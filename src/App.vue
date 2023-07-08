@@ -8,22 +8,22 @@
         <el-divider style="margin: 0;"/>
         <el-menu default-active="1" :collapse="true" style="flex: 1; background-color: #f5f6f8;">
           <el-menu-item index="1" @click="$router.push('/dashboard')">
-            <el-icon><Menu /></el-icon>
+            <el-icon :size="28"><Menu /></el-icon>
             <template #title>分析图表</template>
           </el-menu-item>
           <el-menu-item index="2" @click="$router.push('/table')">
-            <el-icon><List /></el-icon>
+            <el-icon :size="28"><List /></el-icon>
             <template #title>统计数据</template>
           </el-menu-item>
           <el-menu-item index="3" @click="$router.push('/tool')">
-            <el-icon><Tools /></el-icon>
+            <el-icon :size="28"><Tools /></el-icon>
             <template #title>工具</template>
           </el-menu-item>
         </el-menu>
       </el-aside>
-      <el-main>
+      <el-container style="flex-direction: column;">
         <router-view/>
-      </el-main>
+      </el-container>
     </el-container>
   </div>
 </template>
@@ -39,10 +39,6 @@ html, body {
   height: 100%;
   margin: 0;
   padding: 0;
-}
-
-.el-main {
-  padding: 0 !important;
 }
 </style>
 

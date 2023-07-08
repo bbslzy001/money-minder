@@ -7,8 +7,10 @@
   <el-main>Main</el-main>
 </template>
 
-<style>
-
+<style scoped>
+.el-main {
+  background-color: #fcfcfc;
+}
 </style>
 
 <script setup lang="ts">

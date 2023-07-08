@@ -7,7 +7,7 @@
   <el-main>Main</el-main>
 </template>
 
-<style>
+<style scoped>
 
 </style>
 

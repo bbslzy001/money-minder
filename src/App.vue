@@ -6,16 +6,16 @@
           <img src="./assets/logo.png" alt="logo" style="max-height: 100%; max-width: 100%;"/>
         </div>
         <el-divider style="margin: 0;"/>
-        <el-menu default-active="1" :collapse="true" style="flex: 1; background-color: #f5f6f8;">
-          <el-menu-item index="1" @click="$router.push('/dashboard')">
+        <el-menu :default-active="$route.path" :collapse="true" style="flex: 1; background-color: #f5f6f8;">
+          <el-menu-item index="/dashboard" @click="$router.push('/dashboard')">
             <el-icon :size="28"><Menu /></el-icon>
             <template #title>分析图表</template>
           </el-menu-item>
-          <el-menu-item index="2" @click="$router.push('/table')">
+          <el-menu-item index="/table" @click="$router.push('/table')">
             <el-icon :size="28"><List /></el-icon>
-            <template #title>统计数据</template>
+            <template #title>交易明细</template>
           </el-menu-item>
-          <el-menu-item index="3" @click="$router.push('/tool')">
+          <el-menu-item index="/tool" @click="$router.push('/tool')">
             <el-icon :size="28"><Tools /></el-icon>
             <template #title>工具</template>
           </el-menu-item>

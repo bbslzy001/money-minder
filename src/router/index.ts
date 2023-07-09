@@ -2,6 +2,9 @@ import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 import DashboardView from "@/views/DashboardView.vue";
 import TableView from "@/views/TableView.vue";
 import ToolView from "@/views/ToolView.vue";
+import UploadWechat from "@/views/tools/UploadWechat.vue";
+import UploadAlipay from "@/views/tools/UploadAlipay.vue";
+import ToolHome from "@/views/tools/ToolHome.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -20,8 +23,21 @@ const routes: Array<RouteRecordRaw> = [
   },
   {
     path: '/tool',
-    name: 'tool',
-    component: ToolView
+    component: ToolView,
+    children: [
+      {
+        path: '',
+        component: ToolHome,
+      },
+      {
+        path: 'upload-alipay',
+        component: UploadAlipay,
+      },
+      {
+        path: 'upload-wechat',
+        component: UploadWechat,
+      },
+    ],
   },
 ]
 

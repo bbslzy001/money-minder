@@ -1,14 +1,32 @@
 <template>
-  <el-header style="display: flex; align-items: center; justify-content: flex-start;">
-    <el-icon :size="18"><Tools /></el-icon>
-    <div style="margin-left: 8px;">工具</div>
+  <el-header class="header">
+    <el-icon :size="18"><Tools/></el-icon>
+    <div class="header-title">工具</div>
   </el-header>
-  <el-divider style="margin: 4px 0 0 0;"/>
-  <el-main>Main</el-main>
+  <el-divider class="divider"/>
+  <el-main>
+    <router-view/>
+  </el-main>
 </template>
 
 <style scoped>
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
 
+.header-title {
+  margin-left: 8px;
+}
+
+.divider {
+  margin: 4px 0 0 0;
+}
+
+.el-main {
+  background-color: #fcfcfc;
+}
 </style>
 
 <script setup lang="ts">

@@ -6,7 +6,7 @@
           <img src="./assets/logo.png" alt="logo" style="max-height: 100%; max-width: 100%;"/>
         </div>
         <el-divider style="margin: 0;"/>
-        <el-menu :default-active="$route.path" :collapse="true" style="flex: 1; background-color: #f5f6f8;">
+        <el-menu :default-active="activeView" :collapse="true" style="flex: 1; background-color: #f5f6f8;">
           <el-menu-item index="/dashboard" @click="$router.push('/dashboard')">
             <el-icon :size="28"><Menu /></el-icon>
             <template #title>分析图表</template>
@@ -44,4 +44,15 @@ html, body {
 
 <script setup lang="ts">
 import {Menu, List, Tools} from "@element-plus/icons-vue";
+import { computed } from 'vue';
+import { useRoute } from 'vue-router';
+
+const route = useRoute();
+const activeView = computed(() => {
+  if(route.path === '/') return '/dashboard';
+  if(route.path === '/dashboard') return '/dashboard';
+  if(route.path === '/table') return '/table';
+  if(route.path === '/tool' || route.path.startsWith('/tool/')) return '/tool';
+  return '';
+});
 </script>

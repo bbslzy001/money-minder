@@ -30,7 +30,7 @@
     </div>
     <div class="table">
       <el-table :data="pagedTxnTable" size="default" table-layout="auto">
-        <el-table-column prop="txnTime" label="交易时间" sortable width="180"/>
+        <el-table-column prop="txnDateTime" label="交易时间" sortable width="180"/>
         <el-table-column prop="txnType" label="交易类型" width="120"/>
         <el-table-column prop="txnCpty" label="交易方" width="240" :show-overflow-tooltip="true"/>
         <el-table-column prop="prodDesc" label="商品描述" width="auto" :show-overflow-tooltip="true"/>
@@ -59,61 +59,45 @@
     </div>
   </div>
 
-  <el-dialog v-model="txnFormVisible" title="编辑数据信息">
+  <el-dialog v-model="txnFormVisible" title="编辑交易信息">
     <el-form :model="txnForm" :inline="true">
-<!--      <el-form-item label="疾病名称" :label-width="formLabelWidth">-->
-<!--        <el-input v-model="txnForm.specificDataName" autocomplete="off" style="width: 200px; margin-right: 200px;" clearable/>-->
-<!--      </el-form-item>-->
-<!--      <el-form-item label="发病区域" :label-width="formLabelWidth">-->
-<!--        <el-input v-model="txnForm.specificDataRegion" autocomplete="off" style="width: 200px;" clearable/>-->
-<!--      </el-form-item>-->
-<!--      <el-form-item label="发病国家" :label-width="formLabelWidth">-->
-<!--        <el-input v-model="txnForm.specificDataCountry" autocomplete="off" style="width: 200px;" clearable/>-->
-<!--      </el-form-item>-->
-<!--      <el-form-item label="发病地区" :label-width="formLabelWidth">-->
-<!--        <el-input v-model="txnForm.specificDataArea" autocomplete="off" style="width: 200px;" clearable/>-->
-<!--      </el-form-item>-->
-<!--      <el-form-item label="地区类型" :label-width="formLabelWidth">-->
-<!--        <el-select v-model="txnForm.specificDataAreaType" clearable placeholder="请选择地区类型" style="width: 200px;">-->
-<!--          <el-option label="全部" value="全部"/>-->
-<!--          <el-option label="农村" value="农村"/>-->
-<!--          <el-option label="城市" value="城市"/>-->
-<!--        </el-select>-->
-<!--      </el-form-item>-->
-<!--      <el-form-item label="发病年份" :label-width="formLabelWidth">-->
-<!--        <el-input-number v-model="txnForm.specificDataYear" :step="1" step-strictly controls-position="right" size="default" style="width: 200px;"/>-->
-<!--      </el-form-item>-->
-<!--      <el-form-item label="发病月份" :label-width="formLabelWidth">-->
-<!--        <el-input-number v-model="txnForm.specificDataMonth" :min="1" :max="12" :step="1" step-strictly controls-position="right" size="default" style="width: 200px;"/>-->
-<!--      </el-form-item>-->
-<!--      <el-form-item label="发病数" :label-width="formLabelWidth">-->
-<!--        <el-input-number v-model="txnForm.specificDataIncidence" :min="0" :step="1" step-strictly :controls="false" size="default" style="width: 200px;"/>-->
-<!--      </el-form-item>-->
-<!--      <el-form-item label="死亡数" :label-width="formLabelWidth">-->
-<!--        <el-input-number v-model="txnForm.specificDataDeath" :min="0" :step="1" step-strictly :controls="false" size="default" style="width: 200px;"/>-->
-<!--      </el-form-item>-->
-<!--      <el-form-item label="发病率" :label-width="formLabelWidth">-->
-<!--        <el-input-number v-model="txnForm.specificDataIncidenceRate" :min="0" :max="1" :controls="false" size="default" style="width: 200px;"/>-->
-<!--      </el-form-item>-->
-<!--      <el-form-item label="死亡率" :label-width="formLabelWidth">-->
-<!--        <el-input-number v-model="txnForm.specificDataDeathRate" :min="0" :max="1" :controls="false" size="default" style="width: 200px;"/>-->
-<!--      </el-form-item>-->
-<!--      <el-form-item label="患者性别" :label-width="formLabelWidth">-->
-<!--        <el-select v-model="txnForm.specificDataSex" clearable placeholder="请选择患者性别" style="width: 200px;">-->
-<!--          <el-option label="全部" value="全部"/>-->
-<!--          <el-option label="男" value="男"/>-->
-<!--          <el-option label="女" value="女"/>-->
-<!--        </el-select>-->
-<!--      </el-form-item>-->
-<!--      <el-form-item label="患者年龄段" :label-width="formLabelWidth">-->
-<!--        <el-input v-model="txnForm.specificDataAge" autocomplete="off" style="width: 200px;" clearable/>-->
-<!--      </el-form-item>-->
+      <el-form-item label="交易日期" :label-width="formLabelWidth">
+        <el-date-picker v-model="txnForm.txnDate" type="date" format="YYYY年MM月DD日" value-format="YYYY/MM/DD" placeholder="选择日期" clearable/>
+      </el-form-item>
+      <el-form-item label="交易时间" :label-width="formLabelWidth">
+        <el-time-picker v-model="txnForm.txnTime" type="time" format="HH时mm分" value-format="HH:mm" placeholder="选择时间" clearable/>
+      </el-form-item>
+      <el-form-item label="交易类型" :label-width="formLabelWidth">
+        <el-input v-model="txnForm.txnType" autocomplete="off" clearable/>
+      </el-form-item>
+      <el-form-item label="交易方" :label-width="formLabelWidth">
+        <el-input v-model="txnForm.txnCpty" autocomplete="off" clearable/>
+      </el-form-item>
+      <el-form-item label="商品描述" :label-width="formLabelWidth">
+        <el-input v-model="txnForm.prodDesc" autocomplete="off" clearable/>
+      </el-form-item>
+      <el-form-item label="收入/支出" :label-width="formLabelWidth">
+        <el-select v-model="txnForm.incOrExp" placeholder="请选择" clearable>
+          <el-option label="收入" value="收入"/>
+          <el-option label="支出" value="支出"/>
+          <el-option label="不计" value="不计"/>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="交易金额" :label-width="formLabelWidth">
+        <el-input v-model="txnForm.txnAmount" autocomplete="off" clearable/>
+      </el-form-item>
+      <el-form-item label="支付方式" :label-width="formLabelWidth">
+        <el-input v-model="txnForm.payMethod" autocomplete="off" clearable/>
+      </el-form-item>
+      <el-form-item label="交易状态" :label-width="formLabelWidth">
+        <el-input v-model="txnForm.txnStatus" autocomplete="off" clearable/>
+      </el-form-item>
     </el-form>
     <template #footer>
-            <span class="dialog-footer">
-                <el-button @click="txnFormVisible = false">取消</el-button>
-                <el-button type="primary" @click="updateTxnRequest">确认</el-button>
-            </span>
+      <span class="dialog-footer">
+        <el-button @click="txnFormVisible = false">取消</el-button>
+        <el-button type="primary" @click="updateTxnRequest">确认</el-button>
+      </span>
     </template>
   </el-dialog>
 </template>
@@ -164,7 +148,7 @@ import {Code} from '@/utils/code';
 
 interface Txn {
   txnId: number,
-  txnTime: string,
+  txnDateTime: string,
   txnType: string,
   txnCpty: string,
   prodDesc: string,
@@ -174,6 +158,11 @@ interface Txn {
   txnStatus: string,
 }
 
+interface TxnFormValue extends Omit<Txn, 'txnDateTime'> {
+  txnDate: string;
+  txnTime: string;
+}
+
 const selectedForIncOrExp = ref("全部");
 const searchForTxnType = ref('');
 const searchForTxnCpty = ref('');
@@ -181,7 +170,7 @@ const searchForProdDesc = ref('');
 const txnData = ref([
   {
     "txnId": 1,
-    "txnTime": "2023/5/29 18:47",
+    "txnDateTime": "2023/05/29 18:47",
     "txnType": "餐饮美食",
     "txnCpty": "烧饼焖烤鸡腿",
     "prodDesc": "收钱码收款",
@@ -192,7 +181,7 @@ const txnData = ref([
   },
   {
     "txnId": 2,
-    "txnTime": "2023/5/29 14:50",
+    "txnDateTime": "2023/05/29 14:50",
     "txnType": "生活服务",
     "txnCpty": "巡物社",
     "prodDesc": "巡物社(巡物社河南大学店)",
@@ -203,7 +192,7 @@ const txnData = ref([
   },
   {
     "txnId": 3,
-    "txnTime": "2023/5/29 11:44",
+    "txnDateTime": "2023/05/29 11:44",
     "txnType": "餐饮美食",
     "txnCpty": "示范区雷雪艳餐馆",
     "prodDesc": "河南大学_食堂",
@@ -214,7 +203,7 @@ const txnData = ref([
   },
   {
     "txnId": 4,
-    "txnTime": "2023/5/29 0:53",
+    "txnDateTime": "2023/05/29 0:53",
     "txnType": "转账红包",
     "txnCpty": "淘宝（中国）软件有限公司",
     "prodDesc": "淘宝签到提现",
@@ -225,7 +214,7 @@ const txnData = ref([
   },
   {
     "txnId": 5,
-    "txnTime": "2023/5/29 0:07",
+    "txnDateTime": "2023/05/29 0:07",
     "txnType": "商业服务",
     "txnCpty": "上海顺显实业有限公司",
     "prodDesc": "自助设备消费",
@@ -236,7 +225,7 @@ const txnData = ref([
   },
   {
     "txnId": 6,
-    "txnTime": "2023/5/29 0:07",
+    "txnDateTime": "2023/05/29 0:07",
     "txnType": "商业服务",
     "txnCpty": "上海顺显实业有限公司",
     "prodDesc": "自助设备消费",
@@ -247,7 +236,7 @@ const txnData = ref([
   },
   {
     "txnId": 7,
-    "txnTime": "2023/5/28 18:20",
+    "txnDateTime": "2023/05/28 18:20",
     "txnType": "餐饮美食",
     "txnCpty": "河南大学",
     "prodDesc": "河南大学_食堂_南苑1楼29号山东杂粮煎饼",
@@ -258,7 +247,7 @@ const txnData = ref([
   },
   {
     "txnId": 8,
-    "txnTime": "2023/5/28 13:40",
+    "txnDateTime": "2023/05/28 13:40",
     "txnType": "日用百货",
     "txnCpty": "悦来悦喜",
     "prodDesc": "河南悦来悦喜-消费",
@@ -269,7 +258,7 @@ const txnData = ref([
   },
   {
     "txnId": 9,
-    "txnTime": "2023/5/28 13:38",
+    "txnDateTime": "2023/05/28 13:38",
     "txnType": "日用百货",
     "txnCpty": "学长超市",
     "prodDesc": "收钱码收款",
@@ -280,7 +269,7 @@ const txnData = ref([
   },
   {
     "txnId": 10,
-    "txnTime": "2023/5/28 13:24",
+    "txnDateTime": "2023/05/28 13:24",
     "txnType": "退款",
     "txnCpty": "美团",
     "prodDesc": "退款-美团订单-23052811100400000020948974010961",
@@ -291,7 +280,7 @@ const txnData = ref([
   },
   {
     "txnId": 11,
-    "txnTime": "2023/5/28 13:19",
+    "txnDateTime": "2023/05/28 13:19",
     "txnType": "餐饮美食",
     "txnCpty": "美团",
     "prodDesc": "美团订单-23052811100400000020948974010961",
@@ -302,7 +291,7 @@ const txnData = ref([
   },
   {
     "txnId": 12,
-    "txnTime": "2023/5/28 12:10",
+    "txnDateTime": "2023/05/28 12:10",
     "txnType": "餐饮美食",
     "txnCpty": "河南大学",
     "prodDesc": "河南大学_食堂_东苑2楼5号摇滚炒鸡",
@@ -313,7 +302,7 @@ const txnData = ref([
   },
   {
     "txnId": 13,
-    "txnTime": "2023/5/28 0:52",
+    "txnDateTime": "2023/05/28 0:52",
     "txnType": "服饰装扮",
     "txnCpty": "周**",
     "prodDesc": "日本正品totoro宫崎骏龇牙提粽子龙猫公仔玩偶毛绒包挂件书包挂饰",
@@ -324,7 +313,7 @@ const txnData = ref([
   },
   {
     "txnId": 14,
-    "txnTime": "2023/5/28 0:29",
+    "txnDateTime": "2023/05/28 0:29",
     "txnType": "转账红包",
     "txnCpty": "淘宝（中国）软件有限公司",
     "prodDesc": "淘宝签到提现",
@@ -356,13 +345,38 @@ const getTxnRequest = async () => {
 };
 
 const openTxnForm = (index: number, row: Txn) => {
-  txnForm.value = {...row};
+  // 分割日期和时间
+  const dateTime = row.txnDateTime.split(' ');
+  const txnDate = dateTime[0];
+  const txnTime = dateTime[1];
+
+  // 删除 txnDateTime 字段
+  const {txnDateTime, ...rest} = row;
+
+  // 构建表单数据
+  txnForm.value = {
+    ...rest,
+    txnDate,
+    txnTime,
+  };
+
+  console.log(txnForm.value)
+
+  // 打开表单对话框
   txnFormVisible.value = true;
 };
 
 const updateTxnRequest = async () => {
   try {
-    const response = await request.put('/txn/update', txnForm.value);
+    const {txnDate, txnTime, ...rest} = txnForm.value as TxnFormValue;
+    const txnDateTime = `${txnDate} ${txnTime}`;
+
+    console.log(txnDateTime)
+
+    const response = await request.put('/txn/update', {
+      ...rest,
+      txnDateTime,
+    });
     if (response.data.code === Code.UPDATE_OK) {
       txnFormVisible.value = false;
       ElMessage.success(response.data.msg);

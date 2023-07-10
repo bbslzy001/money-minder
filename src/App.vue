@@ -8,15 +8,15 @@
         <el-divider style="margin: 0;"/>
         <el-menu :default-active="activeView" :collapse="true" style="flex: 1; background-color: #f5f6f8;">
           <el-menu-item index="/dashboard" @click="$router.push('/dashboard')">
-            <el-icon :size="28"><Menu /></el-icon>
+            <el-icon :size="28"><Menu/></el-icon>
             <template #title>分析图表</template>
           </el-menu-item>
           <el-menu-item index="/table" @click="$router.push('/table')">
-            <el-icon :size="28"><List /></el-icon>
+            <el-icon :size="28"><List/></el-icon>
             <template #title>交易明细</template>
           </el-menu-item>
           <el-menu-item index="/tool" @click="$router.push('/tool')">
-            <el-icon :size="28"><Tools /></el-icon>
+            <el-icon :size="28"><Tools/></el-icon>
             <template #title>工具</template>
           </el-menu-item>
         </el-menu>
@@ -43,16 +43,17 @@ html, body {
 </style>
 
 <script setup lang="ts">
-import {Menu, List, Tools} from "@element-plus/icons-vue";
-import { computed } from 'vue';
-import { useRoute } from 'vue-router';
+import {List, Menu, Tools} from "@element-plus/icons-vue";
+import {computed} from 'vue';
+import {useRoute} from 'vue-router';
 
 const route = useRoute();
+
 const activeView = computed(() => {
-  if(route.path === '/') return '/dashboard';
-  if(route.path === '/dashboard') return '/dashboard';
-  if(route.path === '/table') return '/table';
-  if(route.path === '/tool' || route.path.startsWith('/tool/')) return '/tool';
+  if (route.path === '/') return '/dashboard';
+  if (route.path === '/dashboard' || route.path.startsWith('/dashboard/')) return '/dashboard';
+  if (route.path === '/table') return '/table';
+  if (route.path === '/tool' || route.path.startsWith('/tool/')) return '/tool';
   return '';
 });
 </script>

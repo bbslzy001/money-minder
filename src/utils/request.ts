@@ -1,8 +1,8 @@
 import axios from 'axios';
 
 const request = axios.create({
-    baseURL: '/api', // 指定API的基础URL
-    timeout: 5000, // 设置请求超时时间（毫秒）
+    baseURL: '/api', // 鎸囧畾API鐨勫熀纭�URL
+    timeout: 5000, // 璁剧疆璇锋眰瓒呮椂鏃堕棿锛堟绉掞級
     headers: {
         'Content-Type': 'application/json',
     },

@@ -14,6 +14,7 @@
   display: flex;
   align-items: center;
   justify-content: flex-start;
+  margin-top: 4px;
 }
 
 .header-title {
@@ -21,7 +22,7 @@
 }
 
 .divider {
-  margin: 4px 0 0 0;
+  margin: 0;
 }
 
 .el-main {

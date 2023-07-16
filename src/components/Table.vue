@@ -360,8 +360,6 @@ const openTxnForm = (index: number, row: Txn) => {
     txnTime,
   };
 
-  console.log(txnForm.value)
-
   // 打开表单对话框
   txnFormVisible.value = true;
 };

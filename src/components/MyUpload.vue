@@ -48,8 +48,7 @@ const uploadFileRequest = async (file: UploadFile) => {
       } else if (response.status === RequestCode.ERROR) {
         uploadFail(file, response.data.error);
       }
-    }
-    else {
+    } else {
       uploadFail(file, '无效文件');
     }
   } catch (error) {

@@ -2,7 +2,7 @@
   <el-container direction="vertical" style="height: 100%;">
     <el-upload
         ref="uploadRef"
-        :action="props.uploadUlr"
+        :action="props.uploadUrl"
         v-model:file-list="fileList"
         drag
         :multiple="true"
@@ -11,7 +11,9 @@
         :accept="props.uploadType"
         :on-change="fileListChange"
         :on-remove="fileListRemove">
-      <el-icon class="el-icon--upload"><upload-filled/></el-icon>
+      <el-icon class="el-icon--upload">
+        <upload-filled/>
+      </el-icon>
       <div class="el-upload__text">{{ props.uploadText }}<em>点击上传</em></div>
       <template #tip>
         <slot name="upload-tip"/>
@@ -28,7 +30,7 @@
       </div>
       <el-table :data="fileList" size="default" table-layout="auto" :max-height="'480px'">
         <el-table-column prop="name" label="文件名"/>
-        <el-table-column prop="size" label="文件大小"/>
+        <el-table-column prop="size" label="文件大小" :formatter="formatFileSize"/>
         <el-table-column prop="status" label="上传状态">
           <template #default="scope">
             <el-tag v-if="scope.row.status === 'ready'" type="info">等待</el-tag>
@@ -71,20 +73,16 @@
 
 <script setup lang="ts">
 import {computed, ref} from 'vue';
-import {
-  ElNotification,
-  ElPopconfirm,
-  UploadFile,
-  UploadProps, UploadRawFile,
-} from "element-plus";
 import type {UploadInstance} from 'element-plus'
+import {ElNotification, ElPopconfirm, UploadFile, UploadProps, UploadRawFile,} from "element-plus";
 import {UploadFilled} from "@element-plus/icons-vue";
 import SparkMD5 from "spark-md5";
 
 interface Props {
-  uploadUlr: string;
+  uploadUrl: string;
   uploadType?: string;
   uploadText?: string;
+  uploadMethod: (fileList: UploadFile[]) => void;
   uploadCheckMethod?: (file: UploadFile, rawFile: UploadRawFile) => void;
   uploadSuccessMethod?: (file: UploadFile) => void;
   uploadFailMethod?: (file: UploadFile) => void;
@@ -105,20 +103,35 @@ const hasFailedFiles = computed(() => {
   return fileList.value.some(file => file.status === 'fail');
 });
 
-// 解析文件过程中所有的异常均通过 handleError 方法抛出
-const handleError = (message: string, file: UploadFile) => {
+const handleSuccess = (message: string) => {
   ElNotification({
-    title: '解析错误',
+    title: '上传成功',
+    message: message,
+    type: 'success',
+    duration: 2000,
+  });
+};
+
+// 解析文件过程中所有的异常均通过 handleError 方法抛出
+const handleError = (message: string) => {
+  ElNotification({
+    title: '上传失败',
     message: message,
     type: 'error',
     duration: 2000,
   });
+};
+
+// 解析文件失败后更新 fileList
+const updateFileList = (file: UploadFile) => {
   fileList.value = fileList.value.filter((f) => f.uid !== file.uid);  // 从 fileList 中删除该 UploadFile
 };
 
 // 将方法暴露给外部调用
 defineExpose({
+  handleSuccess,
   handleError,
+  updateFileList,
 });
 
 // 文件状态改变时的钩子，添加文件、上传成功和上传失败时都会被调用
@@ -128,7 +141,8 @@ const fileListChange: UploadProps['onChange'] = async (file) => {
     const rawFile = file.raw;
 
     if (!rawFile) {
-      handleError('无效文件，请重试', file);
+      handleError('无效文件，请重试');
+      updateFileList(file);
       return;
     }
 
@@ -140,13 +154,15 @@ const fileListChange: UploadProps['onChange'] = async (file) => {
       const md5 = await computeMD5(rawFile);
 
       if (fileMD5List.value.includes(md5)) {
-        handleError('文件已存在', file);
+        handleError('文件已存在');
+        updateFileList(file);
         return;
       }
 
       fileMD5List.value.push(md5);  // 将文件的 MD5 值添加到 fileMD5List
     } catch (error) {
-      handleError('MD5计算错误，请重试', file);
+      handleError('MD5计算错误，请重试');
+      updateFileList(file);
       return;
     }
 
@@ -154,20 +170,18 @@ const fileListChange: UploadProps['onChange'] = async (file) => {
   }
 
   // 上传文件成功时调用
-  if(file.status === 'success') {
+  if (file.status === 'success') {
     if (props.uploadSuccessMethod) {
       props.uploadSuccessMethod(file);
     }
-
     return;
   }
 
   // 上传文件失败时调用
-  if(file.status === 'fail') {
-    if(props.uploadFailMethod) {
+  if (file.status === 'fail') {
+    if (props.uploadFailMethod) {
       props.uploadFailMethod(file);
     }
-
     return;
   }
 };
@@ -187,9 +201,7 @@ const fileListRemove = (index: number) => {
 }
 
 const uploadRequest = () => {
-  if (uploadRef.value) {
-    uploadRef.value.submit();  // 手动上传需要调用 submit 方法，只上传状态为 ready 的文件
-  }
+  props.uploadMethod(fileList.value.filter(file => file.status === 'ready'));
 }
 
 const retryAllUpload = () => {
@@ -233,5 +245,18 @@ const computeMD5 = async (file: File): Promise<string> => {
     };
     fileReader.readAsArrayBuffer(file);
   });
+}
+
+const formatFileSize = (file: UploadFile) => {
+  const size = file.size;
+  if (!size) {
+    return '';
+  } else if (size < 1024) {
+    return size + 'B';
+  } else if (size < 1024 * 1024) {
+    return (size / 1024).toFixed(2) + 'KB';
+  } else {
+    return (size / 1024 / 1024).toFixed(2) + 'MB';
+  }
 }
 </script>

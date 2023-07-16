@@ -1,6 +1,6 @@
 <template>
   <el-container direction="vertical" style="height: 100%;">
-    <MyUpload upload-ulr="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15">
+    <MyUpload upload-url="/upload/alipay">
       <template #my-upload-tip>
         <div class="el-upload__tip">
           <div style="display: flex; align-items: center; justify-content: flex-start;">

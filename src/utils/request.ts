@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const request = axios.create({
+const jsonRequest = axios.create({
     baseURL: '/api', // 指定API的基础URL
     timeout: 5000, // 设置请求超时时间（毫秒）
     headers: {
@@ -8,4 +8,12 @@ const request = axios.create({
     },
 });
 
-export default request;
+const fileRequest = axios.create({
+    baseURL: '/api', // 指定API的基础URL
+    timeout: 5000, // 设置请求超时时间（毫秒）
+    headers: {
+        'Content-Type': 'multipart/form-data',
+    },
+});
+
+export default {jsonRequest, fileRequest};

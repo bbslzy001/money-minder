@@ -144,7 +144,7 @@
 import {computed, onMounted, ref} from "vue";
 import {ElMessage, ElPopconfirm} from "element-plus";
 import request from '@/utils/request';
-import {Code} from '@/utils/code';
+import {RequestCode} from '@/utils/requestCode';
 
 interface Txn {
   txnId: number,
@@ -331,12 +331,12 @@ const formLabelWidth = '120px';
 
 const getTxnRequest = async () => {
   try {
-    const response = await request.get('/txn/getalldata');
-    if (response.data.code === Code.GET_OK) {
+    const response = await request.jsonRequest.get('/txn/getalldata');
+    if (response.status === RequestCode.SUCCESS) {
       txnData.value = response.data.data;
-      ElMessage.success(response.data.msg);
-    } else if (response.data.code === Code.GET_ERR) {
-      ElMessage.error(response.data.msg);
+      ElMessage.success(response.data.message);
+    } else if (response.status === RequestCode.ERROR) {
+      ElMessage.error(response.data.error);
     }
   } catch (error) {
     console.error(error);
@@ -370,19 +370,16 @@ const updateTxnRequest = async () => {
   try {
     const {txnDate, txnTime, ...rest} = txnForm.value as TxnFormValue;
     const txnDateTime = `${txnDate} ${txnTime}`;
-
-    console.log(txnDateTime)
-
-    const response = await request.put('/txn/update', {
+    const response = await request.jsonRequest.put('/txn/update', {
       ...rest,
       txnDateTime,
     });
-    if (response.data.code === Code.UPDATE_OK) {
+    if (response.status === RequestCode.SUCCESS) {
       txnFormVisible.value = false;
-      ElMessage.success(response.data.msg);
+      ElMessage.success(response.data.message);
       getTxnRequest();
-    } else if (response.data.code === Code.UPDATE_ERR) {
-      ElMessage.error(response.data.msg);
+    } else if (response.status === RequestCode.ERROR) {
+      ElMessage.error(response.data.error);
     }
   } catch (error) {
     console.error(error);
@@ -392,16 +389,16 @@ const updateTxnRequest = async () => {
 
 const deleteTxnRequest = async (index: number, row: Txn) => {
   try {
-    const response = await request.delete('/txn/delete', {
+    const response = await request.jsonRequest.delete('/txn/delete', {
       data: {
         txnId: row.txnId,
       },
     });
-    if (response.data.code === Code.DELETE_OK) {
-      ElMessage.success(response.data.msg);
+    if (response.status === RequestCode.SUCCESS) {
+      ElMessage.success(response.data.message);
       getTxnRequest();
-    } else if (response.data.code === Code.DELETE_ERR) {
-      ElMessage.error(response.data.msg);
+    } else if (response.status === RequestCode.ERROR) {
+      ElMessage.error(response.data.error);
     }
   } catch (error) {
     console.error(error);

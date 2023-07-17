@@ -30,7 +30,7 @@
     </div>
     <div class="table">
       <el-table :data="pagedTxnTable" size="default" table-layout="auto">
-        <el-table-column prop="txnDateTime" label="交易时间" sortable width="180"/>
+        <el-table-column prop="txnDateTime" label="交易时间" width="180"/>
         <el-table-column prop="txnType" label="交易类型" width="120"/>
         <el-table-column prop="txnCpty" label="交易方" width="240" :show-overflow-tooltip="true"/>
         <el-table-column prop="prodDesc" label="商品描述" width="auto" :show-overflow-tooltip="true"/>
@@ -42,7 +42,7 @@
           </template>
         </el-table-column>
         <el-table-column prop="txnAmount" label="交易金额" width="120"/>
-        <el-table-column prop="payMethod" label="支付方式" width="180"/>
+        <el-table-column prop="payMethod" label="支付方式" width="180" :show-overflow-tooltip="true"/>
         <el-table-column prop="txnStatus" label="交易状态" width="120"/>
         <el-table-column align="right" label="操作" width="180">
           <template #default="scope">
@@ -156,173 +156,19 @@ interface Txn {
   txnAmount: number,
   payMethod: string,
   txnStatus: string,
+  billId: number,
 }
 
 interface TxnFormValue extends Omit<Txn, 'txnDateTime'> {
-  txnDate: string;
-  txnTime: string;
+  txnDate: string,
+  txnTime: string,
 }
 
 const selectedForIncOrExp = ref("全部");
 const searchForTxnType = ref('');
 const searchForTxnCpty = ref('');
 const searchForProdDesc = ref('');
-const txnData = ref([
-  {
-    "txnId": 1,
-    "txnDateTime": "2023/05/29 18:47",
-    "txnType": "餐饮美食",
-    "txnCpty": "烧饼焖烤鸡腿",
-    "prodDesc": "收钱码收款",
-    "incOrExp": "支出",
-    "txnAmount": 23.5,
-    "payMethod": "余额",
-    "txnStatus": "交易成功"
-  },
-  {
-    "txnId": 2,
-    "txnDateTime": "2023/05/29 14:50",
-    "txnType": "生活服务",
-    "txnCpty": "巡物社",
-    "prodDesc": "巡物社(巡物社河南大学店)",
-    "incOrExp": "支出",
-    "txnAmount": 7.6,
-    "payMethod": "余额",
-    "txnStatus": "交易成功"
-  },
-  {
-    "txnId": 3,
-    "txnDateTime": "2023/05/29 11:44",
-    "txnType": "餐饮美食",
-    "txnCpty": "示范区雷雪艳餐馆",
-    "prodDesc": "河南大学_食堂",
-    "incOrExp": "支出",
-    "txnAmount": 13,
-    "payMethod": "余额",
-    "txnStatus": "交易成功"
-  },
-  {
-    "txnId": 4,
-    "txnDateTime": "2023/05/29 0:53",
-    "txnType": "转账红包",
-    "txnCpty": "淘宝（中国）软件有限公司",
-    "prodDesc": "淘宝签到提现",
-    "incOrExp": "收入",
-    "txnAmount": 0.11,
-    "payMethod": "/",
-    "txnStatus": "交易成功"
-  },
-  {
-    "txnId": 5,
-    "txnDateTime": "2023/05/29 0:07",
-    "txnType": "商业服务",
-    "txnCpty": "上海顺显实业有限公司",
-    "prodDesc": "自助设备消费",
-    "incOrExp": "支出",
-    "txnAmount": 0.05,
-    "payMethod": "余额",
-    "txnStatus": "交易成功"
-  },
-  {
-    "txnId": 6,
-    "txnDateTime": "2023/05/29 0:07",
-    "txnType": "商业服务",
-    "txnCpty": "上海顺显实业有限公司",
-    "prodDesc": "自助设备消费",
-    "incOrExp": "支出",
-    "txnAmount": 0.05,
-    "payMethod": "余额",
-    "txnStatus": "交易成功"
-  },
-  {
-    "txnId": 7,
-    "txnDateTime": "2023/05/28 18:20",
-    "txnType": "餐饮美食",
-    "txnCpty": "河南大学",
-    "prodDesc": "河南大学_食堂_南苑1楼29号山东杂粮煎饼",
-    "incOrExp": "支出",
-    "txnAmount": 7,
-    "payMethod": "余额",
-    "txnStatus": "交易成功"
-  },
-  {
-    "txnId": 8,
-    "txnDateTime": "2023/05/28 13:40",
-    "txnType": "日用百货",
-    "txnCpty": "悦来悦喜",
-    "prodDesc": "河南悦来悦喜-消费",
-    "incOrExp": "支出",
-    "txnAmount": 19,
-    "payMethod": "余额",
-    "txnStatus": "交易成功"
-  },
-  {
-    "txnId": 9,
-    "txnDateTime": "2023/05/28 13:38",
-    "txnType": "日用百货",
-    "txnCpty": "学长超市",
-    "prodDesc": "收钱码收款",
-    "incOrExp": "支出",
-    "txnAmount": 13,
-    "payMethod": "余额",
-    "txnStatus": "交易成功"
-  },
-  {
-    "txnId": 10,
-    "txnDateTime": "2023/05/28 13:24",
-    "txnType": "退款",
-    "txnCpty": "美团",
-    "prodDesc": "退款-美团订单-23052811100400000020948974010961",
-    "incOrExp": "不计",
-    "txnAmount": 44.1,
-    "payMethod": "余额",
-    "txnStatus": "退款成功"
-  },
-  {
-    "txnId": 11,
-    "txnDateTime": "2023/05/28 13:19",
-    "txnType": "餐饮美食",
-    "txnCpty": "美团",
-    "prodDesc": "美团订单-23052811100400000020948974010961",
-    "incOrExp": "支出",
-    "txnAmount": 44.1,
-    "payMethod": "余额",
-    "txnStatus": "交易关闭"
-  },
-  {
-    "txnId": 12,
-    "txnDateTime": "2023/05/28 12:10",
-    "txnType": "餐饮美食",
-    "txnCpty": "河南大学",
-    "prodDesc": "河南大学_食堂_东苑2楼5号摇滚炒鸡",
-    "incOrExp": "支出",
-    "txnAmount": 9,
-    "payMethod": "余额",
-    "txnStatus": "交易成功"
-  },
-  {
-    "txnId": 13,
-    "txnDateTime": "2023/05/28 0:52",
-    "txnType": "服饰装扮",
-    "txnCpty": "周**",
-    "prodDesc": "日本正品totoro宫崎骏龇牙提粽子龙猫公仔玩偶毛绒包挂件书包挂饰",
-    "incOrExp": "支出",
-    "txnAmount": 96.82,
-    "payMethod": "余额",
-    "txnStatus": "交易成功"
-  },
-  {
-    "txnId": 14,
-    "txnDateTime": "2023/05/28 0:29",
-    "txnType": "转账红包",
-    "txnCpty": "淘宝（中国）软件有限公司",
-    "prodDesc": "淘宝签到提现",
-    "incOrExp": "收入",
-    "txnAmount": 0.12,
-    "payMethod": "/",
-    "txnStatus": "交易成功"
-  }
-]);
+const txnData = ref([]);
 const currentPageForTxn = ref(1);
 const pageSize = ref(10);
 const txnFormVisible = ref(false);
@@ -331,9 +177,10 @@ const formLabelWidth = '120px';
 
 const getTxnRequest = async () => {
   try {
-    const response = await request.jsonRequest.get('/txn/getalldata');
+    const response = await request.jsonRequest.get('/txn/getall');
     if (response.status === RequestCode.SUCCESS) {
-      txnData.value = response.data.data;
+      txnData.value = response.data.result;
+      console.log(txnData.value)
       ElMessage.success(response.data.message);
     }
   } catch (error) {
@@ -358,15 +205,17 @@ const openTxnForm = (index: number, row: Txn) => {
     txnTime,
   };
 
+  console.log(txnDate)
+
   // 打开表单对话框
   txnFormVisible.value = true;
 };
 
 const updateTxnRequest = async () => {
   try {
-    const {txnDate, txnTime, ...rest} = txnForm.value as TxnFormValue;
+    const {txnId, txnDate, txnTime, ...rest} = txnForm.value as TxnFormValue;
     const txnDateTime = `${txnDate} ${txnTime}`;
-    const response = await request.jsonRequest.put('/txn/update', {
+    const response = await request.jsonRequest.put(`/txn/update/${txnId}`, {
       ...rest,
       txnDateTime,
     });
@@ -383,11 +232,7 @@ const updateTxnRequest = async () => {
 
 const deleteTxnRequest = async (index: number, row: Txn) => {
   try {
-    const response = await request.jsonRequest.delete('/txn/delete', {
-      data: {
-        txnId: row.txnId,
-      },
-    });
+    const response = await request.jsonRequest.delete(`/txn/delete/${row.txnId}`);
     if (response.status === RequestCode.SUCCESS) {
       ElMessage.success(response.data.message);
       getTxnRequest();
@@ -398,20 +243,28 @@ const deleteTxnRequest = async (index: number, row: Txn) => {
   }
 };
 
-const txnTable = computed(() =>
-    txnData.value.filter(
+const txnTable = computed(() => {
+  if (txnData.value && txnData.value.length > 0) {
+    return txnData.value.filter(
         (data: Txn) =>
             (selectedForIncOrExp.value === "全部" || data.incOrExp === selectedForIncOrExp.value) &&
             (!searchForTxnType.value || data.txnType.toLowerCase().includes(searchForTxnType.value.toLowerCase())) &&
             (!searchForTxnCpty.value || data.txnCpty.toLowerCase().includes(searchForTxnCpty.value.toLowerCase())) &&
             (!searchForProdDesc.value || data.prodDesc.toLowerCase().includes(searchForProdDesc.value.toLowerCase()))
-    )
-);
+    );
+  } else {
+    return [];
+  }
+});
 
 const pagedTxnTable = computed(() => {
-  const start = (currentPageForTxn.value - 1) * pageSize.value;
-  const end = start + pageSize.value;
-  return txnTable.value.slice(start, end);
+  if (txnTable.value && txnTable.value.length > 0) {
+    const start = (currentPageForTxn.value - 1) * pageSize.value;
+    const end = start + pageSize.value;
+    return txnTable.value.slice(start, end);
+  } else {
+    return [];
+  }
 });
 
 onMounted(() => {

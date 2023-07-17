@@ -45,8 +45,6 @@ const uploadFileRequest = async (file: UploadFile) => {
       const response = await request.fileRequest.post(`${props.uploadUrl}`, formData);
       if (response.status === RequestCode.SUCCESS) {
         uploadSuccess(file, response.data.message);
-      } else if (response.status === RequestCode.ERROR) {
-        uploadFail(file, response.data.error);
       }
     } else {
       uploadFail(file, '无效文件');

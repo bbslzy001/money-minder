@@ -335,8 +335,6 @@ const getTxnRequest = async () => {
     if (response.status === RequestCode.SUCCESS) {
       txnData.value = response.data.data;
       ElMessage.success(response.data.message);
-    } else if (response.status === RequestCode.ERROR) {
-      ElMessage.error(response.data.error);
     }
   } catch (error) {
     console.error(error);
@@ -376,8 +374,6 @@ const updateTxnRequest = async () => {
       txnFormVisible.value = false;
       ElMessage.success(response.data.message);
       getTxnRequest();
-    } else if (response.status === RequestCode.ERROR) {
-      ElMessage.error(response.data.error);
     }
   } catch (error) {
     console.error(error);
@@ -395,8 +391,6 @@ const deleteTxnRequest = async (index: number, row: Txn) => {
     if (response.status === RequestCode.SUCCESS) {
       ElMessage.success(response.data.message);
       getTxnRequest();
-    } else if (response.status === RequestCode.ERROR) {
-      ElMessage.error(response.data.error);
     }
   } catch (error) {
     console.error(error);

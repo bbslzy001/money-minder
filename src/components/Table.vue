@@ -62,10 +62,10 @@
   <el-dialog v-model="txnFormVisible" title="编辑交易信息">
     <el-form :model="txnForm" :inline="true">
       <el-form-item label="交易日期" :label-width="formLabelWidth">
-        <el-date-picker v-model="txnForm.txnDate" type="date" format="YYYY年MM月DD日" value-format="YYYY/MM/DD" placeholder="选择日期" clearable/>
+        <el-date-picker v-model="txnForm.txnDate" type="date" format="YYYY年MM月DD日" value-format="YYYY-MM-DD" placeholder="选择日期" clearable/>
       </el-form-item>
       <el-form-item label="交易时间" :label-width="formLabelWidth">
-        <el-time-picker v-model="txnForm.txnTime" type="time" format="HH时mm分" value-format="HH:mm" placeholder="选择时间" clearable/>
+        <el-time-picker v-model="txnForm.txnTime" type="time" format="HH时mm分ss秒" value-format="HH:mm:ss" placeholder="选择时间" clearable/>
       </el-form-item>
       <el-form-item label="交易类型" :label-width="formLabelWidth">
         <el-input v-model="txnForm.txnType" autocomplete="off" clearable/>

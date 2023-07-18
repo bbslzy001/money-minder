@@ -204,8 +204,6 @@ const openTxnForm = (index: number, row: Txn) => {
     txnTime,
   };
 
-  console.log(txnDate)
-
   // 打开表单对话框
   txnFormVisible.value = true;
 };

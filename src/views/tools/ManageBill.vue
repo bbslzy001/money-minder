@@ -35,28 +35,28 @@
     </div>
   </el-container>
 
-  <el-dialog v-model="billFormVisible" title="编辑交易信息">
-    <el-form :model="billForm" :inline="true">
-      <el-form-item label="账单名称" :label-width="formLabelWidth">
+  <el-dialog v-model="billFormVisible" title="编辑交易信息" @close="resetBillForm(billFormRef)">
+    <el-form ref="billFormRef" :model="billForm" :rules="billFormRules" :inline="true">
+      <el-form-item label="账单名称" prop="billName" :label-width="formLabelWidth">
         <el-input v-model="billForm.billName" autocomplete="off" placeholder="请输入" clearable/>
       </el-form-item>
-      <el-form-item label="账单类型" :label-width="formLabelWidth" placeholder="请选择">
-        <el-select v-model="billForm.billType">
+      <el-form-item label="账单类型" prop="billType" :label-width="formLabelWidth">
+        <el-select v-model="billForm.billType" placeholder="请选择" clearable>
           <el-option label="支付宝" value="alipay"/>
           <el-option label="微信" value="wechat"/>
         </el-select>
       </el-form-item>
-      <el-form-item label="起始日期" :label-width="formLabelWidth">
+      <el-form-item label="起始日期" prop="startDate" :label-width="formLabelWidth">
         <el-date-picker v-model="billForm.startDate" type="date" format="YYYY年MM月DD日" value-format="YYYY-MM-DD" placeholder="请选择日期"/>
       </el-form-item>
-      <el-form-item label="截止日期" :label-width="formLabelWidth">
+      <el-form-item label="截止日期" prop="endDate" :label-width="formLabelWidth">
         <el-date-picker v-model="billForm.endDate" type="date" format="YYYY年MM月DD日" value-format="YYYY-MM-DD" placeholder="请选择日期"/>
       </el-form-item>
     </el-form>
     <template #footer>
       <span class="dialog-footer">
         <el-button @click="billFormVisible = false">取消</el-button>
-        <el-button type="primary" @click="updateBillRequest">确认</el-button>
+        <el-button type="primary" @click="submitBillForm(billFormRef)">确认</el-button>
       </span>
     </template>
   </el-dialog>
@@ -82,8 +82,8 @@
 </style>
 
 <script setup lang="ts">
-import {computed, onMounted, ref} from "vue";
-import {ElMessage, ElPopconfirm} from "element-plus";
+import {computed, onMounted, reactive, ref} from "vue";
+import {ElMessage, ElPopconfirm, FormInstance, FormRules} from "element-plus";
 import request from "@/utils/request";
 import {RequestCode} from "@/utils/requestCode";
 
@@ -267,8 +267,29 @@ const billList = ref([
   },
 ]);
 const billFormVisible = ref(false);
-const billForm = ref({});
+const billFormRef = ref<FormInstance>();
+const billForm = reactive({
+  billId: 0,
+  billName: '',
+  startDate: '',
+  endDate: '',
+  billType: '',
+});
 const formLabelWidth = '120px';
+const billFormRules = reactive<FormRules>({
+  billName: [
+    { required: true, message: '请输入账单名称', trigger: 'blur' }
+  ],
+  startDate: [
+    { required: true, message: '请选择起始日期', trigger: 'blur' }
+  ],
+  endDate: [
+    { required: true, message: '请选择截止日期', trigger: 'blur' }
+  ],
+  billType: [
+    { required: true, message: '请选择账单类型', trigger: 'blur' }
+  ],
+});
 
 const getBillRequest = async () => {
   try {
@@ -284,15 +305,35 @@ const getBillRequest = async () => {
 };
 
 const openBillForm = (index: number, row: Bill) => {
-  billForm.value = {...row};
+  billForm.billId = row.billId;
+  billForm.billName = row.billName;
+  billForm.startDate = row.startDate;
+  billForm.endDate = row.endDate;
+  billForm.billType = row.billType;
   billFormVisible.value = true;
 };
 
+const submitBillForm = async (form: FormInstance | undefined) => {
+  if (!form) return;
+  await form.validate((valid) => {
+    if (valid) {
+      updateBillRequest();
+    }
+  });
+};
+
+const resetBillForm = (form: FormInstance | undefined) => {
+  if (!form) return
+  form.resetFields()
+}
+
 const updateBillRequest = async () => {
   try {
-    const {billId, ...rest} = billForm.value as Bill;
-    const response = await request.jsonRequest.put(`/bill/update/${billId}`, {
-      ...rest,
+    const response = await request.jsonRequest.put(`/bill/update/${billForm.billId}`, {
+      'billName': billForm.billName,
+      'startDate': billForm.startDate,
+      'endDate': billForm.endDate,
+      'billType': billForm.billType,
     });
     if (response.status === RequestCode.SUCCESS) {
       billFormVisible.value = false;
@@ -328,7 +369,6 @@ const billListForTable = computed(() => {
     return [];
   }
 });
-
 onMounted(() => {
   getBillRequest();
 });

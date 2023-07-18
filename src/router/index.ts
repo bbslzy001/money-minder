@@ -16,6 +16,8 @@ import WeekReport from "@/views/tools/WeekReport.vue";
 import MonthReport from "@/views/tools/MonthReport.vue";
 import YearReport from "@/views/tools/YearReport.vue";
 import CustomReport from "@/views/tools/CustomReport.vue";
+import AlipayRules from "@/views/tools/AlipayRules.vue";
+import WechatRules from "@/views/tools/WechatRules.vue";
 
 const routes = [
   {
@@ -112,6 +114,16 @@ const routes = [
         path: 'generate-custom-report',
         name: 'generate-custom-report',
         component: CustomReport,
+      },
+      {
+        path: 'customize-alipay-rules',
+        name: 'customize-alipay-rules',
+        component: AlipayRules,
+      },
+      {
+        path: 'customize-wechat-rules',
+        name: 'customize-wechat-rules',
+        component: WechatRules,
       },
     ],
   },

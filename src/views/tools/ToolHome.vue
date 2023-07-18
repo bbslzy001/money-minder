@@ -22,7 +22,7 @@
       <el-card shadow="hover">
         <template #header>
           <div class="header">
-            <el-icon :size="18"><Download/></el-icon>
+            <el-icon :size="18"><Files/></el-icon>
             <div class="header-title">管理账单</div>
           </div>
         </template>
@@ -36,7 +36,7 @@
       <el-card shadow="hover">
         <template #header>
           <div class="header">
-            <el-icon :size="18"><Document/></el-icon>
+            <el-icon :size="18"><Download/></el-icon>
             <div class="header-title">下载账单</div>
           </div>
         </template>
@@ -75,6 +75,24 @@
         </div>
       </el-card>
     </el-col>
+    <el-col :span="8">
+      <el-card shadow="hover">
+        <template #header>
+          <div class="header">
+            <el-icon :size="18"><Tickets/></el-icon>
+            <div class="header-title">自定义交易类型匹配规则</div>
+          </div>
+        </template>
+        <div class="choice" style="padding-bottom: 20px;">
+          <img src="../../assets/alipay.png" alt="alipay" style="max-height: 24px; max-width: 24px;"/>
+          <el-link type="primary" @click="$router.push('/tool/customize-alipay-rules')">自定义 “支付宝” 交易类型匹配规则</el-link>
+        </div>
+        <div class="choice">
+          <img src="../../assets/wechat.png" alt="wechat" style="max-height: 24px; max-width: 24px;"/>
+          <el-link type="success" @click="$router.push('/tool/customize-wechat-rules')">自定义 “微信” 交易类型匹配规则</el-link>
+        </div>
+      </el-card>
+    </el-col>
   </el-row>
 </template>
 
@@ -109,5 +127,5 @@
 </style>
 
 <script setup lang="ts">
-import {Document, Download, Upload} from "@element-plus/icons-vue";
+import {Document, Download, Files, Tickets, Upload} from "@element-plus/icons-vue";
 </script>

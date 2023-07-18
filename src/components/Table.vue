@@ -47,7 +47,7 @@
         <el-table-column align="right" label="操作" width="180">
           <template #default="scope">
             <el-button size="small" type="primary" @click="openTxnForm(scope.$index, scope.row)">编辑</el-button>
-            <el-popconfirm title="是否要删除本条交易" confirm-button-text="删除" @confirm="deleteTxnRequest(scope.$index, scope.row)" cancel-button-text="取消" width="200">
+            <el-popconfirm title="是否删除该交易" confirm-button-text="删除" @confirm="deleteTxnRequest(scope.$index, scope.row)" cancel-button-text="取消" width="200">
               <template #reference>
                 <el-button size="small" type="danger">删除</el-button>
               </template>
@@ -62,35 +62,35 @@
   <el-dialog v-model="txnFormVisible" title="编辑交易信息">
     <el-form :model="txnForm" :inline="true">
       <el-form-item label="交易日期" :label-width="formLabelWidth">
-        <el-date-picker v-model="txnForm.txnDate" type="date" format="YYYY年MM月DD日" value-format="YYYY-MM-DD" placeholder="选择日期" clearable/>
+        <el-date-picker v-model="txnForm.txnDate" type="date" format="YYYY年MM月DD日" value-format="YYYY-MM-DD" placeholder="请选择日期"/>
       </el-form-item>
       <el-form-item label="交易时间" :label-width="formLabelWidth">
-        <el-time-picker v-model="txnForm.txnTime" type="time" format="HH时mm分ss秒" value-format="HH:mm:ss" placeholder="选择时间" clearable/>
+        <el-time-picker v-model="txnForm.txnTime" type="time" format="HH时mm分ss秒" value-format="HH:mm:ss" placeholder="请选择时间"/>
       </el-form-item>
       <el-form-item label="交易类型" :label-width="formLabelWidth">
-        <el-input v-model="txnForm.txnType" autocomplete="off" clearable/>
+        <el-input v-model="txnForm.txnType" autocomplete="off" placeholder="请输入" clearable/>
       </el-form-item>
       <el-form-item label="交易方" :label-width="formLabelWidth">
-        <el-input v-model="txnForm.txnCpty" autocomplete="off" clearable/>
+        <el-input v-model="txnForm.txnCpty" autocomplete="off" placeholder="请输入" clearable/>
       </el-form-item>
       <el-form-item label="商品描述" :label-width="formLabelWidth">
-        <el-input v-model="txnForm.prodDesc" autocomplete="off" clearable/>
+        <el-input v-model="txnForm.prodDesc" autocomplete="off" placeholder="请输入" clearable/>
       </el-form-item>
       <el-form-item label="收入/支出" :label-width="formLabelWidth">
-        <el-select v-model="txnForm.incOrExp" placeholder="请选择" clearable>
+        <el-select v-model="txnForm.incOrExp" placeholder="请选择">
           <el-option label="收入" value="收入"/>
           <el-option label="支出" value="支出"/>
           <el-option label="不计" value="不计"/>
         </el-select>
       </el-form-item>
       <el-form-item label="交易金额" :label-width="formLabelWidth">
-        <el-input v-model="txnForm.txnAmount" autocomplete="off" clearable/>
+        <el-input v-model="txnForm.txnAmount" autocomplete="off" placeholder="请输入" clearable/>
       </el-form-item>
       <el-form-item label="支付方式" :label-width="formLabelWidth">
-        <el-input v-model="txnForm.payMethod" autocomplete="off" clearable/>
+        <el-input v-model="txnForm.payMethod" autocomplete="off" placeholder="请输入" clearable/>
       </el-form-item>
       <el-form-item label="交易状态" :label-width="formLabelWidth">
-        <el-input v-model="txnForm.txnStatus" autocomplete="off" clearable/>
+        <el-input v-model="txnForm.txnStatus" autocomplete="off" placeholder="请输入" clearable/>
       </el-form-item>
     </el-form>
     <template #footer>
@@ -164,7 +164,7 @@ interface TxnFormValue extends Omit<Txn, 'txnDateTime'> {
   txnTime: string,
 }
 
-const selectedForIncOrExp = ref("全部");
+const selectedForIncOrExp = ref('全部');
 const searchForTxnType = ref('');
 const searchForTxnCpty = ref('');
 const searchForProdDesc = ref('');
@@ -180,7 +180,6 @@ const getTxnRequest = async () => {
     const response = await request.jsonRequest.get('/txn/getall');
     if (response.status === RequestCode.SUCCESS) {
       txnData.value = response.data.result;
-      console.log(txnData.value)
       ElMessage.success(response.data.message);
     }
   } catch (error) {

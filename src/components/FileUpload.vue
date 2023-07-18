@@ -11,9 +11,7 @@
         :accept="props.uploadType"
         :on-change="fileListChange"
         :on-remove="fileListRemove">
-      <el-icon class="el-icon--upload">
-        <upload-filled/>
-      </el-icon>
+      <el-icon class="el-icon--upload"><upload-filled/></el-icon>
       <div class="el-upload__text">{{ props.uploadText }}<em>点击上传</em></div>
       <template #tip>
         <slot name="upload-tip"/>
@@ -43,7 +41,7 @@
           <template #default="scope">
             <el-button v-if="scope.row.status === 'fail'" size="small" type="warning" @click="retryUpload(scope.$index)">重试</el-button>
             <el-popconfirm v-if="scope.row.status !== 'uploading' && scope.row.status !== 'success'"
-                           title="是否撤销本文件" confirm-button-text="确认" @confirm="fileListRemove(scope.$index)" cancel-button-text="取消" width="200">
+                           title="是否撤销该文件" confirm-button-text="确认" @confirm="fileListRemove(scope.$index)" cancel-button-text="取消" width="200">
               <template #reference>
                 <el-button size="small" type="danger">撤销</el-button>
               </template>

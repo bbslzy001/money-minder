@@ -173,7 +173,7 @@ const currentPageForTxn = ref(1);
 const pageSize = ref(10);
 const txnFormVisible = ref(false);
 const txnForm = ref({});
-const formLabelWidth = '120px';
+const formLabelWidth = ref('120px');
 
 const getTxnRequest = async () => {
   try {

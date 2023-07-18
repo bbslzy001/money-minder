@@ -35,7 +35,7 @@
     </div>
   </el-container>
 
-  <el-dialog v-model="billFormVisible" title="编辑交易信息" @close="resetBillForm(billFormRef)">
+  <el-dialog v-model="billFormVisible" title="编辑交易信息">
     <el-form ref="billFormRef" :model="billForm" :rules="billFormRules" :inline="true">
       <el-form-item label="账单名称" prop="billName" :label-width="formLabelWidth">
         <el-input v-model="billForm.billName" autocomplete="off" placeholder="请输入" clearable/>
@@ -96,186 +96,11 @@ interface Bill {
 }
 
 const selectedForBillType = ref('all');
-const billList = ref([
-  {
-    'billId': 1,
-    'billName': 'alipay123564111111111111111111111111111111111113',
-    'startDate': '2023-01-01',
-    'endDate': '2023-06-06',
-    'billType': 'alipay'
-  },
-  {
-    'billId': 2,
-    'billName': 'alipay1236656413',
-    'startDate': '2023-04-01',
-    'endDate': '2023-06-01',
-    'billType': 'alipay'
-  },
-  {
-    'billId': 3,
-    'billName': 'alipay1235116413',
-    'startDate': '2023-01-01',
-    'endDate': '2023-05-05',
-    'billType': 'alipay'
-  },
-  {
-    'billId': 4,
-    'billName': 'wechat1235677413',
-    'startDate': '2023-03-03',
-    'endDate': '2023-06-06',
-    'billType': 'wechat'
-  },
-  {
-    'billId': 4,
-    'billName': 'wechat1235677413',
-    'startDate': '2023-03-03',
-    'endDate': '2023-06-06',
-    'billType': 'wechat'
-  },
-  {
-    'billId': 4,
-    'billName': 'wechat1235677413',
-    'startDate': '2023-03-03',
-    'endDate': '2023-06-06',
-    'billType': 'wechat'
-  },
-  {
-    'billId': 4,
-    'billName': 'wechat1235677413',
-    'startDate': '2023-03-03',
-    'endDate': '2023-06-06',
-    'billType': 'wechat'
-  },
-  {
-    'billId': 4,
-    'billName': 'wechat1235677413',
-    'startDate': '2023-03-03',
-    'endDate': '2023-06-06',
-    'billType': 'wechat'
-  },
-  {
-    'billId': 4,
-    'billName': 'wechat1235677413',
-    'startDate': '2023-03-03',
-    'endDate': '2023-06-06',
-    'billType': 'wechat'
-  },
-  {
-    'billId': 4,
-    'billName': 'wechat1235677413',
-    'startDate': '2023-03-03',
-    'endDate': '2023-06-06',
-    'billType': 'wechat'
-  },
-  {
-    'billId': 4,
-    'billName': 'wechat1235677413',
-    'startDate': '2023-03-03',
-    'endDate': '2023-06-06',
-    'billType': 'wechat'
-  },
-  {
-    'billId': 4,
-    'billName': 'wechat1235677413',
-    'startDate': '2023-03-03',
-    'endDate': '2023-06-06',
-    'billType': 'wechat'
-  },
-  {
-    'billId': 4,
-    'billName': 'wechat1235677413',
-    'startDate': '2023-03-03',
-    'endDate': '2023-06-06',
-    'billType': 'wechat'
-  },
-  {
-    'billId': 4,
-    'billName': 'wechat1235677413',
-    'startDate': '2023-03-03',
-    'endDate': '2023-06-06',
-    'billType': 'wechat'
-  },
-  {
-    'billId': 4,
-    'billName': 'wechat1235677413',
-    'startDate': '2023-03-03',
-    'endDate': '2023-06-06',
-    'billType': 'wechat'
-  },
-  {
-    'billId': 4,
-    'billName': 'wechat1235677413',
-    'startDate': '2023-03-03',
-    'endDate': '2023-06-06',
-    'billType': 'wechat'
-  },
-  {
-    'billId': 4,
-    'billName': 'wechat1235677413',
-    'startDate': '2023-03-03',
-    'endDate': '2023-06-06',
-    'billType': 'wechat'
-  },
-  {
-    'billId': 4,
-    'billName': 'wechat1235677413',
-    'startDate': '2023-03-03',
-    'endDate': '2023-06-06',
-    'billType': 'wechat'
-  },
-  {
-    'billId': 4,
-    'billName': 'wechat1235677413',
-    'startDate': '2023-03-03',
-    'endDate': '2023-06-06',
-    'billType': 'wechat'
-  },
-  {
-    'billId': 4,
-    'billName': 'wechat1235677413',
-    'startDate': '2023-03-03',
-    'endDate': '2023-06-06',
-    'billType': 'wechat'
-  },
-  {
-    'billId': 4,
-    'billName': 'wechat1235677413',
-    'startDate': '2023-03-03',
-    'endDate': '2023-06-06',
-    'billType': 'wechat'
-  },
-  {
-    'billId': 4,
-    'billName': 'wechat1235677413',
-    'startDate': '2023-03-03',
-    'endDate': '2023-06-06',
-    'billType': 'wechat'
-  },
-  {
-    'billId': 4,
-    'billName': 'wechat1235677413',
-    'startDate': '2023-03-03',
-    'endDate': '2023-06-06',
-    'billType': 'wechat'
-  },
-  {
-    'billId': 4,
-    'billName': 'wechat1235677413',
-    'startDate': '2023-03-03',
-    'endDate': '2023-06-06',
-    'billType': 'wechat'
-  },
-]);
+const billList = ref([]);
 const billFormVisible = ref(false);
 const billFormRef = ref<FormInstance>();
-const billForm = reactive({
-  billId: 0,
-  billName: '',
-  startDate: '',
-  endDate: '',
-  billType: '',
-});
-const formLabelWidth = '120px';
+const billForm = ref({});
+const formLabelWidth = ref('120px');
 const billFormRules = reactive<FormRules>({
   billName: [
     { required: true, message: '请输入账单名称', trigger: 'blur' }
@@ -305,11 +130,7 @@ const getBillRequest = async () => {
 };
 
 const openBillForm = (index: number, row: Bill) => {
-  billForm.billId = row.billId;
-  billForm.billName = row.billName;
-  billForm.startDate = row.startDate;
-  billForm.endDate = row.endDate;
-  billForm.billType = row.billType;
+  billForm.value = {...row};
   billFormVisible.value = true;
 };
 
@@ -322,18 +143,11 @@ const submitBillForm = async (form: FormInstance | undefined) => {
   });
 };
 
-const resetBillForm = (form: FormInstance | undefined) => {
-  if (!form) return
-  form.resetFields()
-}
-
 const updateBillRequest = async () => {
   try {
-    const response = await request.jsonRequest.put(`/bill/update/${billForm.billId}`, {
-      'billName': billForm.billName,
-      'startDate': billForm.startDate,
-      'endDate': billForm.endDate,
-      'billType': billForm.billType,
+    const {billId, ...rest} = billForm.value as Bill
+    const response = await request.jsonRequest.put(`/bill/update/${billId}`, {
+      ...rest
     });
     if (response.status === RequestCode.SUCCESS) {
       billFormVisible.value = false;

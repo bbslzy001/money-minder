@@ -10,6 +10,12 @@ import WeekAnalyse from "@/views/dashboards/WeekAnalyse.vue";
 import YearAnalyse from "@/views/dashboards/YearAnalyse.vue";
 import AllAnalyse from "@/views/dashboards/AllAnalyse.vue";
 import MonthAnalyse from "@/views/dashboards/MonthAnalyse.vue";
+import ManageBill from "@/views/tools/ManageBill.vue";
+import DayReport from "@/views/tools/DayReport.vue";
+import WeekReport from "@/views/tools/WeekReport.vue";
+import MonthReport from "@/views/tools/MonthReport.vue";
+import YearReport from "@/views/tools/YearReport.vue";
+import CustomReport from "@/views/tools/CustomReport.vue";
 
 const routes = [
   {
@@ -76,6 +82,36 @@ const routes = [
         path: 'upload-wechat',
         name: 'upload-wechat',
         component: UploadWechat,
+      },
+      {
+        path: 'manage-bill',
+        name: 'manage-bill',
+        component: ManageBill,
+      },
+      {
+        path: 'generate-day-report',
+        name: 'generate-day-report',
+        component: DayReport,
+      },
+      {
+        path: 'generate-week-report',
+        name: 'generate-week-report',
+        component: WeekReport,
+      },
+      {
+        path: 'generate-month-report',
+        name: 'generate-month-report',
+        component: MonthReport,
+      },
+      {
+        path: 'generate-year-report',
+        name: 'generate-year-report',
+        component: YearReport,
+      },
+      {
+        path: 'generate-custom-report',
+        name: 'generate-custom-report',
+        component: CustomReport,
       },
     ],
   },

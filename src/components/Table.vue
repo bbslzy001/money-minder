@@ -59,44 +59,44 @@
     </div>
   </div>
 
-  <el-dialog v-model="txnFormVisible" title="编辑交易信息">
-    <el-form :model="txnForm" :inline="true">
-      <el-form-item label="交易日期" :label-width="formLabelWidth">
-        <el-date-picker v-model="txnForm.txnDate" type="date" format="YYYY年MM月DD日" value-format="YYYY-MM-DD" placeholder="请选择日期"/>
+  <el-dialog v-model="txnFormVisible" title="编辑交易信息" @close="resetTxnForm">
+    <el-form ref="txnFormRef" :model="txnForm" :rules="txnFormRules" :inline="true">
+      <el-form-item label="交易日期" prop="txnDate" :label-width="formLabelWidth">
+        <el-date-picker v-model="txnForm.txnDate" type="date" format="YYYY年MM月DD日" value-format="YYYY-MM-DD" placeholder="请选择交易日期"/>
       </el-form-item>
-      <el-form-item label="交易时间" :label-width="formLabelWidth">
-        <el-time-picker v-model="txnForm.txnTime" type="time" format="HH时mm分ss秒" value-format="HH:mm:ss" placeholder="请选择时间"/>
+      <el-form-item label="交易时间" prop="txnTime" :label-width="formLabelWidth">
+        <el-time-picker v-model="txnForm.txnTime" type="time" format="HH时mm分ss秒" value-format="HH:mm:ss" placeholder="请选择交易时间"/>
       </el-form-item>
-      <el-form-item label="交易类型" :label-width="formLabelWidth">
-        <el-input v-model="txnForm.txnType" autocomplete="off" placeholder="请输入" clearable/>
+      <el-form-item label="交易类型" prop="txnType" :label-width="formLabelWidth">
+        <el-input v-model="txnForm.txnType" autocomplete="off" placeholder="请输入交易类型" clearable/>
       </el-form-item>
-      <el-form-item label="交易方" :label-width="formLabelWidth">
-        <el-input v-model="txnForm.txnCpty" autocomplete="off" placeholder="请输入" clearable/>
+      <el-form-item label="交易方" prop="txnCpty" :label-width="formLabelWidth">
+        <el-input v-model="txnForm.txnCpty" autocomplete="off" placeholder="请输入交易方" clearable/>
       </el-form-item>
-      <el-form-item label="商品描述" :label-width="formLabelWidth">
-        <el-input v-model="txnForm.prodDesc" autocomplete="off" placeholder="请输入" clearable/>
+      <el-form-item label="商品描述" prop="prodDesc" :label-width="formLabelWidth">
+        <el-input v-model="txnForm.prodDesc" autocomplete="off" placeholder="请输入商品描述" clearable/>
       </el-form-item>
-      <el-form-item label="收入/支出" :label-width="formLabelWidth">
-        <el-select v-model="txnForm.incOrExp" placeholder="请选择">
+      <el-form-item label="收入/支出" prop="incOrExp" :label-width="formLabelWidth">
+        <el-select v-model="txnForm.incOrExp" placeholder="请选择收支类型" clearable>
           <el-option label="收入" value="收入"/>
           <el-option label="支出" value="支出"/>
           <el-option label="不计" value="不计"/>
         </el-select>
       </el-form-item>
-      <el-form-item label="交易金额" :label-width="formLabelWidth">
-        <el-input v-model="txnForm.txnAmount" autocomplete="off" placeholder="请输入" clearable/>
+      <el-form-item label="交易金额" prop="txnAmount" :label-width="formLabelWidth">
+        <el-input v-model="txnForm.txnAmount" autocomplete="off" placeholder="请输入交易金额" clearable/>
       </el-form-item>
-      <el-form-item label="支付方式" :label-width="formLabelWidth">
-        <el-input v-model="txnForm.payMethod" autocomplete="off" placeholder="请输入" clearable/>
+      <el-form-item label="支付方式" prop="payMethod" :label-width="formLabelWidth">
+        <el-input v-model="txnForm.payMethod" autocomplete="off" placeholder="请输入支付方式" clearable/>
       </el-form-item>
-      <el-form-item label="交易状态" :label-width="formLabelWidth">
-        <el-input v-model="txnForm.txnStatus" autocomplete="off" placeholder="请输入" clearable/>
+      <el-form-item label="交易状态" prop="txnStatus" :label-width="formLabelWidth">
+        <el-input v-model="txnForm.txnStatus" autocomplete="off" placeholder="请输入交易状态" clearable/>
       </el-form-item>
     </el-form>
     <template #footer>
       <span class="dialog-footer">
-        <el-button @click="txnFormVisible = false">取消</el-button>
-        <el-button type="primary" @click="updateTxnRequest">确认</el-button>
+        <el-button @click="closeTxnForm">取消</el-button>
+        <el-button type="primary" @click="submitTxnForm">确认</el-button>
       </span>
     </template>
   </el-dialog>
@@ -141,8 +141,8 @@
 </style>
 
 <script setup lang="ts">
-import {computed, onMounted, ref} from "vue";
-import {ElMessage, ElPopconfirm} from "element-plus";
+import {computed, onMounted, reactive, ref} from "vue";
+import {ElMessage, ElPopconfirm, FormInstance, FormRules} from "element-plus";
 import request from '@/utils/request';
 import {RequestCode} from '@/utils/requestCode';
 
@@ -172,21 +172,45 @@ const txnData = ref([]);
 const currentPageForTxn = ref(1);
 const pageSize = ref(10);
 const txnFormVisible = ref(false);
+const txnFormRef = ref<FormInstance>();
 const txnForm = ref({});
 const formLabelWidth = ref('120px');
-
-const getTxnRequest = async () => {
-  try {
-    const response = await request.jsonRequest.get('/txn/getall');
-    if (response.status === RequestCode.SUCCESS) {
-      txnData.value = response.data.result;
-      ElMessage.success(response.data.message);
-    }
-  } catch (error) {
-    console.error(error);
-    ElMessage.error('未知错误');
-  }
-};
+const txnFormRules = reactive<FormRules>({
+  txnDate: [
+    {required: true, message: '不能为空', trigger: 'blur'},
+  ],
+  txnTime: [
+    {required: true, message: '不能为空', trigger: 'blur'},
+  ],
+  txnType: [
+    {required: true, message: '不能为空', trigger: 'blur'},
+  ],
+  txnCpty: [
+    {required: true, message: '不能为空', trigger: 'blur'},
+  ],
+  prodDesc: [
+    {required: true, message: '不能为空', trigger: 'blur'},
+  ],
+  incOrExp: [
+    {required: true, message: '不能为空', trigger: 'blur'},
+  ],
+  txnAmount: [
+    {required: true, message: '不能为空', trigger: 'blur'},
+    {
+      validator: (rule: any, value: any, callback: any) => {
+        if (isNaN(value) || parseFloat(value) <= 0) {
+          callback(new Error('必须为正有理数'));
+        } else {
+          callback();
+        }
+      },
+      trigger: 'blur',
+    },
+  ],
+  txnStatus: [
+    {required: true, message: '不能为空', trigger: 'blur'},
+  ],
+});
 
 const openTxnForm = (index: number, row: Txn) => {
   // 分割日期和时间
@@ -208,6 +232,37 @@ const openTxnForm = (index: number, row: Txn) => {
   txnFormVisible.value = true;
 };
 
+const closeTxnForm = () => {
+  txnFormVisible.value = false;
+}
+
+const submitTxnForm = async () => {
+  if (!txnFormRef.value) return;
+  await txnFormRef.value.validate((valid) => {
+    if (valid) {
+      updateTxnRequest();
+    }
+  });
+};
+
+const resetTxnForm = () => {
+  if (!txnFormRef.value) return
+  txnFormRef.value.resetFields()
+}
+
+const getTxnRequest = async () => {
+  try {
+    const response = await request.jsonRequest.get('/txn/getall');
+    if (response.status === RequestCode.SUCCESS) {
+      txnData.value = response.data.result;
+      ElMessage.success(response.data.message);
+    }
+  } catch (error) {
+    console.error(error);
+    ElMessage.error('未知错误');
+  }
+};
+
 const updateTxnRequest = async () => {
   try {
     const {txnId, txnDate, txnTime, ...rest} = txnForm.value as TxnFormValue;
@@ -219,7 +274,7 @@ const updateTxnRequest = async () => {
     if (response.status === RequestCode.SUCCESS) {
       txnFormVisible.value = false;
       ElMessage.success(response.data.message);
-      getTxnRequest();
+      await getTxnRequest();
     }
   } catch (error) {
     console.error(error);
@@ -232,7 +287,7 @@ const deleteTxnRequest = async (index: number, row: Txn) => {
     const response = await request.jsonRequest.delete(`/txn/delete/${row.txnId}`);
     if (response.status === RequestCode.SUCCESS) {
       ElMessage.success(response.data.message);
-      getTxnRequest();
+      await getTxnRequest();
     }
   } catch (error) {
     console.error(error);

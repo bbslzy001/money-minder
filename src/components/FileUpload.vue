@@ -27,7 +27,7 @@
         </div>
       </div>
       <el-table :data="fileList" size="default" table-layout="auto" :max-height="'480px'">
-        <el-table-column prop="name" label="文件名"/>
+        <el-table-column prop="name" label="文件名" min-width="180" :show-overflow-tooltip="true"/>
         <el-table-column prop="size" label="文件大小" :formatter="formatFileSize"/>
         <el-table-column prop="status" label="上传状态">
           <template #default="scope">

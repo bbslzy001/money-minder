@@ -265,11 +265,13 @@ const getTxnRequest = async () => {
 
 const updateTxnRequest = async () => {
   try {
-    const {txnId, txnDate, txnTime, ...rest} = txnForm.value as TxnFormValue;
+    const {txnId, txnDate, txnTime, payMethod, ...rest} = txnForm.value as TxnFormValue;
     const txnDateTime = `${txnDate} ${txnTime}`;
+    const format_payMethod = payMethod === '' ? '/' : payMethod;
     const response = await request.jsonRequest.put(`/txn/update/${txnId}`, {
       ...rest,
       txnDateTime,
+      'payMethod': format_payMethod,
     });
     if (response.status === RequestCode.SUCCESS) {
       txnFormVisible.value = false;

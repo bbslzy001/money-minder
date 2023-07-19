@@ -68,7 +68,9 @@
         <el-time-picker v-model="updateTxnForm.txnTime" type="time" format="HH时mm分ss秒" value-format="HH:mm:ss" placeholder="请选择交易时间"/>
       </el-form-item>
       <el-form-item label="交易类型" prop="txnType">
-        <el-input v-model="updateTxnForm.txnType" autocomplete="off" placeholder="请输入交易类型" clearable/>
+        <el-select v-model="updateTxnForm.txnType" placeholder="请选择交易类型" clearable>
+          <el-option v-for="o in txnTypeList" :key="o.txnTypeId" :label="o.txnTypeName" :value="o.txnTypeName"/>
+        </el-select>
       </el-form-item>
       <el-form-item label="交易方" prop="txnCpty">
         <el-input v-model="updateTxnForm.txnCpty" autocomplete="off" placeholder="请输入交易方" clearable/>
@@ -165,6 +167,7 @@ interface TxnFormValue extends Omit<Txn, 'txnDateTime'> {
 }
 
 const txnList = ref([]);
+const txnTypeList = ref([]);
 
 const searchForTxnType = ref('');
 const searchForTxnCpty = ref('');
@@ -291,6 +294,19 @@ const getTxnRequest = async () => {
   }
 };
 
+const getTxnTypeRequest = async () => {
+  try {
+    const response = await request.jsonRequest.get('/txn-type/getall');
+    if (response.status === RequestCode.SUCCESS) {
+      txnTypeList.value = response.data.result;
+      ElMessage.success(response.data.message);
+    }
+  } catch (error) {
+    console.error(error);
+    ElMessage.error('获取失败');
+  }
+};
+
 const txnListForTable = computed(() => {
   if (txnList.value && txnList.value.length > 0) {
     return txnList.value.filter(
@@ -317,5 +333,6 @@ const txnListForPagedTable = computed(() => {
 
 onMounted(() => {
   getTxnRequest();
+  getTxnTypeRequest();
 });
 </script>

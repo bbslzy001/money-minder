@@ -28,9 +28,9 @@
             <div>匹配规则列表</div>
           </div>
           <el-table :data="ruleList" size="default" max-height="calc(100vh - 240px)">
-            <el-table-column prop="txnType" label="交易类型" width="180" sortable/>、
-            <el-table-column prop="txnCpty" label="交易方" width="240" :show-overflow-tooltip="true"/>、
-            <el-table-column prop="prodDesc" label="商品描述" width="auto" :show-overflow-tooltip="true"/>、
+            <el-table-column prop="txnType" label="交易类型" width="180" sortable/>
+            <el-table-column prop="txnCpty" label="交易方" width="240" :show-overflow-tooltip="true"/>
+            <el-table-column prop="prodDesc" label="商品描述" width="auto" :show-overflow-tooltip="true"/>
             <el-table-column align="right" label="操作" width="180">
               <template #default="scope">
                 <el-button size="small" type="primary" @click="openUpdateRuleForm(scope.$index, scope.row)">编辑</el-button>
@@ -150,168 +150,8 @@ interface Rule {
   prodDesc: string;
 }
 
-const txnTypeList = ref([
-  {
-    txnTypeId: 0,
-    txnTypeName: '交通出行',
-  },
-  {
-    txnTypeId: 0,
-    txnTypeName: '交通出行',
-  },
-  {
-    txnTypeId: 0,
-    txnTypeName: '交通出行',
-  },
-  {
-    txnTypeId: 0,
-    txnTypeName: '交通出行',
-  },
-  {
-    txnTypeId: 0,
-    txnTypeName: '交通出行',
-  },
-  {
-    txnTypeId: 0,
-    txnTypeName: '交通出行',
-  },
-  {
-    txnTypeId: 0,
-    txnTypeName: '交通出行',
-  },
-  {
-    txnTypeId: 0,
-    txnTypeName: '交通出行',
-  },
-]);
-const ruleList = ref([
-  {
-    'ruleId': 0,
-    'txnType': '交通出行',
-    'txnCpty': '中铁',
-    'prodDesc': '火车票',
-  },
-  {
-    'ruleId': 0,
-    'txnType': '交通出行',
-    'txnCpty': '/',
-    'prodDesc': '火车票',
-  },
-  {
-    'ruleId': 0,
-    'txnType': '交通出行',
-    'txnCpty': '中铁',
-    'prodDesc': '/',
-  },
-  {
-    'ruleId': 0,
-    'txnType': '交通出行',
-    'txnCpty': '中铁',
-    'prodDesc': '火车票',
-  },
-  {
-    'ruleId': 0,
-    'txnType': '交通出行',
-    'txnCpty': '/',
-    'prodDesc': '火车票',
-  },
-  {
-    'ruleId': 0,
-    'txnType': '交通出行',
-    'txnCpty': '中铁',
-    'prodDesc': '/',
-  },
-  {
-    'ruleId': 0,
-    'txnType': '交通出行',
-    'txnCpty': '中铁',
-    'prodDesc': '火车票',
-  },
-  {
-    'ruleId': 0,
-    'txnType': '交通出行',
-    'txnCpty': '/',
-    'prodDesc': '火车票',
-  },
-  {
-    'ruleId': 0,
-    'txnType': '交通出行',
-    'txnCpty': '中铁',
-    'prodDesc': '/',
-  },
-  {
-    'ruleId': 0,
-    'txnType': '交通出行',
-    'txnCpty': '中铁',
-    'prodDesc': '火车票',
-  },
-  {
-    'ruleId': 0,
-    'txnType': '交通出行',
-    'txnCpty': '/',
-    'prodDesc': '火车票',
-  },
-  {
-    'ruleId': 0,
-    'txnType': '交通出行',
-    'txnCpty': '中铁',
-    'prodDesc': '/',
-  },
-  {
-    'ruleId': 0,
-    'txnType': '交通出行',
-    'txnCpty': '中铁',
-    'prodDesc': '火车票',
-  },
-  {
-    'ruleId': 0,
-    'txnType': '交通出行',
-    'txnCpty': '/',
-    'prodDesc': '火车票',
-  },
-  {
-    'ruleId': 0,
-    'txnType': '交通出行',
-    'txnCpty': '中铁',
-    'prodDesc': '/',
-  },
-  {
-    'ruleId': 0,
-    'txnType': '交通出行',
-    'txnCpty': '中铁',
-    'prodDesc': '火车票',
-  },
-  {
-    'ruleId': 0,
-    'txnType': '交通出行',
-    'txnCpty': '/',
-    'prodDesc': '火车票',
-  },
-  {
-    'ruleId': 0,
-    'txnType': '交通出行',
-    'txnCpty': '中铁',
-    'prodDesc': '/',
-  },
-  {
-    'ruleId': 0,
-    'txnType': '交通出行',
-    'txnCpty': '中铁',
-    'prodDesc': '火车票',
-  },
-  {
-    'ruleId': 0,
-    'txnType': '交通出行',
-    'txnCpty': '/',
-    'prodDesc': '火车票',
-  },
-  {
-    'ruleId': 0,
-    'txnType': '交通出行',
-    'txnCpty': '中铁',
-    'prodDesc': '/',
-  },
-]);
+const txnTypeList = ref([]);
+const ruleList = ref([]);
 
 const addTxnTypeFormVisible = ref(false);
 const addTxnTypeForm = ref({});
@@ -339,10 +179,30 @@ const addRuleFormRules = reactive<FormRules>({
     {required: true, message: '不能为空', trigger: 'blur'},
   ],
   txnCpty: [
-    {required: true, message: '不能为空', trigger: 'blur'},
+    {
+      validator: (rule: any, value: any, callback: any) => {
+        const {prodDesc} = addRuleForm.value as Rule;
+        if (!value && !prodDesc) {
+          callback(new Error('"交易方"和"商品描述"至少有一个不能为空'));
+        } else {
+          callback();
+        }
+      },
+      trigger: 'blur',
+    },
   ],
   prodDesc: [
-    {required: true, message: '不能为空', trigger: 'blur'},
+    {
+      validator: (rule: any, value: any, callback: any) => {
+        const {txnCpty} = addRuleForm.value as Rule;
+        if (!value && !txnCpty) {
+          callback(new Error('"交易方"和"商品描述"至少有一个不能为空'));
+        } else {
+          callback();
+        }
+      },
+      trigger: 'blur',
+    },
   ],
 });
 
@@ -354,10 +214,30 @@ const updateRuleFormRules = reactive<FormRules>({
     {required: true, message: '不能为空', trigger: 'blur'},
   ],
   txnCpty: [
-    {required: true, message: '不能为空', trigger: 'blur'},
+    {
+      validator: (rule: any, value: any, callback: any) => {
+        const {prodDesc} = updateRuleForm.value as Rule;
+        if (!value && !prodDesc) {
+          callback(new Error('"交易方"和"商品描述"至少有一个不能为空'));
+        } else {
+          callback();
+        }
+      },
+      trigger: 'blur',
+    },
   ],
   prodDesc: [
-    {required: true, message: '不能为空', trigger: 'blur'},
+    {
+      validator: (rule: any, value: any, callback: any) => {
+        const {txnCpty} = updateRuleForm.value as Rule;
+        if (!value && !txnCpty) {
+          callback(new Error('"交易方"和"商品描述"至少有一个不能为空'));
+        } else {
+          callback();
+        }
+      },
+      trigger: 'blur',
+    },
   ],
 });
 

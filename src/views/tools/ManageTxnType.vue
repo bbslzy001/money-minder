@@ -125,7 +125,7 @@
 .table-title {
   display: flex;
   align-items: center;
-  justify-content: start;
+  justify-content: flex-start;
   font-size: 18px;
   font-weight: bold;
   margin-bottom: 20px;

@@ -29,7 +29,7 @@
       </div>
     </div>
     <div class="table">
-      <el-table :data="pagedTxnTable" size="default" table-layout="auto">
+      <el-table :data="txnListForPagedTable" size="default">
         <el-table-column prop="txnDateTime" label="交易时间" width="180"/>
         <el-table-column prop="txnType" label="交易类型" width="120"/>
         <el-table-column prop="txnCpty" label="交易方" width="240" :show-overflow-tooltip="true"/>
@@ -46,7 +46,7 @@
         <el-table-column prop="txnStatus" label="交易状态" width="120"/>
         <el-table-column align="right" label="操作" width="180">
           <template #default="scope">
-            <el-button size="small" type="primary" @click="openTxnForm(scope.$index, scope.row)">编辑</el-button>
+            <el-button size="small" type="primary" @click="openUpdateTxnForm(scope.$index, scope.row)">编辑</el-button>
             <el-popconfirm title="是否删除该交易" confirm-button-text="删除" @confirm="deleteTxnRequest(scope.$index, scope.row)" cancel-button-text="取消" width="200">
               <template #reference>
                 <el-button size="small" type="danger">删除</el-button>
@@ -55,48 +55,48 @@
           </template>
         </el-table-column>
       </el-table>
-      <el-pagination background layout="total, prev, pager, next" :total="txnTable.length" v-model:current-page="currentPageForTxn" :page-size="pageSize"/>
+      <el-pagination background layout="total, prev, pager, next" :total="txnListForTable.length" v-model:current-page="currentPage" :page-size="pageSize"/>
     </div>
   </div>
 
-  <el-dialog v-model="txnFormVisible" title="编辑交易信息" @close="resetTxnForm">
-    <el-form ref="txnFormRef" :model="txnForm" :rules="txnFormRules" :inline="true">
-      <el-form-item label="交易日期" prop="txnDate" :label-width="formLabelWidth">
-        <el-date-picker v-model="txnForm.txnDate" type="date" format="YYYY年MM月DD日" value-format="YYYY-MM-DD" placeholder="请选择交易日期"/>
+  <el-dialog v-model="updateTxnFormVisible" title="编辑交易信息" @close="resetUpdateTxnForm">
+    <el-form ref="updateTxnFormRef" :model="updateTxnForm" :rules="updateTxnFormRules" label-width="120px" inline>
+      <el-form-item label="交易日期" prop="txnDate">
+        <el-date-picker v-model="updateTxnForm.txnDate" type="date" format="YYYY年MM月DD日" value-format="YYYY-MM-DD" placeholder="请选择交易日期"/>
       </el-form-item>
-      <el-form-item label="交易时间" prop="txnTime" :label-width="formLabelWidth">
-        <el-time-picker v-model="txnForm.txnTime" type="time" format="HH时mm分ss秒" value-format="HH:mm:ss" placeholder="请选择交易时间"/>
+      <el-form-item label="交易时间" prop="txnTime">
+        <el-time-picker v-model="updateTxnForm.txnTime" type="time" format="HH时mm分ss秒" value-format="HH:mm:ss" placeholder="请选择交易时间"/>
       </el-form-item>
-      <el-form-item label="交易类型" prop="txnType" :label-width="formLabelWidth">
-        <el-input v-model="txnForm.txnType" autocomplete="off" placeholder="请输入交易类型" clearable/>
+      <el-form-item label="交易类型" prop="txnType">
+        <el-input v-model="updateTxnForm.txnType" autocomplete="off" placeholder="请输入交易类型" clearable/>
       </el-form-item>
-      <el-form-item label="交易方" prop="txnCpty" :label-width="formLabelWidth">
-        <el-input v-model="txnForm.txnCpty" autocomplete="off" placeholder="请输入交易方" clearable/>
+      <el-form-item label="交易方" prop="txnCpty">
+        <el-input v-model="updateTxnForm.txnCpty" autocomplete="off" placeholder="请输入交易方" clearable/>
       </el-form-item>
-      <el-form-item label="商品描述" prop="prodDesc" :label-width="formLabelWidth">
-        <el-input v-model="txnForm.prodDesc" autocomplete="off" placeholder="请输入商品描述" clearable/>
+      <el-form-item label="商品描述" prop="prodDesc">
+        <el-input v-model="updateTxnForm.prodDesc" autocomplete="off" placeholder="请输入商品描述" clearable/>
       </el-form-item>
-      <el-form-item label="收入/支出" prop="incOrExp" :label-width="formLabelWidth">
-        <el-select v-model="txnForm.incOrExp" placeholder="请选择收支类型" clearable>
+      <el-form-item label="收入/支出" prop="incOrExp">
+        <el-select v-model="updateTxnForm.incOrExp" placeholder="请选择收支类型" clearable>
           <el-option label="收入" value="收入"/>
           <el-option label="支出" value="支出"/>
           <el-option label="不计" value="不计"/>
         </el-select>
       </el-form-item>
-      <el-form-item label="交易金额" prop="txnAmount" :label-width="formLabelWidth">
-        <el-input v-model="txnForm.txnAmount" autocomplete="off" placeholder="请输入交易金额" clearable/>
+      <el-form-item label="交易金额" prop="txnAmount">
+        <el-input v-model="updateTxnForm.txnAmount" autocomplete="off" placeholder="请输入交易金额" clearable/>
       </el-form-item>
-      <el-form-item label="支付方式" prop="payMethod" :label-width="formLabelWidth">
-        <el-input v-model="txnForm.payMethod" autocomplete="off" placeholder="请输入支付方式" clearable/>
+      <el-form-item label="支付方式" prop="payMethod">
+        <el-input v-model="updateTxnForm.payMethod" autocomplete="off" placeholder="请输入支付方式" clearable/>
       </el-form-item>
-      <el-form-item label="交易状态" prop="txnStatus" :label-width="formLabelWidth">
-        <el-input v-model="txnForm.txnStatus" autocomplete="off" placeholder="请输入交易状态" clearable/>
+      <el-form-item label="交易状态" prop="txnStatus">
+        <el-input v-model="updateTxnForm.txnStatus" autocomplete="off" placeholder="请输入交易状态" clearable/>
       </el-form-item>
     </el-form>
     <template #footer>
       <span class="dialog-footer">
-        <el-button @click="closeTxnForm">取消</el-button>
-        <el-button type="primary" @click="submitTxnForm">确认</el-button>
+        <el-button @click="closeUpdateTxnForm">取消</el-button>
+        <el-button type="primary" @click="submitUpdateTxnForm">确认</el-button>
       </span>
     </template>
   </el-dialog>
@@ -147,35 +147,37 @@ import request from '@/utils/request';
 import {RequestCode} from '@/utils/requestCode';
 
 interface Txn {
-  txnId: number,
-  txnDateTime: string,
-  txnType: string,
-  txnCpty: string,
-  prodDesc: string,
-  incOrExp: string,
-  txnAmount: number,
-  payMethod: string,
-  txnStatus: string,
-  billId: number,
+  txnId: number;
+  txnDateTime: string;
+  txnType: string;
+  txnCpty: string;
+  prodDesc: string;
+  incOrExp: string;
+  txnAmount: number;
+  payMethod: string;
+  txnStatus: string;
+  billId: number;
 }
 
 interface TxnFormValue extends Omit<Txn, 'txnDateTime'> {
-  txnDate: string,
-  txnTime: string,
+  txnDate: string;
+  txnTime: string;
 }
 
-const selectedForIncOrExp = ref('全部');
+const txnList = ref([]);
+
 const searchForTxnType = ref('');
 const searchForTxnCpty = ref('');
 const searchForProdDesc = ref('');
-const txnData = ref([]);
-const currentPageForTxn = ref(1);
+const selectedForIncOrExp = ref('全部');
+
+const currentPage = ref(1);
 const pageSize = ref(10);
-const txnFormVisible = ref(false);
-const txnFormRef = ref<FormInstance>();
-const txnForm = ref({});
-const formLabelWidth = ref('120px');
-const txnFormRules = reactive<FormRules>({
+
+const updateTxnFormVisible = ref(false);
+const updateTxnForm = ref({});
+const updateTxnFormRef = ref<FormInstance>();
+const updateTxnFormRules = reactive<FormRules>({
   txnDate: [
     {required: true, message: '不能为空', trigger: 'blur'},
   ],
@@ -212,77 +214,35 @@ const txnFormRules = reactive<FormRules>({
   ],
 });
 
-const openTxnForm = (index: number, row: Txn) => {
-  // 分割日期和时间
-  const dateTime = row.txnDateTime.split(' ');
-  const txnDate = dateTime[0];
-  const txnTime = dateTime[1];
-
-  // 删除 txnDateTime 字段
+const openUpdateTxnForm = (index: number, row: Txn) => {
   const {txnDateTime, ...rest} = row;
+  const dateTime = txnDateTime.split(' ');
 
-  // 构建表单数据
-  txnForm.value = {
+  updateTxnForm.value = {
     ...rest,
-    txnDate,
-    txnTime,
+    'txnDate': dateTime[0],
+    'txnTime': dateTime[1],
   };
 
-  // 打开表单对话框
-  txnFormVisible.value = true;
+  updateTxnFormVisible.value = true;
 };
 
-const closeTxnForm = () => {
-  txnFormVisible.value = false;
+const closeUpdateTxnForm = () => {
+  updateTxnFormVisible.value = false;
 }
 
-const submitTxnForm = async () => {
-  if (!txnFormRef.value) return;
-  await txnFormRef.value.validate((valid) => {
+const submitUpdateTxnForm = async () => {
+  updateTxnFormRef.value?.validate(async (valid) => {
     if (valid) {
-      updateTxnRequest();
+      await updateTxnRequest();
     }
   });
 };
 
-const resetTxnForm = () => {
-  if (!txnFormRef.value) return
-  txnFormRef.value.resetFields()
+const resetUpdateTxnForm = () => {
+  updateTxnForm.value = {};
+  updateTxnFormRef.value?.resetFields();
 }
-
-const getTxnRequest = async () => {
-  try {
-    const response = await request.jsonRequest.get('/txn/getall');
-    if (response.status === RequestCode.SUCCESS) {
-      txnData.value = response.data.result;
-      ElMessage.success(response.data.message);
-    }
-  } catch (error) {
-    console.error(error);
-    ElMessage.error('未知错误');
-  }
-};
-
-const updateTxnRequest = async () => {
-  try {
-    const {txnId, txnDate, txnTime, payMethod, ...rest} = txnForm.value as TxnFormValue;
-    const txnDateTime = `${txnDate} ${txnTime}`;
-    const format_payMethod = payMethod === '' ? '/' : payMethod;
-    const response = await request.jsonRequest.put(`/txn/update/${txnId}`, {
-      ...rest,
-      txnDateTime,
-      'payMethod': format_payMethod,
-    });
-    if (response.status === RequestCode.SUCCESS) {
-      txnFormVisible.value = false;
-      ElMessage.success(response.data.message);
-      await getTxnRequest();
-    }
-  } catch (error) {
-    console.error(error);
-    ElMessage.error('未知错误');
-  }
-};
 
 const deleteTxnRequest = async (index: number, row: Txn) => {
   try {
@@ -293,13 +253,47 @@ const deleteTxnRequest = async (index: number, row: Txn) => {
     }
   } catch (error) {
     console.error(error);
-    ElMessage.error('未知错误');
+    ElMessage.error('删除失败');
   }
 };
 
-const txnTable = computed(() => {
-  if (txnData.value && txnData.value.length > 0) {
-    return txnData.value.filter(
+const updateTxnRequest = async () => {
+  try {
+    const {txnId, txnDate, txnTime, payMethod, ...rest} = updateTxnForm.value as TxnFormValue;
+    const txnDateTime = `${txnDate} ${txnTime}`;
+    const format_payMethod = payMethod === '' ? '/' : payMethod;
+    const response = await request.jsonRequest.put(`/txn/update/${txnId}`, {
+      ...rest,
+      txnDateTime,
+      'payMethod': format_payMethod,
+    });
+    if (response.status === RequestCode.SUCCESS) {
+      updateTxnFormVisible.value = false;
+      ElMessage.success(response.data.message);
+      await getTxnRequest();
+    }
+  } catch (error) {
+    console.error(error);
+    ElMessage.error('更新失败');
+  }
+};
+
+const getTxnRequest = async () => {
+  try {
+    const response = await request.jsonRequest.get('/txn/getall');
+    if (response.status === RequestCode.SUCCESS) {
+      txnList.value = response.data.result;
+      ElMessage.success(response.data.message);
+    }
+  } catch (error) {
+    console.error(error);
+    ElMessage.error('获取失败');
+  }
+};
+
+const txnListForTable = computed(() => {
+  if (txnList.value && txnList.value.length > 0) {
+    return txnList.value.filter(
         (data: Txn) =>
             (selectedForIncOrExp.value === "全部" || data.incOrExp === selectedForIncOrExp.value) &&
             (!searchForTxnType.value || data.txnType.toLowerCase().includes(searchForTxnType.value.toLowerCase())) &&
@@ -311,11 +305,11 @@ const txnTable = computed(() => {
   }
 });
 
-const pagedTxnTable = computed(() => {
-  if (txnTable.value && txnTable.value.length > 0) {
-    const start = (currentPageForTxn.value - 1) * pageSize.value;
+const txnListForPagedTable = computed(() => {
+  if (txnListForTable.value && txnListForTable.value.length > 0) {
+    const start = (currentPage.value - 1) * pageSize.value;
     const end = start + pageSize.value;
-    return txnTable.value.slice(start, end);
+    return txnListForTable.value.slice(start, end);
   } else {
     return [];
   }

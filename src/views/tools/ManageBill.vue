@@ -23,7 +23,7 @@
         </el-table-column>
         <el-table-column align="right" label="操作">
           <template #default="scope">
-            <el-button size="small" type="primary" @click="openBillForm(scope.$index, scope.row)">编辑</el-button>
+            <el-button size="small" type="primary" @click="openUpdateBillForm(scope.$index, scope.row)">编辑</el-button>
             <el-popconfirm title="是否删除该账单" confirm-button-text="删除" @confirm="deleteBillRequest(scope.$index, scope.row)" cancel-button-text="取消" width="200">
               <template #reference>
                 <el-button size="small" type="danger">删除</el-button>
@@ -35,28 +35,28 @@
     </div>
   </el-container>
 
-  <el-dialog v-model="billFormVisible" title="编辑交易信息" @close="resetBillForm">
-    <el-form ref="billFormRef" :model="billForm" :rules="billFormRules" :inline="true">
-      <el-form-item label="账单名称" prop="billName" :label-width="formLabelWidth">
-        <el-input v-model="billForm.billName" autocomplete="off" placeholder="请输入账单名称" clearable/>
+  <el-dialog v-model="updateBillFormVisible" title="编辑交易信息" @close="resetUpdateBillForm">
+    <el-form ref="updateBillFormRef" :model="updateBillForm" :rules="updateBillFormRules" label-width="120px" inline>
+      <el-form-item label="账单名称" prop="billName">
+        <el-input v-model="updateBillForm.billName" autocomplete="off" placeholder="请输入账单名称" clearable/>
       </el-form-item>
-      <el-form-item label="账单类型" prop="billType" :label-width="formLabelWidth">
-        <el-select v-model="billForm.billType" placeholder="请选择账单类型" clearable>
+      <el-form-item label="账单类型" prop="billType">
+        <el-select v-model="updateBillForm.billType" placeholder="请选择账单类型" clearable>
           <el-option label="支付宝" value="alipay"/>
           <el-option label="微信" value="wechat"/>
         </el-select>
       </el-form-item>
-      <el-form-item label="起始日期" prop="startDate" :label-width="formLabelWidth">
-        <el-date-picker v-model="billForm.startDate" type="date" format="YYYY年MM月DD日" value-format="YYYY-MM-DD" placeholder="请选择起始日期"/>
+      <el-form-item label="起始日期" prop="startDate">
+        <el-date-picker v-model="updateBillForm.startDate" type="date" format="YYYY年MM月DD日" value-format="YYYY-MM-DD" placeholder="请选择起始日期"/>
       </el-form-item>
-      <el-form-item label="截止日期" prop="endDate" :label-width="formLabelWidth">
-        <el-date-picker v-model="billForm.endDate" type="date" format="YYYY年MM月DD日" value-format="YYYY-MM-DD" placeholder="请选择截止日期"/>
+      <el-form-item label="截止日期" prop="endDate">
+        <el-date-picker v-model="updateBillForm.endDate" type="date" format="YYYY年MM月DD日" value-format="YYYY-MM-DD" placeholder="请选择截止日期"/>
       </el-form-item>
     </el-form>
     <template #footer>
       <span class="dialog-footer">
-        <el-button @click="closeBillForm">取消</el-button>
-        <el-button type="primary" @click="submitBillForm">确认</el-button>
+        <el-button @click="closeUpdateBillForm">取消</el-button>
+        <el-button type="primary" @click="submitUpdateBillForm">确认</el-button>
       </span>
     </template>
   </el-dialog>
@@ -88,20 +88,21 @@ import request from "@/utils/request";
 import {RequestCode} from "@/utils/requestCode";
 
 interface Bill {
-  billId: number,
-  billName: string,
-  startDate: string,
-  endDate: string,
-  billType: string,
+  billId: number;
+  billName: string;
+  startDate: string;
+  endDate: string;
+  billType: string;
 }
 
-const selectedForBillType = ref('all');
 const billList = ref([]);
-const billFormVisible = ref(false);
-const billFormRef = ref<FormInstance>();
-const billForm = ref({});
-const formLabelWidth = ref('120px');
-const billFormRules = reactive<FormRules>({
+
+const selectedForBillType = ref('all');
+
+const updateBillFormVisible = ref(false);
+const updateBillForm = ref({});
+const updateBillFormRef = ref<FormInstance>();
+const updateBillFormRules = reactive<FormRules>({
   billName: [
     {required: true, message: '不能为空', trigger: 'blur'},
   ],
@@ -116,58 +117,27 @@ const billFormRules = reactive<FormRules>({
   ],
 });
 
-const openBillForm = (index: number, row: Bill) => {
-  billForm.value = {...row};
-  billFormVisible.value = true;
+const openUpdateBillForm = (index: number, row: Bill) => {
+  updateBillForm.value = {...row};
+  updateBillFormVisible.value = true;
 };
 
-const closeBillForm = () => {
-  billFormVisible.value = false;
+const closeUpdateBillForm = () => {
+  updateBillFormVisible.value = false;
 }
 
-const submitBillForm = async () => {
-  if (!billFormRef.value) return;
-  await billFormRef.value.validate((valid) => {
+const submitUpdateBillForm = async () => {
+  updateBillFormRef.value?.validate(async (valid) => {
     if (valid) {
-      updateBillRequest();
+      await updateBillRequest();
     }
   });
 };
 
-const resetBillForm = () => {
-  if (!billFormRef.value) return
-  billFormRef.value.resetFields()
+const resetUpdateBillForm = () => {
+  updateBillForm.value = {};
+  updateBillFormRef.value?.resetFields();
 }
-
-const getBillRequest = async () => {
-  try {
-    const response = await request.jsonRequest.get('/bill/getall');
-    if (response.status === RequestCode.SUCCESS) {
-      billList.value = response.data.result;
-      ElMessage.success(response.data.message);
-    }
-  } catch (error) {
-    console.error(error);
-    ElMessage.error('未知错误');
-  }
-};
-
-const updateBillRequest = async () => {
-  try {
-    const {billId, ...rest} = billForm.value as Bill
-    const response = await request.jsonRequest.put(`/bill/update/${billId}`, {
-      ...rest
-    });
-    if (response.status === RequestCode.SUCCESS) {
-      billFormVisible.value = false;
-      ElMessage.success(response.data.message);
-      await getBillRequest();
-    }
-  } catch (error) {
-    console.error(error);
-    ElMessage.error('未知错误');
-  }
-};
 
 const deleteBillRequest = async (index: number, row: Bill) => {
   try {
@@ -178,7 +148,37 @@ const deleteBillRequest = async (index: number, row: Bill) => {
     }
   } catch (error) {
     console.error(error);
-    ElMessage.error('未知错误');
+    ElMessage.error('删除失败');
+  }
+};
+
+const updateBillRequest = async () => {
+  try {
+    const {billId, ...rest} = updateBillForm.value as Bill
+    const response = await request.jsonRequest.put(`/bill/update/${billId}`, {
+      ...rest,
+    });
+    if (response.status === RequestCode.SUCCESS) {
+      updateBillFormVisible.value = false;
+      ElMessage.success(response.data.message);
+      await getBillRequest();
+    }
+  } catch (error) {
+    console.error(error);
+    ElMessage.error('更新失败');
+  }
+};
+
+const getBillRequest = async () => {
+  try {
+    const response = await request.jsonRequest.get('/bill/getall');
+    if (response.status === RequestCode.SUCCESS) {
+      billList.value = response.data.result;
+      ElMessage.success(response.data.message);
+    }
+  } catch (error) {
+    console.error(error);
+    ElMessage.error('获取失败');
   }
 };
 

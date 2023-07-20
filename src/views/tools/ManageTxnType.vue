@@ -56,9 +56,9 @@
   </el-container>
 
   <el-dialog v-model="addTxnTypeFormVisible" title="添加交易类型" @close="resetAddTxnTypeForm">
-    <el-form ref="addTxnTypeFormRef" :model="addTxnTypeForm" :rules="addTxnTypeFormRules" label-width="120px" inline>
+    <el-form ref="addTxnTypeFormRef" :model="addTxnTypeForm" :rules="addTxnTypeFormRules" label-width="100px">
       <el-form-item label="类型名称" prop="txnTypeName">
-        <el-input v-model="addTxnTypeForm.txnTypeName" autocomplete="off" placeholder="请输入类型名称" clearable style="width: 220px;"/>
+        <el-input v-model="addTxnTypeForm.txnTypeName" autocomplete="off" placeholder="请输入类型名称" clearable style="width: 240px;"/>
       </el-form-item>
     </el-form>
     <template #footer>
@@ -70,9 +70,9 @@
   </el-dialog>
 
   <el-dialog v-model="updateTxnTypeFormVisible" title="编辑交易类型" @close="resetUpdateTxnTypeForm">
-    <el-form ref="updateTxnTypeFormRef" :model="updateTxnTypeForm" :rules="updateTxnTypeFormRules" label-width="120px" inline>
+    <el-form ref="updateTxnTypeFormRef" :model="updateTxnTypeForm" :rules="updateTxnTypeFormRules" label-width="100px">
       <el-form-item label="类型名称" prop="txnTypeName">
-        <el-input v-model="updateTxnTypeForm.txnTypeName" autocomplete="off" placeholder="请输入类型名称" clearable style="width: 220px;"/>
+        <el-input v-model="updateTxnTypeForm.txnTypeName" autocomplete="off" placeholder="请输入类型名称" clearable style="width: 240px;"/>
       </el-form-item>
     </el-form>
     <template #footer>
@@ -84,14 +84,14 @@
   </el-dialog>
 
   <el-dialog v-model="addRuleFormVisible" title="添加匹配规则" @close="resetAddRuleForm">
-    <el-form ref="addRuleFormRef" :model="addRuleForm" :rules="addRuleFormRules" label-width="120px">
+    <el-form ref="addRuleFormRef" :model="addRuleForm" :rules="addRuleFormRules" label-width="100px">
       <el-form-item label="交易类型" prop="txnTypeId">
         <el-select v-model="addRuleForm.txnTypeId" placeholder="请选择交易类型" clearable>
           <el-option v-for="o in txnTypeList" :key="o.txnTypeId" :label="o.txnTypeName" :value="o.txnTypeId"/>
         </el-select>
       </el-form-item>
       <el-form-item label="原类型名称" prop="originTxnType">
-        <el-input v-model="addRuleForm.originTxnType" autocomplete="off" placeholder="请输入原类型名称" clearable style="width: 220px;"/>
+        <el-input v-model="addRuleForm.originTxnType" autocomplete="off" placeholder="请输入原类型名称" clearable style="width: 240px;"/>
       </el-form-item>
       <el-form-item label="交易方" prop="txnCpty">
         <el-input v-model="addRuleForm.txnCpty" autocomplete="off" placeholder="请输入交易方" clearable/>
@@ -109,14 +109,14 @@
   </el-dialog>
 
   <el-dialog v-model="updateRuleFormVisible" title="编辑匹配规则" @close="resetUpdateRuleForm">
-    <el-form ref="updateRuleFormRef" :model="updateRuleForm" :rules="updateRuleFormRules" label-width="120px" inline>
+    <el-form ref="updateRuleFormRef" :model="updateRuleForm" :rules="updateRuleFormRules" label-width="100px">
       <el-form-item label="交易类型" prop="txnTypeId">
         <el-select v-model="updateRuleForm.txnTypeId" placeholder="请选择交易类型" clearable>
           <el-option v-for="o in txnTypeList" :key="o.txnTypeId" :label="o.txnTypeName" :value="o.txnTypeId"/>
         </el-select>
       </el-form-item>
       <el-form-item label="原类型名称" prop="originTxnType">
-        <el-input v-model="updateRuleForm.originTxnType" autocomplete="off" placeholder="请输入原类型名称" clearable style="width: 220px;"/>
+        <el-input v-model="updateRuleForm.originTxnType" autocomplete="off" placeholder="请输入原类型名称" clearable style="width: 240px;"/>
       </el-form-item>
       <el-form-item label="交易方" prop="txnCpty">
         <el-input v-model="updateRuleForm.txnCpty" autocomplete="off" placeholder="请输入交易方" clearable/>
@@ -144,8 +144,12 @@
   margin-bottom: 20px;
 }
 
-.el-input {
-  width: 450px;
+.el-dialog .el-input {
+  width: 480px;
+}
+
+.el-dialog .el-select {
+  width: 240px;
 }
 </style>
 
@@ -375,6 +379,7 @@ const addTxnTypeRequest = async () => {
   try {
     const response = await request.jsonRequest.post('/txn-type/add', addTxnTypeForm.value);
     if (response.status === RequestCode.SUCCESS) {
+      closeAddTxnTypeForm();
       ElMessage.success(response.data.message);
       await getTxnTypeRequest();
     }
@@ -390,6 +395,7 @@ const deleteTxnTypeRequest = async (index: number, row: TxnType) => {
     if (response.status === RequestCode.SUCCESS) {
       ElMessage.success(response.data.message);
       await getTxnTypeRequest();
+      await getRuleRequest();
     }
   } catch (error) {
     console.error(error);
@@ -404,6 +410,7 @@ const updateTxnTypeRequest = async () => {
       ...rest,
     });
     if (response.status === RequestCode.SUCCESS) {
+      closeUpdateTxnTypeForm();
       ElMessage.success(response.data.message);
       await getTxnTypeRequest();
     }
@@ -428,8 +435,18 @@ const getTxnTypeRequest = async () => {
 
 const addRuleRequest = async () => {
   try {
-    const response = await request.jsonRequest.post('/rule/add', addRuleForm.value);
+    const {originTxnType: tempOriginTxnType, txnCpty: tempTxnCpty, prodDesc: tempProdDesc, ...rest} = addRuleForm.value as Rule;
+    const originTxnType = !tempOriginTxnType || tempOriginTxnType === '' ? '/' : tempOriginTxnType;
+    const txnCpty = !tempTxnCpty || tempTxnCpty === '' ? '/' : tempTxnCpty;
+    const prodDesc = !tempProdDesc || tempProdDesc === '' ? '/' : tempProdDesc;
+    const response = await request.jsonRequest.post('/rule/add', {
+      ...rest,
+      originTxnType,
+      txnCpty,
+      prodDesc,
+    });
     if (response.status === RequestCode.SUCCESS) {
+      closeAddRuleForm();
       ElMessage.success(response.data.message);
       await getRuleRequest();
     }
@@ -454,11 +471,18 @@ const deleteRuleRequest = async (index: number, row: Rule) => {
 
 const updateRuleRequest = async () => {
   try {
-    const {ruleId, ...rest} = updateRuleForm.value as Rule;
+    const {ruleId, originTxnType: tempOriginTxnType, txnCpty: tempTxnCpty, prodDesc: tempProdDesc, ...rest} = updateRuleForm.value as Rule;
+    const originTxnType = tempOriginTxnType === '' ? '/' : tempOriginTxnType;
+    const txnCpty = tempTxnCpty === '' ? '/' : tempTxnCpty;
+    const prodDesc = tempProdDesc === '' ? '/' : tempProdDesc;
     const response = await request.jsonRequest.put(`/rule/update/${ruleId}`, {
       ...rest,
+      originTxnType,
+      txnCpty,
+      prodDesc,
     });
     if (response.status === RequestCode.SUCCESS) {
+      closeUpdateRuleForm();
       ElMessage.success(response.data.message);
       await getRuleRequest();
     }

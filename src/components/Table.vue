@@ -60,7 +60,7 @@
   </div>
 
   <el-dialog v-model="updateTxnFormVisible" title="编辑交易信息" @close="resetUpdateTxnForm">
-    <el-form ref="updateTxnFormRef" :model="updateTxnForm" :rules="updateTxnFormRules" label-width="120px" inline>
+    <el-form ref="updateTxnFormRef" :model="updateTxnForm" :rules="updateTxnFormRules" label-width="100px" inline>
       <el-form-item label="交易日期" prop="txnDate">
         <el-date-picker v-model="updateTxnForm.txnDate" type="date" format="YYYY年MM月DD日" value-format="YYYY-MM-DD" placeholder="请选择交易日期"/>
       </el-form-item>
@@ -72,12 +72,6 @@
           <el-option v-for="o in txnTypeList" :key="o.txnTypeId" :label="o.txnTypeName" :value="o.txnTypeName"/>
         </el-select>
       </el-form-item>
-      <el-form-item label="交易方" prop="txnCpty">
-        <el-input v-model="updateTxnForm.txnCpty" autocomplete="off" placeholder="请输入交易方" clearable/>
-      </el-form-item>
-      <el-form-item label="商品描述" prop="prodDesc">
-        <el-input v-model="updateTxnForm.prodDesc" autocomplete="off" placeholder="请输入商品描述" clearable/>
-      </el-form-item>
       <el-form-item label="收入/支出" prop="incOrExp">
         <el-select v-model="updateTxnForm.incOrExp" placeholder="请选择收支类型" clearable>
           <el-option label="收入" value="收入"/>
@@ -85,14 +79,20 @@
           <el-option label="不计" value="不计"/>
         </el-select>
       </el-form-item>
+      <el-form-item label="交易方" prop="txnCpty">
+        <el-input v-model="updateTxnForm.txnCpty" autocomplete="off" placeholder="请输入交易方" clearable/>
+      </el-form-item>
+      <el-form-item label="商品描述" prop="prodDesc">
+        <el-input v-model="updateTxnForm.prodDesc" autocomplete="off" placeholder="请输入商品描述" clearable/>
+      </el-form-item>
       <el-form-item label="交易金额" prop="txnAmount">
-        <el-input v-model="updateTxnForm.txnAmount" autocomplete="off" placeholder="请输入交易金额" clearable/>
+        <el-input v-model="updateTxnForm.txnAmount" autocomplete="off" placeholder="请输入交易金额" clearable style="width: 240px;"/>
       </el-form-item>
       <el-form-item label="支付方式" prop="payMethod">
-        <el-input v-model="updateTxnForm.payMethod" autocomplete="off" placeholder="请输入支付方式" clearable/>
+        <el-input v-model="updateTxnForm.payMethod" autocomplete="off" placeholder="请输入支付方式" clearable style="width: 240px;"/>
       </el-form-item>
       <el-form-item label="交易状态" prop="txnStatus">
-        <el-input v-model="updateTxnForm.txnStatus" autocomplete="off" placeholder="请输入交易状态" clearable/>
+        <el-input v-model="updateTxnForm.txnStatus" autocomplete="off" placeholder="请输入交易状态" clearable style="width: 240px;"/>
       </el-form-item>
     </el-form>
     <template #footer>
@@ -139,6 +139,18 @@
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
+}
+
+.el-dialog .el-form {
+  --el-form-inline-content-width: 240px;
+}
+
+.el-dialog .el-form .el-input {
+  --el-form-inline-content-width: 480px;
+}
+
+::v-deep(.el-date-editor) {
+  min-width: 240px;
 }
 </style>
 
@@ -262,16 +274,16 @@ const deleteTxnRequest = async (index: number, row: Txn) => {
 
 const updateTxnRequest = async () => {
   try {
-    const {txnId, txnDate, txnTime, payMethod, ...rest} = updateTxnForm.value as TxnFormValue;
-    const txnDateTime = `${txnDate} ${txnTime}`;
-    const format_payMethod = payMethod === '' ? '/' : payMethod;
+    const {txnId, txnDate: tempTxnDate, txnTime: tempTxnTime, payMethod: tempPayMethod, ...rest} = updateTxnForm.value as TxnFormValue;
+    const txnDateTime = `${tempTxnDate} ${tempTxnTime}`;
+    const payMethod = tempPayMethod === '' ? '/' : tempPayMethod;
     const response = await request.jsonRequest.put(`/txn/update/${txnId}`, {
       ...rest,
       txnDateTime,
-      'payMethod': format_payMethod,
+      payMethod,
     });
     if (response.status === RequestCode.SUCCESS) {
-      updateTxnFormVisible.value = false;
+      closeUpdateTxnForm();
       ElMessage.success(response.data.message);
       await getTxnRequest();
     }

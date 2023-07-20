@@ -36,21 +36,21 @@
   </el-container>
 
   <el-dialog v-model="updateBillFormVisible" title="编辑交易信息" @close="resetUpdateBillForm">
-    <el-form ref="updateBillFormRef" :model="updateBillForm" :rules="updateBillFormRules" label-width="120px" inline>
+    <el-form ref="updateBillFormRef" :model="updateBillForm" :rules="updateBillFormRules" label-width="100px" inline>
       <el-form-item label="账单名称" prop="billName">
         <el-input v-model="updateBillForm.billName" autocomplete="off" placeholder="请输入账单名称" clearable/>
-      </el-form-item>
-      <el-form-item label="账单类型" prop="billType">
-        <el-select v-model="updateBillForm.billType" placeholder="请选择账单类型" clearable>
-          <el-option label="支付宝" value="alipay"/>
-          <el-option label="微信" value="wechat"/>
-        </el-select>
       </el-form-item>
       <el-form-item label="起始日期" prop="startDate">
         <el-date-picker v-model="updateBillForm.startDate" type="date" format="YYYY年MM月DD日" value-format="YYYY-MM-DD" placeholder="请选择起始日期"/>
       </el-form-item>
       <el-form-item label="截止日期" prop="endDate">
         <el-date-picker v-model="updateBillForm.endDate" type="date" format="YYYY年MM月DD日" value-format="YYYY-MM-DD" placeholder="请选择截止日期"/>
+      </el-form-item>
+      <el-form-item label="账单类型" prop="billType">
+        <el-select v-model="updateBillForm.billType" placeholder="请选择账单类型" clearable>
+          <el-option label="支付宝" value="alipay"/>
+          <el-option label="微信" value="wechat"/>
+        </el-select>
       </el-form-item>
     </el-form>
     <template #footer>
@@ -78,6 +78,18 @@
 }
 
 .radio {
+}
+
+.el-dialog .el-form {
+  --el-form-inline-content-width: 240px;
+}
+
+.el-dialog .el-form .el-input {
+  --el-form-inline-content-width: 480px;
+}
+
+::v-deep(.el-date-editor) {
+  min-width: 240px;
 }
 </style>
 
@@ -159,7 +171,7 @@ const updateBillRequest = async () => {
       ...rest,
     });
     if (response.status === RequestCode.SUCCESS) {
-      updateBillFormVisible.value = false;
+      closeUpdateBillForm();
       ElMessage.success(response.data.message);
       await getBillRequest();
     }

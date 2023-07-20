@@ -6,7 +6,7 @@
           <div class="table-title">
             <div>交易类型列表</div>
           </div>
-          <el-table :data="txnTypeList" size="default" max-height="calc(100vh - 240px)">
+          <el-table :data="txnTypeList" size="default" max-height="calc(100vh - 240px)" show-overflow-tooltip>
             <el-table-column prop="txnTypeName" label="类型名称" width="auto" sortable/>
             <el-table-column align="right" label="操作" width="180">
               <template #default="scope">
@@ -27,7 +27,7 @@
           <div class="table-title">
             <div>匹配规则列表</div>
           </div>
-          <el-table :data="ruleList" size="default" max-height="calc(100vh - 240px)">
+          <el-table :data="ruleList" size="default" max-height="calc(100vh - 240px)" show-overflow-tooltip>
             <el-table-column prop="txnTypeId" label="交易类型" width="180" sortable>
               <template #default="scope">
                 <template v-for="o in txnTypeList" :key="o.txnTypeId">
@@ -35,8 +35,9 @@
                 </template>
               </template>
             </el-table-column>
-            <el-table-column prop="txnCpty" label="交易方" width="240" :show-overflow-tooltip="true"/>
-            <el-table-column prop="prodDesc" label="商品描述" width="auto" :show-overflow-tooltip="true"/>
+            <el-table-column prop="originTxnType" label="原类型名称" width="180"/>
+            <el-table-column prop="txnCpty" label="交易方" width="240"/>
+            <el-table-column prop="prodDesc" label="商品描述" width="auto"/>
             <el-table-column align="right" label="操作" width="180">
               <template #default="scope">
                 <el-button size="small" type="primary" @click="openUpdateRuleForm(scope.$index, scope.row)">编辑</el-button>
@@ -57,7 +58,7 @@
   <el-dialog v-model="addTxnTypeFormVisible" title="添加交易类型" @close="resetAddTxnTypeForm">
     <el-form ref="addTxnTypeFormRef" :model="addTxnTypeForm" :rules="addTxnTypeFormRules" label-width="120px" inline>
       <el-form-item label="类型名称" prop="txnTypeName">
-        <el-input v-model="addTxnTypeForm.txnTypeName" autocomplete="off" placeholder="请输入类型名称" clearable/>
+        <el-input v-model="addTxnTypeForm.txnTypeName" autocomplete="off" placeholder="请输入类型名称" clearable style="width: 220px;"/>
       </el-form-item>
     </el-form>
     <template #footer>
@@ -71,7 +72,7 @@
   <el-dialog v-model="updateTxnTypeFormVisible" title="编辑交易类型" @close="resetUpdateTxnTypeForm">
     <el-form ref="updateTxnTypeFormRef" :model="updateTxnTypeForm" :rules="updateTxnTypeFormRules" label-width="120px" inline>
       <el-form-item label="类型名称" prop="txnTypeName">
-        <el-input v-model="updateTxnTypeForm.txnTypeName" autocomplete="off" placeholder="请输入类型名称" clearable/>
+        <el-input v-model="updateTxnTypeForm.txnTypeName" autocomplete="off" placeholder="请输入类型名称" clearable style="width: 220px;"/>
       </el-form-item>
     </el-form>
     <template #footer>
@@ -83,11 +84,14 @@
   </el-dialog>
 
   <el-dialog v-model="addRuleFormVisible" title="添加匹配规则" @close="resetAddRuleForm">
-    <el-form ref="addRuleFormRef" :model="addRuleForm" :rules="addRuleFormRules" label-width="120px" inline>
+    <el-form ref="addRuleFormRef" :model="addRuleForm" :rules="addRuleFormRules" label-width="120px">
       <el-form-item label="交易类型" prop="txnTypeId">
         <el-select v-model="addRuleForm.txnTypeId" placeholder="请选择交易类型" clearable>
           <el-option v-for="o in txnTypeList" :key="o.txnTypeId" :label="o.txnTypeName" :value="o.txnTypeId"/>
         </el-select>
+      </el-form-item>
+      <el-form-item label="原类型名称" prop="originTxnType">
+        <el-input v-model="addRuleForm.originTxnType" autocomplete="off" placeholder="请输入原类型名称" clearable style="width: 220px;"/>
       </el-form-item>
       <el-form-item label="交易方" prop="txnCpty">
         <el-input v-model="addRuleForm.txnCpty" autocomplete="off" placeholder="请输入交易方" clearable/>
@@ -110,6 +114,9 @@
         <el-select v-model="updateRuleForm.txnTypeId" placeholder="请选择交易类型" clearable>
           <el-option v-for="o in txnTypeList" :key="o.txnTypeId" :label="o.txnTypeName" :value="o.txnTypeId"/>
         </el-select>
+      </el-form-item>
+      <el-form-item label="原类型名称" prop="originTxnType">
+        <el-input v-model="updateRuleForm.originTxnType" autocomplete="off" placeholder="请输入原类型名称" clearable style="width: 220px;"/>
       </el-form-item>
       <el-form-item label="交易方" prop="txnCpty">
         <el-input v-model="updateRuleForm.txnCpty" autocomplete="off" placeholder="请输入交易方" clearable/>
@@ -136,6 +143,10 @@
   font-weight: bold;
   margin-bottom: 20px;
 }
+
+.el-input {
+  width: 450px;
+}
 </style>
 
 <script setup lang="ts">
@@ -151,9 +162,10 @@ interface TxnType {
 
 interface Rule {
   ruleId: number;
-  txnTypeId: number;
+  originTxnType: string;
   txnCpty: string;
   prodDesc: string;
+  txnTypeId: number;
 }
 
 const txnTypeList = ref([]);
@@ -184,12 +196,25 @@ const addRuleFormRules = reactive<FormRules>({
   txnTypeId: [
     {required: true, message: '不能为空', trigger: 'blur'},
   ],
+  originTxnType: [
+    {
+      validator: (rule: any, value: any, callback: any) => {
+        const {txnCpty, prodDesc} = addRuleForm.value as Rule;
+        if (!value && !txnCpty && !prodDesc) {
+          callback(new Error('"原类型名称"、"交易方"、"商品描述"至少有一个不能为空'));
+        } else {
+          callback();
+        }
+      },
+      trigger: 'blur',
+    }
+  ],
   txnCpty: [
     {
       validator: (rule: any, value: any, callback: any) => {
-        const {prodDesc} = addRuleForm.value as Rule;
-        if (!value && !prodDesc) {
-          callback(new Error('"交易方"和"商品描述"至少有一个不能为空'));
+        const {originTxnType, prodDesc} = addRuleForm.value as Rule;
+        if (!value && !originTxnType && !prodDesc) {
+          callback(new Error('"原类型名称"、"交易方"、"商品描述"至少有一个不能为空'));
         } else {
           callback();
         }
@@ -200,9 +225,9 @@ const addRuleFormRules = reactive<FormRules>({
   prodDesc: [
     {
       validator: (rule: any, value: any, callback: any) => {
-        const {txnCpty} = addRuleForm.value as Rule;
-        if (!value && !txnCpty) {
-          callback(new Error('"交易方"和"商品描述"至少有一个不能为空'));
+        const {originTxnType, txnCpty} = addRuleForm.value as Rule;
+        if (!value && !originTxnType && !txnCpty) {
+          callback(new Error('"原类型名称"、"交易方"、"商品描述"至少有一个不能为空'));
         } else {
           callback();
         }
@@ -219,12 +244,25 @@ const updateRuleFormRules = reactive<FormRules>({
   txnTypeId: [
     {required: true, message: '不能为空', trigger: 'blur'},
   ],
+  originTxnType: [
+    {
+      validator: (rule: any, value: any, callback: any) => {
+        const {txnCpty, prodDesc} = updateRuleForm.value as Rule;
+        if (!value && !txnCpty && !prodDesc) {
+          callback(new Error('"原类型名称"、"交易方"、"商品描述"至少有一个不能为空'));
+        } else {
+          callback();
+        }
+      },
+      trigger: 'blur',
+    }
+  ],
   txnCpty: [
     {
       validator: (rule: any, value: any, callback: any) => {
-        const {prodDesc} = updateRuleForm.value as Rule;
-        if (!value && !prodDesc) {
-          callback(new Error('"交易方"和"商品描述"至少有一个不能为空'));
+        const {originTxnType, prodDesc} = updateRuleForm.value as Rule;
+        if (!value && !originTxnType && !prodDesc) {
+          callback(new Error('"原类型名称"、"交易方"、"商品描述"至少有一个不能为空'));
         } else {
           callback();
         }
@@ -235,9 +273,9 @@ const updateRuleFormRules = reactive<FormRules>({
   prodDesc: [
     {
       validator: (rule: any, value: any, callback: any) => {
-        const {txnCpty} = updateRuleForm.value as Rule;
-        if (!value && !txnCpty) {
-          callback(new Error('"交易方"和"商品描述"至少有一个不能为空'));
+        const {originTxnType, txnCpty} = updateRuleForm.value as Rule;
+        if (!value && !originTxnType && !txnCpty) {
+          callback(new Error('"原类型名称"、"交易方"、"商品描述"至少有一个不能为空'));
         } else {
           callback();
         }

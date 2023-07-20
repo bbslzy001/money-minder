@@ -11,8 +11,8 @@
           </el-radio-group>
         </div>
       </div>
-      <el-table :data="billListForTable" size="default" table-layout="auto" max-height="calc(100vh - 210px)">
-        <el-table-column prop="billName" label="账单名称" sortable min-width="180" :show-overflow-tooltip="true"/>
+      <el-table :data="billListForTable" size="default" table-layout="auto" max-height="calc(100vh - 210px)" show-overflow-tooltip>
+        <el-table-column prop="billName" label="账单名称" sortable min-width="180"/>
         <el-table-column prop="startDate" label="起始日期" sortable/>
         <el-table-column prop="endDate" label="截止日期" sortable/>
         <el-table-column prop="billType" label="账单类型">

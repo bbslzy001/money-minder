@@ -29,11 +29,11 @@
       </div>
     </div>
     <div class="table">
-      <el-table :data="txnListForPagedTable" size="default">
+      <el-table :data="txnListForPagedTable" size="default" show-overflow-tooltip>
         <el-table-column prop="txnDateTime" label="交易时间" width="180"/>
         <el-table-column prop="txnType" label="交易类型" width="120"/>
-        <el-table-column prop="txnCpty" label="交易方" width="240" :show-overflow-tooltip="true"/>
-        <el-table-column prop="prodDesc" label="商品描述" width="auto" :show-overflow-tooltip="true"/>
+        <el-table-column prop="txnCpty" label="交易方" width="240"/>
+        <el-table-column prop="prodDesc" label="商品描述" width="auto"/>
         <el-table-column prop="incOrExp" label="收入/支出" width="120">
           <template #default="scope">
             <el-tag v-if="scope.row.incOrExp === '收入'" type="success">收入</el-tag>
@@ -42,7 +42,7 @@
           </template>
         </el-table-column>
         <el-table-column prop="txnAmount" label="交易金额" width="120"/>
-        <el-table-column prop="payMethod" label="支付方式" width="180" :show-overflow-tooltip="true"/>
+        <el-table-column prop="payMethod" label="支付方式" width="180"/>
         <el-table-column prop="txnStatus" label="交易状态" width="120"/>
         <el-table-column align="right" label="操作" width="180">
           <template #default="scope">

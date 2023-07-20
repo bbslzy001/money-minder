@@ -28,7 +28,13 @@
             <div>匹配规则列表</div>
           </div>
           <el-table :data="ruleList" size="default" max-height="calc(100vh - 240px)">
-            <el-table-column prop="txnType" label="交易类型" width="180" sortable/>
+            <el-table-column prop="txnTypeId" label="交易类型" width="180" sortable>
+              <template #default="scope">
+                <template v-for="o in txnTypeList" :key="o.txnTypeId">
+                  <span v-if="scope.row.txnTypeId === o.txnTypeId" v-text="o.txnTypeName"/>
+                </template>
+              </template>
+            </el-table-column>
             <el-table-column prop="txnCpty" label="交易方" width="240" :show-overflow-tooltip="true"/>
             <el-table-column prop="prodDesc" label="商品描述" width="auto" :show-overflow-tooltip="true"/>
             <el-table-column align="right" label="操作" width="180">
@@ -78,9 +84,9 @@
 
   <el-dialog v-model="addRuleFormVisible" title="添加匹配规则" @close="resetAddRuleForm">
     <el-form ref="addRuleFormRef" :model="addRuleForm" :rules="addRuleFormRules" label-width="120px" inline>
-      <el-form-item label="交易类型" prop="txnType">
-        <el-select v-model="addRuleForm.txnType" placeholder="请选择交易类型" clearable>
-          <el-option v-for="o in txnTypeList" :key="o.txnTypeId" :label="o.txnTypeName" :value="o.txnTypeName"/>
+      <el-form-item label="交易类型" prop="txnTypeId">
+        <el-select v-model="addRuleForm.txnTypeId" placeholder="请选择交易类型" clearable>
+          <el-option v-for="o in txnTypeList" :key="o.txnTypeId" :label="o.txnTypeName" :value="o.txnTypeId"/>
         </el-select>
       </el-form-item>
       <el-form-item label="交易方" prop="txnCpty">
@@ -100,9 +106,9 @@
 
   <el-dialog v-model="updateRuleFormVisible" title="编辑匹配规则" @close="resetUpdateRuleForm">
     <el-form ref="updateRuleFormRef" :model="updateRuleForm" :rules="updateRuleFormRules" label-width="120px" inline>
-      <el-form-item label="交易类型" prop="txnType">
-        <el-select v-model="updateRuleForm.txnType" placeholder="请选择交易类型" clearable>
-          <el-option v-for="o in txnTypeList" :key="o.txnTypeId" :label="o.txnTypeName" :value="o.txnTypeName"/>
+      <el-form-item label="交易类型" prop="txnTypeId">
+        <el-select v-model="updateRuleForm.txnTypeId" placeholder="请选择交易类型" clearable>
+          <el-option v-for="o in txnTypeList" :key="o.txnTypeId" :label="o.txnTypeName" :value="o.txnTypeId"/>
         </el-select>
       </el-form-item>
       <el-form-item label="交易方" prop="txnCpty">
@@ -145,7 +151,7 @@ interface TxnType {
 
 interface Rule {
   ruleId: number;
-  txnType: string;
+  txnTypeId: number;
   txnCpty: string;
   prodDesc: string;
 }
@@ -175,7 +181,7 @@ const addRuleFormVisible = ref(false);
 const addRuleForm = ref({});
 const addRuleFormRef = ref<FormInstance>();
 const addRuleFormRules = reactive<FormRules>({
-  txnType: [
+  txnTypeId: [
     {required: true, message: '不能为空', trigger: 'blur'},
   ],
   txnCpty: [
@@ -210,7 +216,7 @@ const updateRuleFormVisible = ref(false);
 const updateRuleForm = ref({});
 const updateRuleFormRef = ref<FormInstance>();
 const updateRuleFormRules = reactive<FormRules>({
-  txnType: [
+  txnTypeId: [
     {required: true, message: '不能为空', trigger: 'blur'},
   ],
   txnCpty: [
@@ -305,7 +311,7 @@ const resetAddRuleForm = () => {
   addRuleFormRef.value?.resetFields();
 };
 
-const openUpdateRuleForm = (index: number, row: TxnType) => {
+const openUpdateRuleForm = (index: number, row: Rule) => {
   updateRuleForm.value = {...row};
   updateRuleFormVisible.value = true;
 };
@@ -384,7 +390,7 @@ const getTxnTypeRequest = async () => {
 
 const addRuleRequest = async () => {
   try {
-    const response = await request.jsonRequest.post('/txn-type-rule/add', addRuleForm.value);
+    const response = await request.jsonRequest.post('/rule/add', addRuleForm.value);
     if (response.status === RequestCode.SUCCESS) {
       ElMessage.success(response.data.message);
       await getRuleRequest();
@@ -397,7 +403,7 @@ const addRuleRequest = async () => {
 
 const deleteRuleRequest = async (index: number, row: Rule) => {
   try {
-    const response = await request.jsonRequest.delete(`/txn-type-rule/delete/${row.ruleId}`);
+    const response = await request.jsonRequest.delete(`/rule/delete/${row.ruleId}`);
     if (response.status === RequestCode.SUCCESS) {
       ElMessage.success(response.data.message);
       await getRuleRequest();
@@ -411,7 +417,7 @@ const deleteRuleRequest = async (index: number, row: Rule) => {
 const updateRuleRequest = async () => {
   try {
     const {ruleId, ...rest} = updateRuleForm.value as Rule;
-    const response = await request.jsonRequest.put(`/txn-type-rule/update/${ruleId}`, {
+    const response = await request.jsonRequest.put(`/rule/update/${ruleId}`, {
       ...rest,
     });
     if (response.status === RequestCode.SUCCESS) {
@@ -426,9 +432,9 @@ const updateRuleRequest = async () => {
 
 const getRuleRequest = async () => {
   try {
-    const response = await request.jsonRequest.get('/txn-type-rule/getall');
+    const response = await request.jsonRequest.get('/rule/getall');
     if (response.status === RequestCode.SUCCESS) {
-      txnTypeList.value = response.data.result;
+      ruleList.value = response.data.result;
       ElMessage.success(response.data.message);
     }
   } catch (error) {
@@ -439,5 +445,6 @@ const getRuleRequest = async () => {
 
 onMounted(() => {
   getTxnTypeRequest();
+  getRuleRequest();
 });
 </script>

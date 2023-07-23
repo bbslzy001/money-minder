@@ -104,8 +104,36 @@
     </el-form>
     <template #footer>
       <span class="dialog-footer">
-        <el-button @click="closeUpdateTxnForm">取消</el-button>
-        <el-button type="primary" @click="submitUpdateTxnForm">确认</el-button>
+        <el-button type="primary" plain @click="openAddRuleForm">自定义匹配规则</el-button>
+        <span>
+          <el-button @click="closeUpdateTxnForm">取消</el-button>
+          <el-button type="primary" @click="submitUpdateTxnForm">确认</el-button>
+        </span>
+      </span>
+    </template>
+  </el-dialog>
+
+  <el-dialog v-model="addRuleFormVisible" title="添加匹配规则" @close="resetAddRuleForm">
+    <el-form ref="addRuleFormRef" :model="addRuleForm" :rules="addRuleFormRules" label-width="100px">
+      <el-form-item label="交易类型" prop="txnTypeId">
+        <el-select v-model="addRuleForm.txnTypeId" placeholder="请选择交易类型" clearable>
+          <el-option v-for="o in txnTypeList" :key="o.txnTypeId" :label="o.txnTypeName" :value="o.txnTypeId"/>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="原类型名称" prop="originTxnType">
+        <el-input v-model="addRuleForm.originTxnType" autocomplete="off" placeholder="请输入原类型名称" clearable style="width: 240px;"/>
+      </el-form-item>
+      <el-form-item label="交易方" prop="txnCpty">
+        <el-input v-model="addRuleForm.txnCpty" autocomplete="off" placeholder="请输入交易方" clearable/>
+      </el-form-item>
+      <el-form-item label="商品描述" prop="prodDesc">
+        <el-input v-model="addRuleForm.prodDesc" autocomplete="off" placeholder="请输入商品描述" clearable/>
+      </el-form-item>
+    </el-form>
+    <template #footer>
+      <span>
+        <el-button @click="closeAddRuleForm">取消</el-button>
+        <el-button type="primary" @click="submitAddRuleForm">确认</el-button>
       </span>
     </template>
   </el-dialog>
@@ -159,6 +187,12 @@
 ::v-deep(.el-date-editor) {
   min-width: 240px;
 }
+
+.dialog-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
 </style>
 
 <script setup lang="ts">
@@ -185,6 +219,20 @@ interface TxnType {
   txnTypeName: string;
 }
 
+interface Rule {
+  ruleId: number;
+  originTxnType: string;
+  txnCpty: string;
+  prodDesc: string;
+  txnTypeId: number;
+}
+
+interface RuleConfig {
+  addRuleApplyTxns: boolean;
+  deleteRuleApplyTxns: boolean;
+  updateRuleApplyTxns: boolean;
+}
+
 interface TxnFormValue extends Omit<Txn, 'txnDateTime'> {
   txnDate: string;
   txnTime: string;
@@ -192,6 +240,7 @@ interface TxnFormValue extends Omit<Txn, 'txnDateTime'> {
 
 const txnList = ref([]);
 const txnTypeList = ref([]);
+const ruleConfig = ref({});
 
 const searchForTxnType = ref('');
 const searchForTxnCpty = ref('');
@@ -241,6 +290,54 @@ const updateTxnFormRules = reactive<FormRules>({
   ],
 });
 
+const addRuleFormVisible = ref(false);
+const addRuleForm = ref({});
+const addRuleFormRef = ref<FormInstance>();
+const addRuleFormRules = reactive<FormRules>({
+  txnTypeId: [
+    {required: true, message: '不能为空', trigger: 'blur'},
+  ],
+  originTxnType: [
+    {
+      validator: (rule: any, value: any, callback: any) => {
+        const {txnCpty, prodDesc} = addRuleForm.value as Rule;
+        if (!value && !txnCpty && !prodDesc) {
+          callback(new Error('"原类型名称"、"交易方"、"商品描述"至少有一个不能为空'));
+        } else {
+          callback();
+        }
+      },
+      trigger: 'blur',
+    }
+  ],
+  txnCpty: [
+    {
+      validator: (rule: any, value: any, callback: any) => {
+        const {originTxnType, prodDesc} = addRuleForm.value as Rule;
+        if (!value && !originTxnType && !prodDesc) {
+          callback(new Error('"原类型名称"、"交易方"、"商品描述"至少有一个不能为空'));
+        } else {
+          callback();
+        }
+      },
+      trigger: 'blur',
+    },
+  ],
+  prodDesc: [
+    {
+      validator: (rule: any, value: any, callback: any) => {
+        const {originTxnType, txnCpty} = addRuleForm.value as Rule;
+        if (!value && !originTxnType && !txnCpty) {
+          callback(new Error('"原类型名称"、"交易方"、"商品描述"至少有一个不能为空'));
+        } else {
+          callback();
+        }
+      },
+      trigger: 'blur',
+    },
+  ],
+});
+
 const openUpdateTxnForm = (index: number, row: Txn) => {
   const {txnDateTime, ...rest} = row;
   const dateTime = txnDateTime.split(' ');
@@ -270,6 +367,47 @@ const resetUpdateTxnForm = () => {
   updateTxnForm.value = {};
   updateTxnFormRef.value?.resetFields();
 }
+
+const openAddRuleForm = () => {
+  const txn = updateTxnForm.value as Txn;
+  addRuleForm.value = {
+    'originTxnType': txn.originTxnType,
+    'txnCpty': txn.txnCpty,
+    'prodDesc': txn.prodDesc,
+    'txnTypeId': txn.txnTypeId,
+  };
+  addRuleFormVisible.value = true;
+};
+
+const closeAddRuleForm = () => {
+  addRuleFormVisible.value = false;
+};
+
+const submitAddRuleForm = () => {
+  addRuleFormRef.value?.validate(async (valid) => {
+    if (valid) {
+      await addRuleRequest();
+    }
+  });
+};
+
+const resetAddRuleForm = () => {
+  addRuleForm.value = {};
+  addRuleFormRef.value?.resetFields();
+};
+
+const getRuleConfigRequest = async () => {
+  try {
+    const response = await jsonRequest.get('/config/get/1');
+    if (response.status === RequestCode.SUCCESS) {
+      ruleConfig.value = response.data.result.configValue;
+      ElMessage.success(response.data.message);
+    }
+  } catch (error) {
+    console.error(error);
+    ElMessage.error('获取失败');
+  }
+};
 
 const deleteTxnRequest = async (index: number, row: Txn) => {
   try {
@@ -331,6 +469,33 @@ const getTxnTypeRequest = async () => {
   }
 };
 
+const addRuleRequest = async () => {
+  try {
+    const {originTxnType: tempOriginTxnType, txnCpty: tempTxnCpty, prodDesc: tempProdDesc, ...rest} = addRuleForm.value as Rule;
+    const originTxnType = !tempOriginTxnType || tempOriginTxnType === '' ? '/' : tempOriginTxnType;
+    const txnCpty = !tempTxnCpty || tempTxnCpty === '' ? '/' : tempTxnCpty;
+    const prodDesc = !tempProdDesc || tempProdDesc === '' ? '/' : tempProdDesc;
+    const arg = (ruleConfig.value as RuleConfig).addRuleApplyTxns ? '/apply-txns' : '';
+    const response = await jsonRequest.post(`/rule/add${arg}`, {
+      ...rest,
+      originTxnType,
+      txnCpty,
+      prodDesc,
+    });
+    if (response.status === RequestCode.SUCCESS) {
+      closeAddRuleForm();
+      closeUpdateTxnForm();
+      ElMessage.success(response.data.message);
+      if ((ruleConfig.value as RuleConfig).addRuleApplyTxns) {
+        await getTxnRequest();
+      }
+    }
+  } catch (error) {
+    console.error(error);
+    ElMessage.error('添加失败');
+  }
+};
+
 const txnListForTable = computed(() => {
   if (txnList.value && txnList.value.length > 0) {
     return txnList.value.filter(
@@ -358,7 +523,8 @@ const txnListForPagedTable = computed(() => {
 });
 
 onMounted(() => {
-  getTxnRequest();
+  getRuleConfigRequest();
   getTxnTypeRequest();
+  getTxnRequest();
 });
 </script>

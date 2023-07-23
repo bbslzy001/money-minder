@@ -4,7 +4,10 @@
       <el-col :span="6">
         <el-card shadow="never" style="height: 100%;">
           <div class="table-title">
-            <div>交易类型列表</div>
+            <div>
+              <span>交易类型列表 </span>
+              <el-link :icon="QuestionFilled as string" :underline="false" type="primary" @click="openTxnTypeIntro"/>
+            </div>
           </div>
           <el-table :data="txnTypeList" size="default" max-height="calc(100vh - 240px)" show-overflow-tooltip>
             <el-table-column prop="txnTypeName" label="类型名称" width="auto" sortable/>
@@ -25,7 +28,34 @@
       <el-col :span="18">
         <el-card shadow="never" style="height: 100%;">
           <div class="table-title">
-            <div>匹配规则列表</div>
+            <div>
+              <span>匹配规则列表 </span>
+              <el-link :icon="QuestionFilled as string" :underline="false" type="primary" @click="openRuleIntro"/>
+            </div>
+            <el-popover :visible="ruleConfigFormVisible" placement="left-start" :width="300" @close="resetRuleConfigForm">
+              <template #reference>
+                <el-button type="primary" text @click="openRuleConfigForm">设置</el-button>
+              </template>
+              <div>
+                <p>是否将下述操作应用于已有数据 ？</p>
+                <div style="display: flex; align-items: center; margin-bottom: 8px;">
+                  <span style="margin-right: 8px;">添加</span>
+                  <el-switch v-model="ruleConfigForm.addRuleApplyTxns" inline-prompt :active-icon="Check as string" :inactive-icon="Close as string"/>
+                </div>
+                <div style="display: flex; align-items: center; margin-bottom: 8px;">
+                  <span style="margin-right: 8px;">删除</span>
+                  <el-switch v-model="ruleConfigForm.deleteRuleApplyTxns" inline-prompt :active-icon="Check as string" :inactive-icon="Close as string"/>
+                </div>
+                <div style="display: flex; align-items: center; margin-bottom: 8px;">
+                  <span style="margin-right: 8px;">更新</span>
+                  <el-switch v-model="ruleConfigForm.updateRuleApplyTxns" inline-prompt :active-icon="Check as string" :inactive-icon="Close as string"/>
+                </div>
+              </div>
+              <div style="display: flex; flex-direction: row; justify-content: flex-end;">
+                <el-button @click="closeRuleConfigForm">取消</el-button>
+                <el-button type="primary" @click="submitRuleConfigForm">保存</el-button>
+              </div>
+            </el-popover>
           </div>
           <el-table :data="ruleList" size="default" max-height="calc(100vh - 240px)" show-overflow-tooltip>
             <el-table-column prop="txnTypeId" label="交易类型" width="180" sortable>
@@ -54,6 +84,14 @@
       </el-col>
     </el-row>
   </el-container>
+
+  <el-drawer v-model="txnTypeIntroVisible" title="交易类型说明" direction="rtl" size="40%" :with-header="false">
+    <div v-html="txnTypeIntro"></div>
+  </el-drawer>
+
+  <el-drawer v-model="ruleIntroVisible" title="匹配规则说明" direction="rtl" size="40%" :with-header="false">
+    <div v-html="ruleIntro"></div>
+  </el-drawer>
 
   <el-dialog v-model="addTxnTypeFormVisible" title="添加交易类型" @close="resetAddTxnTypeForm">
     <el-form ref="addTxnTypeFormRef" :model="addTxnTypeForm" :rules="addTxnTypeFormRules" label-width="100px">
@@ -138,7 +176,7 @@
 .table-title {
   display: flex;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: space-between;
   font-size: 18px;
   font-weight: bold;
   margin-bottom: 20px;
@@ -156,8 +194,10 @@
 <script setup lang="ts">
 import {onMounted, reactive, ref} from "vue";
 import {ElMessage, FormInstance, FormRules} from "element-plus";
-import request from "@/utils/request";
+import {Check, Close, QuestionFilled} from "@element-plus/icons-vue";
+import {jsonRequest} from "@/utils/request";
 import {RequestCode} from "@/utils/requestCode";
+import {parseMarkdownFile} from '@/utils/markdownParser';
 
 interface TxnType {
   txnTypeId: number;
@@ -172,8 +212,24 @@ interface Rule {
   txnTypeId: number;
 }
 
+interface RuleConfig {
+  addRuleApplyTxns: boolean;
+  deleteRuleApplyTxns: boolean;
+  updateRuleApplyTxns: boolean;
+}
+
 const txnTypeList = ref([]);
 const ruleList = ref([]);
+const ruleConfig = ref({});
+
+const txnTypeIntroVisible = ref(false);
+const txnTypeIntro = ref();
+
+const ruleIntroVisible = ref(false);
+const ruleIntro = ref();
+
+const ruleConfigFormVisible = ref(false);
+const ruleConfigForm = ref({});
 
 const addTxnTypeFormVisible = ref(false);
 const addTxnTypeForm = ref({});
@@ -289,6 +345,41 @@ const updateRuleFormRules = reactive<FormRules>({
   ],
 });
 
+const openTxnTypeIntro = () => {
+  if (!txnTypeIntro.value) {
+    const filePath = require('../../assets/txnTypeIntro.md');
+    const markdownText = filePath.default;
+    txnTypeIntro.value = parseMarkdownFile(markdownText);
+  }
+  txnTypeIntroVisible.value = true;
+};
+
+const openRuleIntro = () => {
+  if (!ruleIntro.value) {
+    const filePath = require('../../assets/ruleIntro.md');
+    const markdownText = filePath.default;
+    ruleIntro.value = parseMarkdownFile(markdownText);
+  }
+  ruleIntroVisible.value = true;
+};
+
+const openRuleConfigForm = () => {
+  ruleConfigForm.value = {...ruleConfig.value};
+  ruleConfigFormVisible.value = true;
+};
+
+const closeRuleConfigForm = () => {
+  ruleConfigFormVisible.value = false;
+};
+
+const submitRuleConfigForm = () => {
+  updateRuleConfigRequest();
+};
+
+const resetRuleConfigForm = () => {
+  ruleConfigForm.value = {};
+};
+
 const openAddTxnTypeForm = () => {
   addTxnTypeFormVisible.value = true;
 };
@@ -375,9 +466,38 @@ const resetUpdateRuleForm = () => {
   updateRuleFormRef.value?.resetFields();
 };
 
+const updateRuleConfigRequest = async () => {
+  try {
+    const response = await jsonRequest.put('/config/update/1', {
+      'configValue': ruleConfigForm.value,
+    });
+    if (response.status === RequestCode.SUCCESS) {
+      closeRuleConfigForm();
+      ElMessage.success(response.data.message);
+      await getRuleConfigRequest();
+    }
+  } catch (error) {
+    console.error(error);
+    ElMessage.error('更新失败');
+  }
+};
+
+const getRuleConfigRequest = async () => {
+  try {
+    const response = await jsonRequest.get('/config/get/1');
+    if (response.status === RequestCode.SUCCESS) {
+      ruleConfig.value = response.data.result.configValue;
+      ElMessage.success(response.data.message);
+    }
+  } catch (error) {
+    console.error(error);
+    ElMessage.error('获取失败');
+  }
+};
+
 const addTxnTypeRequest = async () => {
   try {
-    const response = await request.jsonRequest.post('/txn-type/add', addTxnTypeForm.value);
+    const response = await jsonRequest.post('/txn-type/add', addTxnTypeForm.value);
     if (response.status === RequestCode.SUCCESS) {
       closeAddTxnTypeForm();
       ElMessage.success(response.data.message);
@@ -391,7 +511,7 @@ const addTxnTypeRequest = async () => {
 
 const deleteTxnTypeRequest = async (index: number, row: TxnType) => {
   try {
-    const response = await request.jsonRequest.delete(`/txn-type/delete/${row.txnTypeId}`);
+    const response = await jsonRequest.delete(`/txn-type/delete/${row.txnTypeId}`);
     if (response.status === RequestCode.SUCCESS) {
       ElMessage.success(response.data.message);
       await getTxnTypeRequest();
@@ -406,7 +526,7 @@ const deleteTxnTypeRequest = async (index: number, row: TxnType) => {
 const updateTxnTypeRequest = async () => {
   try {
     const {txnTypeId, ...rest} = updateTxnTypeForm.value as TxnType;
-    const response = await request.jsonRequest.put(`/txn-type/update/${txnTypeId}`, {
+    const response = await jsonRequest.put(`/txn-type/update/${txnTypeId}`, {
       ...rest,
     });
     if (response.status === RequestCode.SUCCESS) {
@@ -422,7 +542,7 @@ const updateTxnTypeRequest = async () => {
 
 const getTxnTypeRequest = async () => {
   try {
-    const response = await request.jsonRequest.get('/txn-type/getall');
+    const response = await jsonRequest.get('/txn-type/getall');
     if (response.status === RequestCode.SUCCESS) {
       txnTypeList.value = response.data.result;
       ElMessage.success(response.data.message);
@@ -439,7 +559,8 @@ const addRuleRequest = async () => {
     const originTxnType = !tempOriginTxnType || tempOriginTxnType === '' ? '/' : tempOriginTxnType;
     const txnCpty = !tempTxnCpty || tempTxnCpty === '' ? '/' : tempTxnCpty;
     const prodDesc = !tempProdDesc || tempProdDesc === '' ? '/' : tempProdDesc;
-    const response = await request.jsonRequest.post('/rule/add', {
+    const arg = (ruleConfig.value as RuleConfig).addRuleApplyTxns ? '/apply-txns' : '';
+    const response = await jsonRequest.post(`/rule/add${arg}`, {
       ...rest,
       originTxnType,
       txnCpty,
@@ -458,7 +579,8 @@ const addRuleRequest = async () => {
 
 const deleteRuleRequest = async (index: number, row: Rule) => {
   try {
-    const response = await request.jsonRequest.delete(`/rule/delete/${row.ruleId}`);
+    const arg = (ruleConfig.value as RuleConfig).deleteRuleApplyTxns ? '/apply-txns' : '';
+    const response = await jsonRequest.delete(`/rule/delete${arg}/${row.ruleId}`);
     if (response.status === RequestCode.SUCCESS) {
       ElMessage.success(response.data.message);
       await getRuleRequest();
@@ -475,7 +597,8 @@ const updateRuleRequest = async () => {
     const originTxnType = tempOriginTxnType === '' ? '/' : tempOriginTxnType;
     const txnCpty = tempTxnCpty === '' ? '/' : tempTxnCpty;
     const prodDesc = tempProdDesc === '' ? '/' : tempProdDesc;
-    const response = await request.jsonRequest.put(`/rule/update/${ruleId}`, {
+    const arg = (ruleConfig.value as RuleConfig).updateRuleApplyTxns ? '/apply-txns' : '';
+    const response = await jsonRequest.put(`/rule/update${arg}/${ruleId}`, {
       ...rest,
       originTxnType,
       txnCpty,
@@ -494,7 +617,7 @@ const updateRuleRequest = async () => {
 
 const getRuleRequest = async () => {
   try {
-    const response = await request.jsonRequest.get('/rule/getall');
+    const response = await jsonRequest.get('/rule/getall');
     if (response.status === RequestCode.SUCCESS) {
       ruleList.value = response.data.result;
       ElMessage.success(response.data.message);
@@ -506,6 +629,7 @@ const getRuleRequest = async () => {
 };
 
 onMounted(() => {
+  getRuleConfigRequest();
   getTxnTypeRequest();
   getRuleRequest();
 });

@@ -96,7 +96,7 @@
 <script setup lang="ts">
 import {computed, onMounted, reactive, ref} from "vue";
 import {ElMessage, ElPopconfirm, FormInstance, FormRules} from "element-plus";
-import request from "@/utils/request";
+import {jsonRequest} from "@/utils/request";
 import {RequestCode} from "@/utils/requestCode";
 
 interface Bill {
@@ -153,7 +153,7 @@ const resetUpdateBillForm = () => {
 
 const deleteBillRequest = async (index: number, row: Bill) => {
   try {
-    const response = await request.jsonRequest.delete(`/bill/delete/${row.billId}`);
+    const response = await jsonRequest.delete(`/bill/delete/${row.billId}`);
     if (response.status === RequestCode.SUCCESS) {
       ElMessage.success(response.data.message);
       await getBillRequest();
@@ -167,7 +167,7 @@ const deleteBillRequest = async (index: number, row: Bill) => {
 const updateBillRequest = async () => {
   try {
     const {billId, ...rest} = updateBillForm.value as Bill
-    const response = await request.jsonRequest.put(`/bill/update/${billId}`, {
+    const response = await jsonRequest.put(`/bill/update/${billId}`, {
       ...rest,
     });
     if (response.status === RequestCode.SUCCESS) {
@@ -183,7 +183,7 @@ const updateBillRequest = async () => {
 
 const getBillRequest = async () => {
   try {
-    const response = await request.jsonRequest.get('/bill/getall');
+    const response = await jsonRequest.get('/bill/getall');
     if (response.status === RequestCode.SUCCESS) {
       billList.value = response.data.result;
       ElMessage.success(response.data.message);

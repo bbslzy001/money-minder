@@ -31,7 +31,14 @@
     <div class="table">
       <el-table :data="txnListForPagedTable" size="default" show-overflow-tooltip>
         <el-table-column prop="txnDateTime" label="交易时间" width="180"/>
-        <el-table-column prop="txnType" label="交易类型" width="120"/>
+        <el-table-column prop="txnTypeId" label="交易类型" width="120">
+          <template #default="scope">
+            <template v-for="o in txnTypeList" :key="o.txnTypeId">
+              <span v-if="scope.row.txnTypeId === 1 && o.txnTypeId === 1" v-text="`${o.txnTypeName}（${scope.row.originTxnType}）`"/>
+              <span v-else-if="scope.row.txnTypeId === o.txnTypeId" v-text="o.txnTypeName"/>
+            </template>
+          </template>
+        </el-table-column>
         <el-table-column prop="txnCpty" label="交易方" width="240"/>
         <el-table-column prop="prodDesc" label="商品描述" width="auto"/>
         <el-table-column prop="incOrExp" label="收入/支出" width="120">
@@ -67,9 +74,9 @@
       <el-form-item label="交易时间" prop="txnTime">
         <el-time-picker v-model="updateTxnForm.txnTime" type="time" format="HH时mm分ss秒" value-format="HH:mm:ss" placeholder="请选择交易时间"/>
       </el-form-item>
-      <el-form-item label="交易类型" prop="txnType">
-        <el-select v-model="updateTxnForm.txnType" placeholder="请选择交易类型" clearable>
-          <el-option v-for="o in txnTypeList" :key="o.txnTypeId" :label="o.txnTypeName" :value="o.txnTypeName"/>
+      <el-form-item label="交易类型" prop="txnTypeId">
+        <el-select v-model="updateTxnForm.txnTypeId" placeholder="请选择交易类型" clearable>
+          <el-option v-for="o in txnTypeList" :key="o.txnTypeId" :label="o.txnTypeName" :value="o.txnTypeId"/>
         </el-select>
       </el-form-item>
       <el-form-item label="收入/支出" prop="incOrExp">
@@ -157,20 +164,25 @@
 <script setup lang="ts">
 import {computed, onMounted, reactive, ref} from "vue";
 import {ElMessage, ElPopconfirm, FormInstance, FormRules} from "element-plus";
-import request from '@/utils/request';
+import {jsonRequest} from '@/utils/request';
 import {RequestCode} from '@/utils/requestCode';
 
 interface Txn {
   txnId: number;
   txnDateTime: string;
-  txnType: string;
   txnCpty: string;
   prodDesc: string;
   incOrExp: string;
   txnAmount: number;
   payMethod: string;
   txnStatus: string;
-  billId: number;
+  originTxnType: string;
+  txnTypeId: number;
+}
+
+interface TxnType {
+  txnTypeId: number;
+  txnTypeName: string;
 }
 
 interface TxnFormValue extends Omit<Txn, 'txnDateTime'> {
@@ -199,9 +211,6 @@ const updateTxnFormRules = reactive<FormRules>({
   txnTime: [
     {required: true, message: '不能为空', trigger: 'blur'},
   ],
-  txnType: [
-    {required: true, message: '不能为空', trigger: 'blur'},
-  ],
   txnCpty: [
     {required: true, message: '不能为空', trigger: 'blur'},
   ],
@@ -225,6 +234,9 @@ const updateTxnFormRules = reactive<FormRules>({
     },
   ],
   txnStatus: [
+    {required: true, message: '不能为空', trigger: 'blur'},
+  ],
+  txnTypeId: [
     {required: true, message: '不能为空', trigger: 'blur'},
   ],
 });
@@ -261,7 +273,7 @@ const resetUpdateTxnForm = () => {
 
 const deleteTxnRequest = async (index: number, row: Txn) => {
   try {
-    const response = await request.jsonRequest.delete(`/txn/delete/${row.txnId}`);
+    const response = await jsonRequest.delete(`/txn/delete/${row.txnId}`);
     if (response.status === RequestCode.SUCCESS) {
       ElMessage.success(response.data.message);
       await getTxnRequest();
@@ -277,7 +289,7 @@ const updateTxnRequest = async () => {
     const {txnId, txnDate: tempTxnDate, txnTime: tempTxnTime, payMethod: tempPayMethod, ...rest} = updateTxnForm.value as TxnFormValue;
     const txnDateTime = `${tempTxnDate} ${tempTxnTime}`;
     const payMethod = tempPayMethod === '' ? '/' : tempPayMethod;
-    const response = await request.jsonRequest.put(`/txn/update/${txnId}`, {
+    const response = await jsonRequest.put(`/txn/update/${txnId}`, {
       ...rest,
       txnDateTime,
       payMethod,
@@ -295,7 +307,7 @@ const updateTxnRequest = async () => {
 
 const getTxnRequest = async () => {
   try {
-    const response = await request.jsonRequest.get('/txn/getall');
+    const response = await jsonRequest.get('/txn/getall');
     if (response.status === RequestCode.SUCCESS) {
       txnList.value = response.data.result;
       ElMessage.success(response.data.message);
@@ -308,7 +320,7 @@ const getTxnRequest = async () => {
 
 const getTxnTypeRequest = async () => {
   try {
-    const response = await request.jsonRequest.get('/txn-type/getall');
+    const response = await jsonRequest.get('/txn-type/getall');
     if (response.status === RequestCode.SUCCESS) {
       txnTypeList.value = response.data.result;
       ElMessage.success(response.data.message);
@@ -322,11 +334,13 @@ const getTxnTypeRequest = async () => {
 const txnListForTable = computed(() => {
   if (txnList.value && txnList.value.length > 0) {
     return txnList.value.filter(
-        (data: Txn) =>
-            (selectedForIncOrExp.value === "全部" || data.incOrExp === selectedForIncOrExp.value) &&
-            (!searchForTxnType.value || data.txnType.toLowerCase().includes(searchForTxnType.value.toLowerCase())) &&
-            (!searchForTxnCpty.value || data.txnCpty.toLowerCase().includes(searchForTxnCpty.value.toLowerCase())) &&
-            (!searchForProdDesc.value || data.prodDesc.toLowerCase().includes(searchForProdDesc.value.toLowerCase()))
+        (data: Txn) => {
+          const txnType = (txnTypeList.value as TxnType[]).find((o) => o.txnTypeId === data.txnTypeId) as TxnType;
+          return (selectedForIncOrExp.value === "全部" || data.incOrExp === selectedForIncOrExp.value) &&
+              (!searchForTxnType.value || txnType.txnTypeName.toLowerCase().includes(searchForTxnType.value.toLowerCase())) &&
+              (!searchForTxnCpty.value || data.txnCpty.toLowerCase().includes(searchForTxnCpty.value.toLowerCase())) &&
+              (!searchForProdDesc.value || data.prodDesc.toLowerCase().includes(searchForProdDesc.value.toLowerCase()));
+        }
     );
   } else {
     return [];

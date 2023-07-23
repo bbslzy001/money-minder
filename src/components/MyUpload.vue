@@ -16,7 +16,7 @@
 import {ref} from "vue";
 import FileUpload from '@/components/FileUpload.vue';
 import {UploadFile, UploadRawFile} from "element-plus";
-import request from '@/utils/request';
+import {fileRequest} from '@/utils/request';
 import {RequestCode} from "@/utils/requestCode";
 
 interface Props {
@@ -42,7 +42,7 @@ const uploadFileRequest = async (file: UploadFile) => {
     if (rawFile) {
       const formData = new FormData();
       formData.append('file', rawFile);
-      const response = await request.fileRequest.post(`${props.uploadUrl}`, formData);
+      const response = await fileRequest.post(`${props.uploadUrl}`, formData);
       if (response.status === RequestCode.SUCCESS) {
         uploadSuccess(file, response.data.message);
       }

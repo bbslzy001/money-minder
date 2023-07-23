@@ -14,5 +14,19 @@ module.exports = defineConfig({
         }
       }
     }
-  }
+  },
+  configureWebpack: {
+    module: {
+      rules: [
+        {
+          test: /\.md$/,
+          use: [
+            {
+              loader: 'raw-loader',
+            },
+          ],
+        },
+      ],
+    },
+  },
 });

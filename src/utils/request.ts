@@ -16,4 +16,4 @@ const fileRequest = axios.create({
     },
 });
 
-export default {jsonRequest, fileRequest};
+export {jsonRequest, fileRequest};

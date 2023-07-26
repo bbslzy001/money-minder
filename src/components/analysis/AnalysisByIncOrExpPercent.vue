@@ -1,0 +1,106 @@
+<template>
+  <AnalysisTemplate title-content="收支占比">
+    <template #main-content>
+      <div id="chart"/>
+    </template>
+  </AnalysisTemplate>
+</template>
+
+<style scoped>
+#chart {
+  width: 100%;
+  height: 100%;
+}
+</style>
+
+<script setup lang="ts">
+import {onMounted, ref} from "vue";
+import {ElMessage} from "element-plus";
+import * as echarts from 'echarts';
+import {jsonRequest} from "@/utils/request";
+import {RequestCode} from "@/utils/requestCode";
+import AnalysisTemplate from "@/components/analysis/AnalysisTemplate.vue";
+
+interface Props {
+  startDate: string;
+  endDate: string;
+}
+
+const props = defineProps<Props>();
+
+const incomeAmount = ref();
+const expenseAmount = ref();
+
+const getIncomeRequest = async () => {
+  try {
+    const response = await jsonRequest.post('/analysis/amount', {
+      startDate: props.startDate,
+      endDate: props.endDate,
+      incOrExp: '收入',
+    });
+    if (response.status === RequestCode.SUCCESS) {
+      incomeAmount.value = response.data.result.txnAmount;
+      ElMessage.success(response.data.message);
+    }
+  } catch (error) {
+    console.error(error);
+    ElMessage.error('获取失败');
+  }
+};
+
+const getExpenseRequest = async () => {
+  try {
+    const response = await jsonRequest.post('/analysis/amount', {
+      startDate: props.startDate,
+      endDate: props.endDate,
+      incOrExp: '支出',
+    });
+    if (response.status === RequestCode.SUCCESS) {
+      expenseAmount.value = response.data.result.txnAmount;
+      ElMessage.success(response.data.message);
+    }
+  } catch (error) {
+    console.error(error);
+    ElMessage.error('获取失败');
+  }
+};
+
+const drawChart = () => {
+  const myChart = echarts.init(document.getElementById('chart'));
+  const option = {
+    tooltip: {
+      trigger: 'item',
+      formatter: (params: any) => params.name + ': ' + params.value.toFixed(2) + ' (' + params.percent.toFixed(2) + '%)',
+    },
+    legend: {
+      orient: 'vertical',
+      left: 'left',
+    },
+    series: [
+      {
+        name: '收支占比',
+        type: 'pie',
+        radius: '50%',
+        data: [
+          {value: incomeAmount.value, name: '收入'},
+          {value: expenseAmount.value, name: '支出'},
+        ],
+        emphasis: {
+          itemStyle: {
+            shadowBlur: 10,
+            shadowOffsetX: 0,
+            shadowColor: 'rgba(0, 0, 0, 0.5)',
+          },
+        },
+      },
+    ],
+  };
+  myChart.setOption(option);
+};
+
+onMounted(async () => {
+  await getIncomeRequest();
+  await getExpenseRequest();
+  drawChart();
+});
+</script>

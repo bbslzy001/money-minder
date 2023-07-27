@@ -5,11 +5,11 @@ import ToolView from "@/views/ToolView.vue";
 import UploadWechat from "@/views/tools/UploadWechat.vue";
 import UploadAlipay from "@/views/tools/UploadAlipay.vue";
 import ToolHome from "@/views/tools/ToolHome.vue";
-import DayAnalyse from "@/views/dashboards/DayAnalyse.vue";
-import WeekAnalyse from "@/views/dashboards/WeekAnalyse.vue";
-import YearAnalyse from "@/views/dashboards/YearAnalyse.vue";
-import AllAnalyse from "@/views/dashboards/AllAnalyse.vue";
-import MonthAnalyse from "@/views/dashboards/MonthAnalyse.vue";
+import DayAnalysis from "@/views/dashboards/DayAnalysis.vue";
+import WeekAnalysis from "@/views/dashboards/WeekAnalysis.vue";
+import YearAnalysis from "@/views/dashboards/YearAnalysis.vue";
+import AllAnalysis from "@/views/dashboards/AllAnalysis.vue";
+import MonthAnalysis from "@/views/dashboards/MonthAnalysis.vue";
 import ManageBill from "@/views/tools/ManageBill.vue";
 import DayReport from "@/views/tools/DayReport.vue";
 import WeekReport from "@/views/tools/WeekReport.vue";
@@ -30,32 +30,33 @@ const routes = [
     children: [
       {
         path: '',
-        redirect: '/dashboard/day-analyse'
+        name: 'dashboard-home',
+        redirect: '/dashboard/day-analysis'
       },
       {
-        path: 'day-analyse',
-        name: 'day-analyse',
-        component: DayAnalyse,
+        path: 'day-analysis',
+        name: 'day-analysis',
+        component: DayAnalysis,
       },
       {
-        path: 'week-analyse',
-        name: 'week-analyse',
-        component: WeekAnalyse,
+        path: 'week-analysis',
+        name: 'week-analysis',
+        component: WeekAnalysis,
       },
       {
-        path: 'month-analyse',
-        name: 'month-analyse',
-        component: MonthAnalyse,
+        path: 'month-analysis',
+        name: 'month-analysis',
+        component: MonthAnalysis,
       },
       {
-        path: 'year-analyse',
-        name: 'year-analyse',
-        component: YearAnalyse,
+        path: 'year-analysis',
+        name: 'year-analysis',
+        component: YearAnalysis,
       },
       {
-        path: 'all-analyse',
-        name: 'all-analyse',
-        component: AllAnalyse,
+        path: 'all-analysis',
+        name: 'all-analysis',
+        component: AllAnalysis,
       },
     ],
   },

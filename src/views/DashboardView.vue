@@ -6,19 +6,19 @@
     </div>
     <div style="display: flex; height: 60px; align-items: end;">
       <el-menu :default-active="activeView" mode="horizontal" :ellipsis="false">
-        <el-menu-item index="day-analyse" @click="$router.push('/dashboard/day-analyse')">
+        <el-menu-item index="day-analysis" @click="$router.push('/dashboard/day-analysis')">
           <template #title>日分析</template>
         </el-menu-item>
-        <el-menu-item index="week-analyse" @click="$router.push('/dashboard/week-analyse')">
+        <el-menu-item index="week-analysis" @click="$router.push('/dashboard/week-analysis')">
           <template #title>周分析</template>
         </el-menu-item>
-        <el-menu-item index="month-analyse" @click="$router.push('/dashboard/month-analyse')">
+        <el-menu-item index="month-analysis" @click="$router.push('/dashboard/month-analysis')">
           <template #title>月分析</template>
         </el-menu-item>
-        <el-menu-item index="year-analyse" @click="$router.push('/dashboard/year-analyse')">
+        <el-menu-item index="year-analysis" @click="$router.push('/dashboard/year-analysis')">
           <template #title>年分析</template>
         </el-menu-item>
-        <el-menu-item index="all-analyse" @click="$router.push('/dashboard/all-analyse')">
+        <el-menu-item index="all-analysis" @click="$router.push('/dashboard/all-analysis')">
           <template #title>总分析</template>
         </el-menu-item>
       </el-menu>
@@ -52,18 +52,18 @@
 </style>
 
 <script setup lang="ts">
-import {Menu} from "@element-plus/icons-vue";
 import {computed} from "vue";
 import {useRoute} from "vue-router";
+import {Menu} from "@element-plus/icons-vue";
 
 const route = useRoute();
 
 const activeView = computed(() => {
-  if (route.path === '/dashboard/day-analyse') return 'day-analyse';
-  if (route.path === '/dashboard/week-analyse') return 'week-analyse';
-  if (route.path === '/dashboard/month-analyse') return 'month-analyse';
-  if (route.path === '/dashboard/year-analyse') return 'year-analyse';
-  if (route.path === '/dashboard/all-analyse') return 'all-analyse';
+  if (route.path === '/dashboard/day-analysis') return 'day-analysis';
+  if (route.path === '/dashboard/week-analysis') return 'week-analysis';
+  if (route.path === '/dashboard/month-analysis') return 'month-analysis';
+  if (route.path === '/dashboard/year-analysis') return 'year-analysis';
+  if (route.path === '/dashboard/all-analysis') return 'all-analysis';
   return '';
 });
 </script>

@@ -1,14 +1,14 @@
 <template>
   <AnalysisTemplate>
     <template #main-content>
-      <el-row style="height: calc(50% - 10px); margin-bottom: 20px;">
-        <el-statistic title="交易总数" :value="txnCount" :precision="0"></el-statistic>
-      </el-row>
-      <el-row style="height: calc(50% - 10px);">
-        <el-col :span="12">
+      <el-row style="height: 100%;">
+        <el-col :span="8">
+          <el-statistic title="交易总数" :value="txnCount" :precision="0" :suffix="'笔'"></el-statistic>
+        </el-col>
+        <el-col :span="8">
           <el-statistic title="总收入" :value="incomeAmount" :precision="2" :suffix="'元'"></el-statistic>
         </el-col>
-        <el-col :span="12">
+        <el-col :span="8">
           <el-statistic title="总支出" :value="expenseAmount" :precision="2" :suffix="'元'"></el-statistic>
         </el-col>
       </el-row>

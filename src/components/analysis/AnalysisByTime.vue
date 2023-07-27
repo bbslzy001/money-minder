@@ -1,13 +1,13 @@
 <template>
   <AnalysisTemplate title-content="交易时间轴">
     <template #main-content>
-      <div id="chart"/>
+      <div id="analysis-by-time"/>
     </template>
   </AnalysisTemplate>
 </template>
 
 <style scoped>
-#chart {
+#analysis-by-time {
   width: 100%;
   height: 100%;
 }
@@ -19,6 +19,7 @@ import {ElMessage} from "element-plus";
 import {jsonRequest} from "@/utils/request";
 import {RequestCode} from "@/utils/requestCode";
 import AnalysisTemplate from "@/components/analysis/AnalysisTemplate.vue";
+import * as echarts from "echarts";
 
 interface Props {
   startDate: string;
@@ -64,8 +65,78 @@ const getExpenseListRequest = async () => {
   }
 }
 
-onMounted(() => {
-  getIncomeListRequest();
-  getExpenseListRequest();
+const drawChart = () => {
+  const myChart = echarts.init(document.getElementById('analysis-by-time'));
+  const option = {
+    tooltip: {
+      trigger: 'axis',
+      axisPointer: {
+        type: 'shadow',
+      },
+      confine: true,
+      formatter: (params: any) => {
+        return params[0].name + '<br/>' +
+            params[0].seriesName + ': ' + Math.abs(params[0].value) + '笔<br/>' +
+            params[1].seriesName + ': ' + Math.abs(params[1].value) + '笔<br/>';
+      },
+    },
+    legend: {
+      data: ['支出', '收入'],
+      left: 'left',
+    },
+    grid: {
+      left: '2%',
+      right: '5%',
+      top: '8%',
+      bottom: '3%',
+      containLabel: true
+    },
+    xAxis: [
+      {
+        type: 'value',
+        boundaryGap: [0, 0.01],
+        axisLabel: {
+          formatter: (value: any) => {
+            return Math.abs(value) + '笔';
+          }
+        },
+      },
+    ],
+    yAxis: {
+      type: 'category',
+      inverse: true,
+      data: incomeList.value.map((item: any) => item.timeRange),
+    },
+    series: [
+      {
+        name: '支出',
+        type: 'bar',
+        stack: '总量',
+        data: expenseList.value.map((item: any) => -item.txnCount),
+      },
+      {
+        name: '收入',
+        type: 'bar',
+        stack: '总量',
+        data: incomeList.value.map((item: any) => item.txnCount),
+      },
+    ],
+  };
+  myChart.setOption(option);
+
+  // 不允许取消所有legend
+  myChart.on('legendselectchanged', (params: any) => {
+    const selectedItems = Object.keys(params.selected).filter(key => params.selected[key]);
+    if (selectedItems.length === 0) {
+      params.selected[params.name] = true;
+      myChart.setOption({legend: {selected: params.selected}});
+    }
+  });
+}
+
+onMounted(async () => {
+  await getIncomeListRequest();
+  await getExpenseListRequest();
+  drawChart();
 });
 </script>

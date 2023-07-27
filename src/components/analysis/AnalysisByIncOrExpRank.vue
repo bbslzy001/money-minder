@@ -8,7 +8,7 @@
     </template>
     <template #main-content>
       <el-table :data="selectedForIncOrExp == '收入' ? incomeList : expenseList" style="width: 100%" size="default" show-overflow-tooltip>
-        <el-table-column prop="prodDesc" label="商品描述" width="auto"/>
+        <el-table-column prop="txnCpty" label="交易方" width="auto"/>
         <el-table-column prop="txnAmount" label="交易金额" align="right" width="120"/>
       </el-table>
     </template>

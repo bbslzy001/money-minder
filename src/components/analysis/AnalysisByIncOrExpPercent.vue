@@ -1,13 +1,13 @@
 <template>
   <AnalysisTemplate title-content="收支占比">
     <template #main-content>
-      <div id="chart"/>
+      <div id="analysis-by-inc-or-exp-percent"/>
     </template>
   </AnalysisTemplate>
 </template>
 
 <style scoped>
-#chart {
+#analysis-by-inc-or-exp-percent {
   width: 100%;
   height: 100%;
 }
@@ -66,21 +66,27 @@ const getExpenseRequest = async () => {
 };
 
 const drawChart = () => {
-  const myChart = echarts.init(document.getElementById('chart'));
+  const myChart = echarts.init(document.getElementById('analysis-by-inc-or-exp-percent'));
   const option = {
     tooltip: {
       trigger: 'item',
-      formatter: (params: any) => params.name + ': ' + params.value.toFixed(2) + ' (' + params.percent.toFixed(2) + '%)',
+      confine: true,
+      formatter: (params: any) => {
+        return params.name + ': ' + params.value.toFixed(2) + '元 (' + params.percent.toFixed(2) + '%)';
+      },
     },
-    legend: {
-      orient: 'vertical',
-      left: 'left',
+    grid: {
+      left: '3%',
+      right: '3%',
+      top: '3%',
+      bottom: '3%',
+      containLabel: true
     },
     series: [
       {
         name: '收支占比',
         type: 'pie',
-        radius: '50%',
+        radius: '75%',
         data: [
           {value: incomeAmount.value, name: '收入'},
           {value: expenseAmount.value, name: '支出'},

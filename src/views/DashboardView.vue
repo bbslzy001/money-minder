@@ -25,7 +25,7 @@
     </div>
   </el-header>
   <el-divider class="divider"/>
-  <el-main>
+  <el-main style="overflow-y: auto;">
     <router-view/>
   </el-main>
 </template>

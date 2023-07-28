@@ -89,16 +89,17 @@ const drawChart = () => {
       right: '5%',
       top: '8%',
       bottom: '3%',
-      containLabel: true
+      containLabel: true,
     },
     xAxis: [
       {
         type: 'value',
         boundaryGap: [0, 0.01],
+        minInterval: 1,
         axisLabel: {
           formatter: (value: any) => {
             return Math.abs(value) + '笔';
-          }
+          },
         },
       },
     ],
@@ -113,12 +114,14 @@ const drawChart = () => {
         type: 'bar',
         stack: '总量',
         data: expenseList.value.map((item: any) => -item.txnCount),
+        barMaxWidth: '60',
       },
       {
         name: '收入',
         type: 'bar',
         stack: '总量',
         data: incomeList.value.map((item: any) => item.txnCount),
+        barMaxWidth: '60',
       },
     ],
   };

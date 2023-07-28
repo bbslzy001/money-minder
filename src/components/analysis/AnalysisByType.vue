@@ -105,13 +105,14 @@ const drawChart = () => {
       right: '5%',
       top: '3%',
       bottom: '3%',
-      containLabel: true
+      containLabel: true,
     },
     xAxis: {
       type: 'value',
       axisLabel: {
-        formatter: '{value} 元',
+        formatter: '{value}元',
       },
+      minInterval: 0.01,
     },
     yAxis: {
       type: 'category',
@@ -130,6 +131,7 @@ const drawChart = () => {
       {
         type: 'bar',
         data: selectedForIncOrExp.value === '收入' ? incomeList.value.map((item: any) => item.txnAmount) : expenseList.value.map((item: any) => item.txnAmount),
+        barMaxWidth: '60',
         itemStyle: {
           color: new echarts.graphic.LinearGradient(
               0, 0, 1, 0,

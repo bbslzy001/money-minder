@@ -13,10 +13,10 @@
             <el-table-column prop="txnTypeName" label="类型名称" width="auto" sortable/>
             <el-table-column align="right" label="操作" width="180">
               <template #default="scope">
-                <el-button size="small" type="primary" @click="openUpdateTxnTypeForm(scope.$index, scope.row)">编辑</el-button>
+                <el-button size="small" type="primary" @click="openUpdateTxnTypeForm(scope.$index, scope.row)" :disabled="scope.row.txnTypeId === 1">编辑</el-button>
                 <el-popconfirm title="是否删除该交易类型" confirm-button-text="删除" @confirm="deleteTxnTypeRequest(scope.$index, scope.row)" cancel-button-text="取消" width="200">
                   <template #reference>
-                    <el-button size="small" type="danger">删除</el-button>
+                    <el-button size="small" type="danger" :disabled="scope.row.txnTypeId === 1">删除</el-button>
                   </template>
                 </el-popconfirm>
               </template>

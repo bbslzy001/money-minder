@@ -1,5 +1,5 @@
 <template>
-  <el-row :gutter="20" style="height: 100%;">
+  <el-row :gutter="20" style="height: calc(100vh - 110px);">
     <el-col :span="14">
       <el-row :gutter="20" style="height: calc(40% - 10px); margin-bottom: 20px;">
         <el-col :span="14">

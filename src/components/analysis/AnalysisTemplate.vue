@@ -1,52 +1,56 @@
 <template>
-  <el-card shadow="hover" class="card" body-style="height: calc(100% - 40px); display: flex; flex-direction: column;">
-    <div v-if="props.titleContent" class="header">
-      <div class="header-title">
-        <span>{{ props.titleContent }}</span>
-        <el-tooltip v-if="props.tipContent" placement="bottom-start">
-          <template #content>{{ props.tipContent }}</template>
-          <el-icon :size="14"><InfoFilled/></el-icon>
-        </el-tooltip>
+  <MyCard class="analy-card" style="display: flex; flex-direction: column;">
+    <template #my-card-content>
+      <div v-if="props.titleContent" class="analy-card-header">
+        <div class="analy-card-header-title">
+          <span>{{ props.titleContent }}</span>
+          <el-tooltip v-if="props.tipContent" placement="bottom-start">
+            <template #content>{{ props.tipContent }}</template>
+            <el-icon :size="14"><InfoFilled/></el-icon>
+          </el-tooltip>
+        </div>
+        <slot name="analy-card-header-tag"/>
       </div>
-      <slot name="header-tag"/>
-    </div>
-    <div class="main">
-      <slot name="main-content"/>
-    </div>
-  </el-card>
+      <div class="analy-card-main">
+        <slot name="analy-card-main-content"/>
+      </div>
+    </template>
+  </MyCard>
 </template>
 
 <style scoped>
-.card {
+.analy-card {
   width: 100%;
   height: 100%;
+  padding: 20px;
 }
 
-.header {
+.analy-card-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin-bottom: 8px;
 }
 
-.header-title {
+.analy-card-header-title {
   display: flex;
   align-items: center;
   justify-content: flex-start;
   margin-bottom: 8px;
 }
 
-.header-title span {
+.analy-card-header-title span {
   margin-right: 4px;
 }
 
-.main {
+.analy-card-main {
   flex: 1;
 }
 </style>
 
 <script setup lang="ts">
 import {InfoFilled} from "@element-plus/icons-vue";
+import MyCard from "@/components/MyCard.vue";
 
 interface Props {
   titleContent?: string;

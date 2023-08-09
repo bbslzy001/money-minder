@@ -1,12 +1,12 @@
 <template>
   <AnalysisTemplate title-content="收支程度">
-    <template #header-tag>
+    <template #analy-card-header-tag>
       <el-radio-group v-model="selectedForIncOrExp">
         <el-radio-button label="收入">收入</el-radio-button>
         <el-radio-button label="支出">支出</el-radio-button>
       </el-radio-group>
     </template>
-    <template #main-content>
+    <template #analy-card-main-content>
       <div id="analysis-by-calendar"/>
     </template>
   </AnalysisTemplate>
@@ -20,12 +20,13 @@
 </style>
 
 <script setup lang="ts">
-import {onMounted, ref, watchEffect} from "vue";
+import {onMounted, onUnmounted, ref, watchEffect} from "vue";
 import {ElMessage} from "element-plus";
+import * as echarts from "echarts";
+import AnalysisTemplate from "@/components/analysis/AnalysisTemplate.vue";
 import {jsonRequest} from "@/utils/request";
 import {RequestCode} from "@/utils/requestCode";
-import AnalysisTemplate from "@/components/analysis/AnalysisTemplate.vue";
-import * as echarts from "echarts";
+import resizeChart from "@/utils/resizeChart";
 
 interface Props {
   startDate: string;
@@ -123,15 +124,22 @@ const drawChart = () => {
     ],
   };
   myChart.setOption(option);
+  return myChart;
 }
 
 onMounted(async () => {
   await getIncomeListRequest();
   await getExpenseListRequest();
-  drawChart();
+  const myChart = drawChart();
+  resizeChart.observe(myChart, document.getElementById('analysis-by-calendar'));
 
+  // 监听响应式数据变化
   watchEffect(() => {
     drawChart();
   });
+});
+
+onUnmounted(() => {
+  resizeChart.unobserve();
 });
 </script>

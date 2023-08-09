@@ -2,6 +2,8 @@ import {createApp} from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
+
+// ElementPlus
 import ElementPlus from 'element-plus'
 import zhCn from 'element-plus/dist/locale/zh-cn.mjs'
 import 'element-plus/dist/index.css'

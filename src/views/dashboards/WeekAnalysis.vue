@@ -1,5 +1,5 @@
 <template>
-  <el-row :gutter="20" style="height: 125%;">
+  <el-row :gutter="20" style="height: calc((100vh - 110px) * 1.25);">
     <el-col :span="10">
       <el-row style="height: calc(32% - 10px); margin-bottom: 20px;">
         <AnalysisByDate :start-date="startDate" :end-date="endDate"/>

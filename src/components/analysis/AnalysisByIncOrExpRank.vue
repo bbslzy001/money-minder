@@ -1,12 +1,12 @@
 <template>
   <AnalysisTemplate title-content="收支排行" tip-content="按收支金额从高到低排，取前五个交易">
-    <template #header-tag>
+    <template #analy-card-header-tag>
       <el-radio-group v-model="selectedForIncOrExp">
         <el-radio-button label="收入">收入</el-radio-button>
         <el-radio-button label="支出">支出</el-radio-button>
       </el-radio-group>
     </template>
-    <template #main-content>
+    <template #analy-card-main-content>
       <el-table :data="selectedForIncOrExp == '收入' ? incomeList : expenseList" style="width: 100%" size="default" show-overflow-tooltip>
         <el-table-column prop="txnCpty" label="交易方" width="auto"/>
         <el-table-column prop="txnAmount" label="交易金额" align="right" width="120"/>
@@ -22,9 +22,9 @@
 <script setup lang="ts">
 import {onMounted, ref} from "vue";
 import {ElMessage} from "element-plus";
+import AnalysisTemplate from "@/components/analysis/AnalysisTemplate.vue";
 import {jsonRequest} from "@/utils/request";
 import {RequestCode} from "@/utils/requestCode";
-import AnalysisTemplate from "@/components/analysis/AnalysisTemplate.vue";
 
 interface Props {
   startDate: string;

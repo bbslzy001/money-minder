@@ -1,6 +1,6 @@
 <template>
   <AnalysisTemplate>
-    <template #main-content>
+    <template #analy-card-main-content>
       <el-row style="height: 100%;">
         <el-col :span="8">
           <el-statistic title="交易总数" :value="txnCount" :precision="0" :suffix="'笔'"></el-statistic>
@@ -23,9 +23,9 @@
 <script setup lang="ts">
 import {onMounted, ref} from "vue";
 import {ElMessage} from "element-plus";
+import AnalysisTemplate from "@/components/analysis/AnalysisTemplate.vue";
 import {jsonRequest} from "@/utils/request";
 import {RequestCode} from "@/utils/requestCode";
-import AnalysisTemplate from "@/components/analysis/AnalysisTemplate.vue";
 
 interface Props {
   startDate: string;

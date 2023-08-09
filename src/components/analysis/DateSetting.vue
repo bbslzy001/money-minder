@@ -1,33 +1,36 @@
 <template>
-  <el-card shadow="hover" class="card" body-style="height: calc(100% - 40px); display: flex; flex-direction: column;">
-    <div class="main">
-      <div class="main-content">
-        <el-icon :size="32"><Calendar/></el-icon>
-        <slot name="link"/>
+  <MyCard class="analy-card" style="display: flex; flex-direction: column;">
+    <template #my-card-content>
+      <div class="analy-card-main">
+        <div class="analy-card-main-content">
+          <el-icon :size="32"><Calendar/></el-icon>
+          <slot name="link"/>
+        </div>
+        <div class="analy-card-extra-content" v-if="props.extraContent">{{ props.extraContent }}</div>
       </div>
-      <div class="extra-content" v-if="props.extraContent">{{ props.extraContent }}</div>
-    </div>
-  </el-card>
+    </template>
+  </MyCard>
 </template>
 
 <style scoped>
-.card {
+.analy-card {
   width: 100%;
   height: 100%;
+  padding: 20px;
 }
 
-.main {
+.analy-card-main {
   flex: 1;
 }
 
-.main-content {
+.analy-card-main-content {
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin-bottom: 8px;
 }
 
-.extra-content {
+.analy-card-extra-content {
   display: flex;
   justify-content: flex-end;
   align-items: center;
@@ -37,6 +40,7 @@
 
 <script setup lang="ts">
 import {Calendar} from "@element-plus/icons-vue";
+import MyCard from "@/components/MyCard.vue";
 
 interface Props {
   extraContent?: string;

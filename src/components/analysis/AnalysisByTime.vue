@@ -1,6 +1,6 @@
 <template>
   <AnalysisTemplate title-content="交易时间轴">
-    <template #main-content>
+    <template #analy-card-main-content>
       <div id="analysis-by-time"/>
     </template>
   </AnalysisTemplate>
@@ -14,12 +14,13 @@
 </style>
 
 <script setup lang="ts">
-import {onMounted, ref} from "vue";
+import {onMounted, onUnmounted, ref} from "vue";
 import {ElMessage} from "element-plus";
+import * as echarts from "echarts";
+import AnalysisTemplate from "@/components/analysis/AnalysisTemplate.vue";
 import {jsonRequest} from "@/utils/request";
 import {RequestCode} from "@/utils/requestCode";
-import AnalysisTemplate from "@/components/analysis/AnalysisTemplate.vue";
-import * as echarts from "echarts";
+import resizeChart from "@/utils/resizeChart";
 
 interface Props {
   startDate: string;
@@ -135,11 +136,18 @@ const drawChart = () => {
       myChart.setOption({legend: {selected: params.selected}});
     }
   });
+
+  return myChart;
 }
 
 onMounted(async () => {
   await getIncomeListRequest();
   await getExpenseListRequest();
-  drawChart();
+  const myChart = drawChart();
+  resizeChart.observe(myChart, document.getElementById('analysis-by-time'));
+});
+
+onUnmounted(() => {
+  resizeChart.unobserve();
 });
 </script>

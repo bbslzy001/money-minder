@@ -1,5 +1,5 @@
 <template>
-  <AnalysisTemplate title-content="收支排行" tip-content="按收支金额从高到低排，取前五个交易">
+  <MyChart title-content="收支排行" tip-content="按收支金额从高到低排，取前五个交易">
     <template #analy-card-header-tag>
       <el-radio-group v-model="selectedForIncOrExp">
         <el-radio-button label="收入">收入</el-radio-button>
@@ -12,7 +12,7 @@
         <el-table-column prop="txnAmount" label="交易金额" align="right" width="120"/>
       </el-table>
     </template>
-  </AnalysisTemplate>
+  </MyChart>
 </template>
 
 <style scoped>
@@ -22,7 +22,7 @@
 <script setup lang="ts">
 import {onMounted, ref} from "vue";
 import {ElMessage} from "element-plus";
-import AnalysisTemplate from "@/components/analysis/AnalysisTemplate.vue";
+import MyChart from "@/components/cards/charts/MyChart.vue";
 import {jsonRequest} from "@/utils/request";
 import {RequestCode} from "@/utils/requestCode";
 

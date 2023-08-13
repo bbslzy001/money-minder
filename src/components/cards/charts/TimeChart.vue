@@ -1,9 +1,9 @@
 <template>
-  <AnalysisTemplate title-content="交易时间轴">
+  <MyChart title-content="交易时间轴">
     <template #analy-card-main-content>
       <div id="analysis-by-time"/>
     </template>
-  </AnalysisTemplate>
+  </MyChart>
 </template>
 
 <style scoped>
@@ -17,7 +17,7 @@
 import {onMounted, onUnmounted, ref} from "vue";
 import {ElMessage} from "element-plus";
 import * as echarts from "echarts";
-import AnalysisTemplate from "@/components/analysis/AnalysisTemplate.vue";
+import MyChart from "@/components/cards/charts/MyChart.vue";
 import {jsonRequest} from "@/utils/request";
 import {RequestCode} from "@/utils/requestCode";
 import resizeChart from "@/utils/resizeChart";

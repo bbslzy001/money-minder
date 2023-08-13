@@ -1,89 +1,97 @@
 <template>
-  <el-container direction="vertical" style="height: 100%;">
-    <el-row :gutter="20" style="height: 100%;">
-      <el-col :span="6">
-        <el-card shadow="never" style="height: 100%;">
-          <div class="table-title">
-            <div>
-              <span>交易类型列表 </span>
-              <el-link :icon="QuestionFilled as string" :underline="false" type="primary" @click="openTxnTypeIntro"/>
-            </div>
-          </div>
-          <el-table :data="txnTypeList" size="default" max-height="calc(100vh - 240px)" show-overflow-tooltip>
-            <el-table-column prop="txnTypeName" label="类型名称" width="auto" sortable/>
-            <el-table-column align="right" label="操作" width="180">
-              <template #default="scope">
-                <el-button size="small" type="primary" @click="openUpdateTxnTypeForm(scope.$index, scope.row)" :disabled="scope.row.txnTypeId === 1">编辑</el-button>
-                <el-popconfirm title="是否删除该交易类型" confirm-button-text="删除" @confirm="deleteTxnTypeRequest(scope.$index, scope.row)" cancel-button-text="取消" width="200">
-                  <template #reference>
-                    <el-button size="small" type="danger" :disabled="scope.row.txnTypeId === 1">删除</el-button>
-                  </template>
-                </el-popconfirm>
-              </template>
-            </el-table-column>
-          </el-table>
-          <el-button type="primary" plain style="width: 100%; margin-top: 16px;" @click="openAddTxnTypeForm">添加</el-button>
-        </el-card>
-      </el-col>
-      <el-col :span="18">
-        <el-card shadow="never" style="height: 100%;">
-          <div class="table-title">
-            <div>
-              <span>匹配规则列表 </span>
-              <el-link :icon="QuestionFilled as string" :underline="false" type="primary" @click="openRuleIntro"/>
-            </div>
-            <el-popover :visible="ruleConfigFormVisible" placement="left-start" :width="300" @close="resetRuleConfigForm">
-              <template #reference>
-                <el-button type="primary" text @click="openRuleConfigForm">设置</el-button>
-              </template>
-              <div>
-                <p>是否将下述操作应用于已有数据 ？</p>
-                <div style="display: flex; align-items: center; margin-bottom: 8px;">
-                  <span style="margin-right: 8px;">添加</span>
-                  <el-switch v-model="ruleConfigForm.addRuleApplyTxns" inline-prompt :active-icon="Check as string" :inactive-icon="Close as string"/>
-                </div>
-                <div style="display: flex; align-items: center; margin-bottom: 8px;">
-                  <span style="margin-right: 8px;">删除</span>
-                  <el-switch v-model="ruleConfigForm.deleteRuleApplyTxns" inline-prompt :active-icon="Check as string" :inactive-icon="Close as string"/>
-                </div>
-                <div style="display: flex; align-items: center; margin-bottom: 8px;">
-                  <span style="margin-right: 8px;">更新</span>
-                  <el-switch v-model="ruleConfigForm.updateRuleApplyTxns" inline-prompt :active-icon="Check as string" :inactive-icon="Close as string"/>
+  <MyView>
+    <template #title>
+      <el-icon :size="20"><CollectionTag/></el-icon>
+      <span class="title-text">管理交易类型及匹配规则</span>
+    </template>
+    <template #content>
+      <el-container direction="vertical" style="height: 100%;">
+        <el-row :gutter="20" style="height: 100%;">
+          <el-col :span="6">
+            <el-card shadow="never" style="height: 100%;">
+              <div class="table-title">
+                <div>
+                  <span>交易类型列表 </span>
+                  <el-link :icon="QuestionFilled as string" :underline="false" type="primary" @click="openTxnTypeIntro"/>
                 </div>
               </div>
-              <div style="display: flex; flex-direction: row; justify-content: flex-end;">
-                <el-button @click="closeRuleConfigForm">取消</el-button>
-                <el-button type="primary" @click="submitRuleConfigForm">保存</el-button>
-              </div>
-            </el-popover>
-          </div>
-          <el-table :data="ruleList" size="default" max-height="calc(100vh - 240px)" show-overflow-tooltip>
-            <el-table-column prop="txnTypeId" label="交易类型" width="180" sortable>
-              <template #default="scope">
-                <template v-for="o in txnTypeList" :key="o.txnTypeId">
-                  <span v-if="scope.row.txnTypeId === o.txnTypeId" v-text="o.txnTypeName"/>
-                </template>
-              </template>
-            </el-table-column>
-            <el-table-column prop="originTxnType" label="原类型名称" width="180"/>
-            <el-table-column prop="txnCpty" label="交易方" width="240"/>
-            <el-table-column prop="prodDesc" label="商品描述" width="auto"/>
-            <el-table-column align="right" label="操作" width="180">
-              <template #default="scope">
-                <el-button size="small" type="primary" @click="openUpdateRuleForm(scope.$index, scope.row)">编辑</el-button>
-                <el-popconfirm title="是否删除该匹配规则" confirm-button-text="删除" @confirm="deleteRuleRequest(scope.$index, scope.row)" cancel-button-text="取消" width="200">
-                  <template #reference>
-                    <el-button size="small" type="danger">删除</el-button>
+              <el-table :data="txnTypeList" size="default" max-height="calc(100vh - 240px)" show-overflow-tooltip>
+                <el-table-column prop="txnTypeName" label="类型名称" width="auto" sortable/>
+                <el-table-column align="right" label="操作" width="180">
+                  <template #default="scope">
+                    <el-button size="small" type="primary" @click="openUpdateTxnTypeForm(scope.$index, scope.row)" :disabled="scope.row.txnTypeId === 1">编辑</el-button>
+                    <el-popconfirm title="是否删除该交易类型" confirm-button-text="删除" @confirm="deleteTxnTypeRequest(scope.$index, scope.row)" cancel-button-text="取消" width="200">
+                      <template #reference>
+                        <el-button size="small" type="danger" :disabled="scope.row.txnTypeId === 1">删除</el-button>
+                      </template>
+                    </el-popconfirm>
                   </template>
-                </el-popconfirm>
-              </template>
-            </el-table-column>
-          </el-table>
-          <el-button type="primary" plain style="width: 100%; margin-top: 16px;" @click="openAddRuleForm">添加</el-button>
-        </el-card>
-      </el-col>
-    </el-row>
-  </el-container>
+                </el-table-column>
+              </el-table>
+              <el-button type="primary" plain style="width: 100%; margin-top: 16px;" @click="openAddTxnTypeForm">添加</el-button>
+            </el-card>
+          </el-col>
+          <el-col :span="18">
+            <el-card shadow="never" style="height: 100%;">
+              <div class="table-title">
+                <div>
+                  <span>匹配规则列表 </span>
+                  <el-link :icon="QuestionFilled as string" :underline="false" type="primary" @click="openRuleIntro"/>
+                </div>
+                <el-popover :visible="ruleConfigFormVisible" placement="left-start" :width="300" @close="resetRuleConfigForm">
+                  <template #reference>
+                    <el-button type="primary" text @click="openRuleConfigForm">设置</el-button>
+                  </template>
+                  <div>
+                    <p>是否将下述操作应用于已有数据 ？</p>
+                    <div style="display: flex; align-items: center; margin-bottom: 8px;">
+                      <span style="margin-right: 8px;">添加</span>
+                      <el-switch v-model="ruleConfigForm.addRuleApplyTxns" inline-prompt :active-icon="Check as string" :inactive-icon="Close as string"/>
+                    </div>
+                    <div style="display: flex; align-items: center; margin-bottom: 8px;">
+                      <span style="margin-right: 8px;">删除</span>
+                      <el-switch v-model="ruleConfigForm.deleteRuleApplyTxns" inline-prompt :active-icon="Check as string" :inactive-icon="Close as string"/>
+                    </div>
+                    <div style="display: flex; align-items: center; margin-bottom: 8px;">
+                      <span style="margin-right: 8px;">更新</span>
+                      <el-switch v-model="ruleConfigForm.updateRuleApplyTxns" inline-prompt :active-icon="Check as string" :inactive-icon="Close as string"/>
+                    </div>
+                  </div>
+                  <div style="display: flex; flex-direction: row; justify-content: flex-end;">
+                    <el-button @click="closeRuleConfigForm">取消</el-button>
+                    <el-button type="primary" @click="submitRuleConfigForm">保存</el-button>
+                  </div>
+                </el-popover>
+              </div>
+              <el-table :data="ruleList" size="default" max-height="calc(100vh - 240px)" show-overflow-tooltip>
+                <el-table-column prop="txnTypeId" label="交易类型" width="180" sortable>
+                  <template #default="scope">
+                    <template v-for="o in txnTypeList" :key="o.txnTypeId">
+                      <span v-if="scope.row.txnTypeId === o.txnTypeId" v-text="o.txnTypeName"/>
+                    </template>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="originTxnType" label="原类型名称" width="180"/>
+                <el-table-column prop="txnCpty" label="交易方" width="240"/>
+                <el-table-column prop="prodDesc" label="商品描述" width="auto"/>
+                <el-table-column align="right" label="操作" width="180">
+                  <template #default="scope">
+                    <el-button size="small" type="primary" @click="openUpdateRuleForm(scope.$index, scope.row)">编辑</el-button>
+                    <el-popconfirm title="是否删除该匹配规则" confirm-button-text="删除" @confirm="deleteRuleRequest(scope.$index, scope.row)" cancel-button-text="取消" width="200">
+                      <template #reference>
+                        <el-button size="small" type="danger">删除</el-button>
+                      </template>
+                    </el-popconfirm>
+                  </template>
+                </el-table-column>
+              </el-table>
+              <el-button type="primary" plain style="width: 100%; margin-top: 16px;" @click="openAddRuleForm">添加</el-button>
+            </el-card>
+          </el-col>
+        </el-row>
+      </el-container>
+    </template>
+  </MyView>
 
   <el-drawer v-model="txnTypeIntroVisible" title="交易类型说明" direction="rtl" size="40%" :with-header="false">
     <div v-html="txnTypeIntro"></div>
@@ -173,6 +181,11 @@
 </template>
 
 <style scoped>
+.title-text {
+  margin-left: 8px;
+  font-size: 20px;
+}
+
 .table-title {
   display: flex;
   align-items: center;
@@ -194,10 +207,12 @@
 <script setup lang="ts">
 import {onMounted, reactive, ref} from "vue";
 import {ElMessage, FormInstance, FormRules} from "element-plus";
-import {Check, Close, QuestionFilled} from "@element-plus/icons-vue";
+import {Check, Close, CollectionTag, QuestionFilled} from "@element-plus/icons-vue";
+import MyView from "@/views/MyView.vue";
 import {jsonRequest} from "@/utils/request";
 import {RequestCode} from "@/utils/requestCode";
 import {parseMarkdownFile} from '@/utils/markdownParser';
+
 
 interface TxnType {
   txnTypeId: number;
@@ -347,7 +362,7 @@ const updateRuleFormRules = reactive<FormRules>({
 
 const openTxnTypeIntro = () => {
   if (!txnTypeIntro.value) {
-    const filePath = require('../../assets/txnTypeIntro.md');
+    const filePath = require('../assets/txnTypeIntro.md');
     const markdownText = filePath.default;
     txnTypeIntro.value = parseMarkdownFile(markdownText);
   }
@@ -356,7 +371,7 @@ const openTxnTypeIntro = () => {
 
 const openRuleIntro = () => {
   if (!ruleIntro.value) {
-    const filePath = require('../../assets/ruleIntro.md');
+    const filePath = require('../assets/ruleIntro.md');
     const markdownText = filePath.default;
     ruleIntro.value = parseMarkdownFile(markdownText);
   }

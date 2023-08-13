@@ -2,35 +2,35 @@
   <el-row :gutter="20" style="height: calc((100vh - 110px) * 1.25);">
     <el-col :span="10">
       <el-row style="height: calc(32% - 10px); margin-bottom: 20px;">
-        <AnalysisByDate :start-date="startDate" :end-date="endDate"/>
+        <DateChart :start-date="startDate" :end-date="endDate"/>
       </el-row>
       <el-row style="height: calc(68% - 10px);">
-        <AnalysisByTime :start-date="startDate" :end-date="endDate"/>
+        <TimeChart :start-date="startDate" :end-date="endDate"/>
       </el-row>
     </el-col>
     <el-col :span="14">
       <el-row :gutter="20" style="height: calc(12% - 10px); margin-bottom: 20px;">
         <el-col :span="16">
-          <AnalysisData :start-date="startDate" :end-date="endDate"/>
+          <DataChart :start-date="startDate" :end-date="endDate"/>
         </el-col>
         <el-col :span="8">
-          <DateSetting :extra-content="currentDate[1]">
+          <DateSettingCard :extra-content="currentDate[1]">
             <template #link>
               <el-link type="primary" @click="" style="font-size: 32px;">{{ currentDate[0] }}</el-link>
             </template>
-          </DateSetting>
+          </DateSettingCard>
         </el-col>
       </el-row>
       <el-row :gutter="20" style="height: calc(32% - 10px); margin-bottom: 20px;">
         <el-col :span="14">
-          <AnalysisByCalendar :start-date="startDate" :end-date="endDate"/>
+          <CalendarChart :start-date="startDate" :end-date="endDate"/>
         </el-col>
         <el-col :span="10">
-          <AnalysisByIncOrExpPercent :start-date="startDate" :end-date="endDate"/>
+          <IncOrExpPercentChart :start-date="startDate" :end-date="endDate"/>
         </el-col>
       </el-row>
       <el-row style="height: calc(48% - 10px);">
-        <AnalysisByType :start-date="startDate" :end-date="endDate"/>
+        <TypeChart :start-date="startDate" :end-date="endDate"/>
       </el-row>
     </el-col>
   </el-row>
@@ -41,13 +41,13 @@
 </style>
 
 <script setup lang="ts">
-import AnalysisByIncOrExpPercent from "@/components/analysis/AnalysisByIncOrExpPercent.vue";
-import AnalysisByTime from "@/components/analysis/AnalysisByTime.vue";
-import AnalysisData from "@/components/analysis/AnalysisData.vue";
-import AnalysisByType from "@/components/analysis/AnalysisByType.vue";
-import DateSetting from "@/components/analysis/DateSetting.vue";
-import AnalysisByDate from "@/components/analysis/AnalysisByDate.vue";
-import AnalysisByCalendar from "@/components/analysis/AnalysisByCalendar.vue";
+import DateSettingCard from "@/components/cards/DateSettingCard.vue";
+import CalendarChart from "@/components/cards/charts/CalendarChart.vue";
+import DataChart from "@/components/cards/charts/DataChart.vue";
+import DateChart from "@/components/cards/charts/DateChart.vue";
+import IncOrExpPercentChart from "@/components/cards/charts/IncOrExpPercentChart.vue";
+import TimeChart from "@/components/cards/charts/TimeChart.vue";
+import TypeChart from "@/components/cards/charts/TypeChart.vue";
 
 const startDate = '2023-07-01 00:00:00';
 const endDate = '2023-07-31 23:59:59';

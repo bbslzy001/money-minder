@@ -1,5 +1,5 @@
 <template>
-  <AnalysisTemplate>
+  <MyChart>
     <template #analy-card-main-content>
       <el-row style="height: 100%;">
         <el-col :span="8">
@@ -13,7 +13,7 @@
         </el-col>
       </el-row>
     </template>
-  </AnalysisTemplate>
+  </MyChart>
 </template>
 
 <style scoped>
@@ -23,7 +23,7 @@
 <script setup lang="ts">
 import {onMounted, ref} from "vue";
 import {ElMessage} from "element-plus";
-import AnalysisTemplate from "@/components/analysis/AnalysisTemplate.vue";
+import MyChart from "@/components/cards/charts/MyChart.vue";
 import {jsonRequest} from "@/utils/request";
 import {RequestCode} from "@/utils/requestCode";
 

@@ -1,5 +1,5 @@
 <template>
-  <AnalysisTemplate title-content="收支趋势">
+  <MyChart title-content="收支趋势">
     <template #analy-card-header-tag>
       <el-radio-group v-model="selectedForIncOrExp">
         <el-radio-button label="收入">收入</el-radio-button>
@@ -9,7 +9,7 @@
     <template #analy-card-main-content>
       <div id="analysis-by-date"/>
     </template>
-  </AnalysisTemplate>
+  </MyChart>
 </template>
 
 <style scoped>
@@ -23,7 +23,7 @@
 import {onMounted, onUnmounted, ref, watchEffect} from "vue";
 import {ElMessage} from "element-plus";
 import * as echarts from "echarts";
-import AnalysisTemplate from "@/components/analysis/AnalysisTemplate.vue";
+import MyChart from "@/components/cards/charts/MyChart.vue";
 import {jsonRequest} from "@/utils/request";
 import {RequestCode} from "@/utils/requestCode";
 import resizeChart from "@/utils/resizeChart";

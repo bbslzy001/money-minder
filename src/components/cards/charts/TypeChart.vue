@@ -1,5 +1,5 @@
 <template>
-  <AnalysisTemplate title-content="各类型交易金额" tip-content="按照各交易类型的总金额进行排序">
+  <MyChart title-content="各类型交易金额" tip-content="按照各交易类型的总金额进行排序">
     <template #analy-card-header-tag>
       <el-radio-group v-model="selectedForIncOrExp">
         <el-radio-button label="收入">收入</el-radio-button>
@@ -9,7 +9,7 @@
     <template #analy-card-main-content>
       <div id="analysis-by-type"/>
     </template>
-  </AnalysisTemplate>
+  </MyChart>
 </template>
 
 <style scoped>
@@ -23,7 +23,7 @@
 import {onMounted, onUnmounted, ref, watchEffect} from "vue";
 import {ElMessage} from "element-plus";
 import * as echarts from "echarts";
-import AnalysisTemplate from "@/components/analysis/AnalysisTemplate.vue";
+import MyChart from "@/components/cards/charts/MyChart.vue";
 import {jsonRequest} from "@/utils/request";
 import {RequestCode} from "@/utils/requestCode";
 import resizeChart from "@/utils/resizeChart";

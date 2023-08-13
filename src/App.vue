@@ -10,18 +10,32 @@
             </el-button>
           </div>
         </el-menu-item>
-        <el-divider style="margin: 0;"/>
-        <el-menu-item index="/dashboard" @click="$router.push('/dashboard')">
-          <el-icon :size="24" style="margin-right: 20px;"><Menu/></el-icon>
-          <template #title>分析图表</template>
+        <el-divider style="margin-top: 0;"/>
+        <el-menu-item index="/upload" @click="$router.push('/upload')">
+          <el-icon :size="24" style="margin-right: 20px;"><Upload/></el-icon>
+          <template #title>上传</template>
         </el-menu-item>
-        <el-menu-item index="/table" @click="$router.push('/table')">
-          <el-icon :size="24" style="margin-right: 20px;"><List/></el-icon>
+        <el-divider content-position="left">{{ !isCollapse ? '分析' : '' }}</el-divider>
+        <el-menu-item index="/dashboard" @click="$router.push('/dashboard')">
+          <el-icon :size="24" style="margin-right: 20px;"><PieChart/></el-icon>
+          <template #title>仪表板</template>
+        </el-menu-item>
+        <el-menu-item index="/report" @click="$router.push('/report')">
+          <el-icon :size="24" style="margin-right: 20px;"><DataLine/></el-icon>
+          <template #title>分析报告</template>
+        </el-menu-item>
+        <el-divider content-position="left">{{ !isCollapse ? '管理' : '' }}</el-divider>
+        <el-menu-item index="/txn" @click="$router.push('/txn')">
+          <el-icon :size="24" style="margin-right: 20px;"><Document/></el-icon>
           <template #title>交易明细</template>
         </el-menu-item>
-        <el-menu-item index="/tool" @click="$router.push('/tool')">
-          <el-icon :size="24" style="margin-right: 20px;"><Tools/></el-icon>
-          <template #title>工具</template>
+        <el-menu-item index="/bill" @click="$router.push('/bill')">
+          <el-icon :size="24" style="margin-right: 20px;"><Files/></el-icon>
+          <template #title>账单</template>
+        </el-menu-item>
+        <el-menu-item index="/txn-type-rule" @click="$router.push('/txn-type-rule')">
+          <el-icon :size="24" style="margin-right: 20px;"><CollectionTag/></el-icon>
+          <template #title>匹配规则</template>
         </el-menu-item>
       </el-menu>
       <el-container direction="vertical">
@@ -71,7 +85,7 @@ html, body {
 <script setup lang="ts">
 import {computed, ref} from 'vue';
 import {useRoute} from 'vue-router';
-import {Fold, List, Menu, Tools} from "@element-plus/icons-vue";
+import {CollectionTag, DataLine, Document, Files, Fold, PieChart, Upload} from "@element-plus/icons-vue";
 
 const isCollapse = ref(true);
 
@@ -80,8 +94,11 @@ const route = useRoute();
 const activeView = computed(() => {
   if (route.path === '/') return '/dashboard';
   if (route.path === '/dashboard' || route.path.startsWith('/dashboard/')) return '/dashboard';
-  if (route.path === '/table') return '/table';
-  if (route.path === '/tool' || route.path.startsWith('/tool/')) return '/tool';
+  if (route.path === '/report' || route.path.startsWith('/report/')) return '/report';
+  if (route.path === '/upload' || route.path.startsWith('/upload/')) return '/upload';
+  if (route.path === '/bill') return '/bill';
+  if (route.path === '/txn') return '/txn';
+  if (route.path === '/txn-type-rule') return '/txn-type-rule';
   return '';
 });
 </script>

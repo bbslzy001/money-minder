@@ -1,22 +1,24 @@
-import {createRouter, createWebHistory} from 'vue-router'
+import {createRouter, createWebHistory} from 'vue-router';
+import BillView from "@/views/BillView.vue";
 import DashboardView from "@/views/DashboardView.vue";
-import TableView from "@/views/TableView.vue";
-import ToolView from "@/views/ToolView.vue";
-import UploadWechat from "@/views/tools/UploadWechat.vue";
-import UploadAlipay from "@/views/tools/UploadAlipay.vue";
-import ToolHome from "@/views/tools/ToolHome.vue";
-import DayAnalysis from "@/views/dashboards/DayAnalysis.vue";
-import WeekAnalysis from "@/views/dashboards/WeekAnalysis.vue";
-import YearAnalysis from "@/views/dashboards/YearAnalysis.vue";
-import AllAnalysis from "@/views/dashboards/AllAnalysis.vue";
-import MonthAnalysis from "@/views/dashboards/MonthAnalysis.vue";
-import ManageBill from "@/views/tools/ManageBill.vue";
-import DayReport from "@/views/tools/DayReport.vue";
-import WeekReport from "@/views/tools/WeekReport.vue";
-import MonthReport from "@/views/tools/MonthReport.vue";
-import YearReport from "@/views/tools/YearReport.vue";
-import CustomReport from "@/views/tools/CustomReport.vue";
-import ManageTxnType from "@/views/tools/ManageTxnType.vue";
+import ReportView from "@/views/ReportView.vue";
+import TxnView from "@/views/TxnView.vue";
+import TxnTypeRuleView from "@/views/TxnTypeRuleView.vue";
+import UploadView from "@/views/UploadView.vue";
+import DailyDashboard from "@/views/dashboards/DailyDashboard.vue";
+import WeeklyDashboard from "@/views/dashboards/WeeklyDashboard.vue";
+import MonthlyDashboard from "@/views/dashboards/MonthlyDashboard.vue";
+import YearlyDashboard from "@/views/dashboards/YearlyDashboard.vue";
+import OverallDashboard from "@/views/dashboards/OverallDashboard.vue";
+import ReportHome from "@/views/reports/ReportHome.vue";
+import DailyReport from "@/views/reports/DailyReport.vue";
+import WeeklyReport from "@/views/reports/WeeklyReport.vue";
+import MonthlyReport from "@/views/reports/MonthlyReport.vue";
+import YearlyReport from "@/views/reports/YearlyReport.vue";
+import CustomReport from "@/views/reports/CustomReport.vue";
+import UploadHome from "@/views/uploads/UploadHome.vue";
+import UploadAlipay from "@/views/uploads/UploadAlipay.vue";
+import UploadWechat from "@/views/uploads/UploadWechat.vue";
 
 const routes = [
   {
@@ -24,56 +26,19 @@ const routes = [
     redirect: '/dashboard'
   },
   {
-    path: '/dashboard',
-    name: 'dashboard',
-    component: DashboardView,
+    path: '/upload',
+    name: 'upload',
+    component: UploadView,
     children: [
       {
         path: '',
-        name: 'dashboard-home',
-        redirect: '/dashboard/day-analysis'
+        name: 'to-upload-home',
+        redirect: '/upload/upload-home'
       },
       {
-        path: 'day-analysis',
-        name: 'day-analysis',
-        component: DayAnalysis,
-      },
-      {
-        path: 'week-analysis',
-        name: 'week-analysis',
-        component: WeekAnalysis,
-      },
-      {
-        path: 'month-analysis',
-        name: 'month-analysis',
-        component: MonthAnalysis,
-      },
-      {
-        path: 'year-analysis',
-        name: 'year-analysis',
-        component: YearAnalysis,
-      },
-      {
-        path: 'all-analysis',
-        name: 'all-analysis',
-        component: AllAnalysis,
-      },
-    ],
-  },
-  {
-    path: '/table',
-    name: 'table',
-    component: TableView
-  },
-  {
-    path: '/tool',
-    name: 'tool',
-    component: ToolView,
-    children: [
-      {
-        path: '',
-        name: 'tool-home',
-        component: ToolHome,
+        path: 'upload-home',
+        name: 'upload-home',
+        component: UploadHome,
       },
       {
         path: 'upload-alipay',
@@ -85,42 +50,101 @@ const routes = [
         name: 'upload-wechat',
         component: UploadWechat,
       },
+    ],
+  },
+  {
+    path: '/dashboard',
+    name: 'dashboard',
+    component: DashboardView,
+    children: [
       {
-        path: 'manage-bill',
-        name: 'manage-bill',
-        component: ManageBill,
+        path: '',
+        name: 'dashboard-home',
+        redirect: '/dashboard/daily-dashboard'
       },
       {
-        path: 'generate-day-report',
-        name: 'generate-day-report',
-        component: DayReport,
+        path: 'daily-dashboard',
+        name: 'daily-dashboard',
+        component: DailyDashboard,
       },
       {
-        path: 'generate-week-report',
-        name: 'generate-week-report',
-        component: WeekReport,
+        path: 'weekly-dashboard',
+        name: 'weekly-dashboard',
+        component: WeeklyDashboard,
       },
       {
-        path: 'generate-month-report',
-        name: 'generate-month-report',
-        component: MonthReport,
+        path: 'monthly-dashboard',
+        name: 'monthly-dashboard',
+        component: MonthlyDashboard,
       },
       {
-        path: 'generate-year-report',
-        name: 'generate-year-report',
-        component: YearReport,
+        path: 'yearly-dashboard',
+        name: 'yearly-dashboard',
+        component: YearlyDashboard,
       },
       {
-        path: 'generate-custom-report',
-        name: 'generate-custom-report',
-        component: CustomReport,
-      },
-      {
-        path: 'manage-txn-type',
-        name: 'manage-txn-type',
-        component: ManageTxnType,
+        path: 'overall-dashboard',
+        name: 'overall-dashboard',
+        component: OverallDashboard,
       },
     ],
+  },
+  {
+    path: '/report',
+    name: 'report',
+    component: ReportView,
+    children: [
+      {
+        path: '',
+        name: 'to-report-home',
+        redirect: '/report/report-home'
+      },
+      {
+        path: 'report-home',
+        name: 'report-home',
+        component: ReportHome,
+      },
+      {
+        path: 'daily-report',
+        name: 'daily-report',
+        component: DailyReport,
+      },
+      {
+        path: 'weekly-report',
+        name: 'weekly-report',
+        component: WeeklyReport,
+      },
+      {
+        path: 'monthly-report',
+        name: 'monthly-report',
+        component: MonthlyReport,
+      },
+      {
+        path: 'yearly-report',
+        name: 'yearly-report',
+        component: YearlyReport,
+      },
+      {
+        path: 'custom-report',
+        name: 'custom-report',
+        component: CustomReport,
+      },
+    ],
+  },
+  {
+    path: '/bill',
+    name: 'bill',
+    component: BillView,
+  },
+  {
+    path: '/txn',
+    name: 'txn',
+    component: TxnView,
+  },
+  {
+    path: '/txn-type-rule',
+    name: 'txn-type-rule',
+    component: TxnTypeRuleView,
   },
 ]
 

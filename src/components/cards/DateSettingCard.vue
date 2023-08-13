@@ -40,7 +40,7 @@
 
 <script setup lang="ts">
 import {Calendar} from "@element-plus/icons-vue";
-import MyCard from "@/components/MyCard.vue";
+import MyCard from "@/components/cards/MyCard.vue";
 
 interface Props {
   extraContent?: string;

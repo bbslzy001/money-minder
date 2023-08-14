@@ -1,49 +1,48 @@
 <template>
-  <MyCard class="analy-card" style="display: flex; flex-direction: column;">
-    <template #my-card-content>
-      <div v-if="props.titleContent" class="analy-card-header">
-        <div class="analy-card-header-title">
-          <span>{{ props.titleContent }}</span>
-          <el-tooltip v-if="props.tipContent" placement="bottom-start">
-            <template #content>{{ props.tipContent }}</template>
+  <MyCard class="my-chart-card">
+    <template #content>
+      <div v-if="props.title" class="my-chart-card-header">
+        <div class="my-chart-card-header-title">
+          <span>{{ props.title }}</span>
+          <el-tooltip v-if="props.titleTip" placement="bottom-start">
+            <template #content>{{ props.titleTip }}</template>
             <el-icon :size="14"><InfoFilled/></el-icon>
           </el-tooltip>
         </div>
-        <slot name="analy-card-header-tag"/>
+        <slot name="header-extra"/>
       </div>
-      <div class="analy-card-main">
-        <slot name="analy-card-main-content"/>
+      <div class="my-chart-card-content">
+        <slot name="content"/>
       </div>
     </template>
   </MyCard>
 </template>
 
 <style scoped>
-.analy-card {
-  width: 100%;
-  height: 100%;
+.my-chart-card {
   padding: 20px;
+  display: flex;
+  flex-direction: column;
 }
 
-.analy-card-header {
+.my-chart-card-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin-bottom: 8px;
 }
 
-.analy-card-header-title {
+.my-chart-card-header-title {
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  margin-bottom: 8px;
 }
 
-.analy-card-header-title span {
+.my-chart-card-header-title span {
   margin-right: 4px;
 }
 
-.analy-card-main {
+.my-chart-card-content {
   flex: 1;
 }
 </style>
@@ -53,8 +52,8 @@ import {InfoFilled} from "@element-plus/icons-vue";
 import MyCard from "@/components/cards/MyCard.vue";
 
 interface Props {
-  titleContent?: string;
-  tipContent?: string;
+  title?: string;
+  titleTip?: string;
 }
 
 const props = defineProps<Props>();

@@ -1,12 +1,12 @@
 <template>
-  <MyChart title-content="收支排行" tip-content="按收支金额从高到低排，取前五个交易">
-    <template #analy-card-header-tag>
+  <MyChart title="收支排行" title-tip="按收支金额从高到低排，取前五个交易">
+    <template #header-extra>
       <el-radio-group v-model="selectedForIncOrExp">
         <el-radio-button label="收入">收入</el-radio-button>
         <el-radio-button label="支出">支出</el-radio-button>
       </el-radio-group>
     </template>
-    <template #analy-card-main-content>
+    <template #content>
       <el-table :data="selectedForIncOrExp == '收入' ? incomeList : expenseList" style="width: 100%" size="default" show-overflow-tooltip>
         <el-table-column prop="txnCpty" label="交易方" width="auto"/>
         <el-table-column prop="txnAmount" label="交易金额" align="right" width="120"/>

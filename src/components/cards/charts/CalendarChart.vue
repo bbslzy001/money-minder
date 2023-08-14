@@ -1,12 +1,12 @@
 <template>
-  <MyChart title-content="收支程度">
-    <template #analy-card-header-tag>
+  <MyChart title="收支程度">
+    <template #header-extra>
       <el-radio-group v-model="selectedForIncOrExp">
         <el-radio-button label="收入">收入</el-radio-button>
         <el-radio-button label="支出">支出</el-radio-button>
       </el-radio-group>
     </template>
-    <template #analy-card-main-content>
+    <template #content>
       <div id="analysis-by-calendar"/>
     </template>
   </MyChart>

@@ -1,6 +1,6 @@
 <template>
-  <MyChart title-content="交易时间轴">
-    <template #analy-card-main-content>
+  <MyChart title="交易时间轴">
+    <template #content>
       <div id="analysis-by-time"/>
     </template>
   </MyChart>

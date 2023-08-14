@@ -1,70 +1,75 @@
 <template>
-  <div class="container">
-    <div class="select">
-      <div class="select-title">筛选条件</div>
-      <div class="input">
-        <el-row :gutter="20">
-          <el-col :span="16">
-            <el-row :gutter="20">
-              <el-col :span="6">
-                <el-input v-model="searchForTxnType" clearable size="default" placeholder="交易类型..."/>
-              </el-col>
-              <el-col :span="6">
-                <el-input v-model="searchForTxnCpty" clearable size="default" placeholder="交易方..."/>
-              </el-col>
-              <el-col :span="12">
-                <el-input v-model="searchForProdDesc" clearable size="default" placeholder="商品描述..."/>
-              </el-col>
-            </el-row>
-          </el-col>
-        </el-row>
-      </div>
-      <div class="radio">
-        <el-radio-group v-model="selectedForIncOrExp">
-          <el-radio-button label="全部">全部</el-radio-button>
-          <el-radio-button label="收入">收入</el-radio-button>
-          <el-radio-button label="支出">支出</el-radio-button>
-          <el-radio-button label="不计">不计</el-radio-button>
-        </el-radio-group>
-      </div>
-    </div>
-    <div class="table">
-      <el-table :data="txnListForPagedTable" size="default" show-overflow-tooltip>
-        <el-table-column prop="txnDateTime" label="交易时间" width="180"/>
-        <el-table-column prop="txnTypeId" label="交易类型" width="120">
-          <template #default="scope">
-            <template v-for="o in txnTypeList" :key="o.txnTypeId">
-              <span v-if="scope.row.txnTypeId === 1 && o.txnTypeId === 1" v-text="`${o.txnTypeName}（${scope.row.originTxnType}）`"/>
-              <span v-else-if="scope.row.txnTypeId === o.txnTypeId" v-text="o.txnTypeName"/>
-            </template>
-          </template>
-        </el-table-column>
-        <el-table-column prop="txnCpty" label="交易方" width="240"/>
-        <el-table-column prop="prodDesc" label="商品描述" width="auto"/>
-        <el-table-column prop="incOrExp" label="收入/支出" width="120">
-          <template #default="scope">
-            <el-tag v-if="scope.row.incOrExp === '收入'" type="success">收入</el-tag>
-            <el-tag v-else-if="scope.row.incOrExp === '支出'" type="danger">支出</el-tag>
-            <el-tag v-else-if="scope.row.incOrExp === '不计'" type="info">不计</el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column prop="txnAmount" label="交易金额" width="120"/>
-        <el-table-column prop="payMethod" label="支付方式" width="180"/>
-        <el-table-column prop="txnStatus" label="交易状态" width="120"/>
-        <el-table-column align="right" label="操作" width="180">
-          <template #default="scope">
-            <el-button size="small" type="primary" @click="openUpdateTxnForm(scope.$index, scope.row)">编辑</el-button>
-            <el-popconfirm title="是否删除该交易" confirm-button-text="删除" @confirm="deleteTxnRequest(scope.$index, scope.row)" cancel-button-text="取消" width="200">
-              <template #reference>
-                <el-button size="small" type="danger">删除</el-button>
+  <el-container direction="vertical" style="height: calc(100vh - 110px);">
+    <MyTableCard title="筛选条件">
+      <template #content>
+        <div class="input">
+          <el-row :gutter="20">
+            <el-col :span="16">
+              <el-row :gutter="20">
+                <el-col :span="6">
+                  <el-input v-model="searchForTxnType" clearable size="default" placeholder="交易类型..."/>
+                </el-col>
+                <el-col :span="6">
+                  <el-input v-model="searchForTxnCpty" clearable size="default" placeholder="交易方..."/>
+                </el-col>
+                <el-col :span="12">
+                  <el-input v-model="searchForProdDesc" clearable size="default" placeholder="商品描述..."/>
+                </el-col>
+              </el-row>
+            </el-col>
+          </el-row>
+        </div>
+        <div class="radio">
+          <el-radio-group v-model="selectedForIncOrExp">
+            <el-radio-button label="全部">全部</el-radio-button>
+            <el-radio-button label="收入">收入</el-radio-button>
+            <el-radio-button label="支出">支出</el-radio-button>
+            <el-radio-button label="不计">不计</el-radio-button>
+          </el-radio-group>
+        </div>
+      </template>
+    </MyTableCard>
+    <MyTableCard title="交易列表" style="height: 100%; margin-top: 20px;">
+      <template #content>
+        <div class="table">
+          <el-table :data="txnListForPagedTable" size="default" show-overflow-tooltip>
+            <el-table-column prop="txnDateTime" label="交易时间" width="180"/>
+            <el-table-column prop="txnTypeId" label="交易类型" width="120">
+              <template #default="scope">
+                <template v-for="o in txnTypeList" :key="o.txnTypeId">
+                  <span v-if="scope.row.txnTypeId === 1 && o.txnTypeId === 1" v-text="`${o.txnTypeName}（${scope.row.originTxnType}）`"/>
+                  <span v-else-if="scope.row.txnTypeId === o.txnTypeId" v-text="o.txnTypeName"/>
+                </template>
               </template>
-            </el-popconfirm>
-          </template>
-        </el-table-column>
-      </el-table>
-      <el-pagination background layout="total, prev, pager, next" :total="txnListForTable.length" v-model:current-page="currentPage" :page-size="pageSize"/>
-    </div>
-  </div>
+            </el-table-column>
+            <el-table-column prop="txnCpty" label="交易方" width="240"/>
+            <el-table-column prop="prodDesc" label="商品描述" width="auto"/>
+            <el-table-column prop="incOrExp" label="收入/支出" width="120">
+              <template #default="scope">
+                <el-tag v-if="scope.row.incOrExp === '收入'" type="success">收入</el-tag>
+                <el-tag v-else-if="scope.row.incOrExp === '支出'" type="danger">支出</el-tag>
+                <el-tag v-else-if="scope.row.incOrExp === '不计'" type="info">不计</el-tag>
+              </template>
+            </el-table-column>
+            <el-table-column prop="txnAmount" label="交易金额" width="120"/>
+            <el-table-column prop="payMethod" label="支付方式" width="180"/>
+            <el-table-column prop="txnStatus" label="交易状态" width="120"/>
+            <el-table-column align="right" label="操作" width="180">
+              <template #default="scope">
+                <el-button size="small" type="primary" @click="openUpdateTxnForm(scope.$index, scope.row)">编辑</el-button>
+                <el-popconfirm title="是否删除该交易" confirm-button-text="删除" @confirm="deleteTxnRequest(scope.$index, scope.row)" cancel-button-text="取消" width="200">
+                  <template #reference>
+                    <el-button size="small" type="danger">删除</el-button>
+                  </template>
+                </el-popconfirm>
+              </template>
+            </el-table-column>
+          </el-table>
+          <el-pagination background layout="total, prev, pager, next" :total="txnListForTable.length" v-model:current-page="currentPage" :page-size="pageSize"/>
+        </div>
+      </template>
+    </MyTableCard>
+  </el-container>
 
   <el-dialog v-model="updateTxnFormVisible" title="编辑交易信息" @close="resetUpdateTxnForm">
     <el-form ref="updateTxnFormRef" :model="updateTxnForm" :rules="updateTxnFormRules" label-width="100px" inline>
@@ -140,27 +145,6 @@
 </template>
 
 <style scoped>
-.container {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
-
-.select {
-  display: flex;
-  flex-direction: column;
-  padding: 20px;
-  background-color: #f5f5f5;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06);
-  margin: 5px 0 20px;
-}
-
-.select-title {
-  font-size: 18px;
-  font-weight: bold;
-  margin-bottom: 20px;
-}
-
 .input {
   margin-bottom: 10px;
 }
@@ -200,6 +184,7 @@ import {computed, onMounted, reactive, ref} from "vue";
 import {ElMessage, ElPopconfirm, FormInstance, FormRules} from "element-plus";
 import {jsonRequest} from '@/utils/request';
 import {RequestCode} from '@/utils/requestCode';
+import MyTableCard from "@/components/cards/MyTableCard.vue";
 
 interface Txn {
   txnId: number;

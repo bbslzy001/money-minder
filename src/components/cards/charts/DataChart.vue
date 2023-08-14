@@ -1,6 +1,6 @@
 <template>
   <MyChart>
-    <template #analy-card-main-content>
+    <template #content>
       <el-row style="height: 100%;">
         <el-col :span="8">
           <el-statistic title="交易总数" :value="txnCount" :precision="0" :suffix="'笔'"></el-statistic>

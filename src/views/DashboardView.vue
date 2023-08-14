@@ -6,7 +6,7 @@
     </template>
     <template #extra>
       <MyCard style="display: flex; align-items: center; justify-content: space-evenly; width: 280px; height: 50px;">
-        <template #my-card-content>
+        <template #content>
           <img src="../assets/day.png" alt="day" class="image-button" @click="$router.push('/dashboard/daily-dashboard')" :class="{selected: activeView === 'daily-dashboard'}"/>
           <img src="../assets/week.png" alt="week" class="image-button" @click="$router.push('/dashboard/weekly-dashboard')" :class="{selected: activeView === 'weekly-dashboard'}"/>
           <img src="../assets/month.png" alt="month" class="image-button" @click="$router.push('/dashboard/monthly-dashboard')" :class="{selected: activeView === 'monthly-dashboard'}"/>

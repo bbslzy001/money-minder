@@ -1,5 +1,5 @@
 <template>
-  <el-container direction="vertical" style="height: 100%;">
+  <el-container direction="vertical">
     <MyUpload upload-url="/upload/alipay">
       <template #my-upload-tip>
         <div class="el-upload__tip">

@@ -1,12 +1,12 @@
 <template>
-  <MyChart title-content="各类型交易金额" tip-content="按照各交易类型的总金额进行排序">
-    <template #analy-card-header-tag>
+  <MyChart title="各类型交易金额" title-tip="按照各交易类型的总金额进行排序">
+    <template #header-extra>
       <el-radio-group v-model="selectedForIncOrExp">
         <el-radio-button label="收入">收入</el-radio-button>
         <el-radio-button label="支出">支出</el-radio-button>
       </el-radio-group>
     </template>
-    <template #analy-card-main-content>
+    <template #content>
       <div id="analysis-by-type"/>
     </template>
   </MyChart>

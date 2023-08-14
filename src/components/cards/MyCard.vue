@@ -1,6 +1,6 @@
 <template>
   <div class="my-card">
-    <slot name="my-card-content"/>
+    <slot name="content"/>
   </div>
 </template>
 
@@ -9,9 +9,9 @@
   width: 100%;
   height: 100%;
   background-color: #ffffff;
-  border-radius: 10px;
-  box-shadow: 0 3px 3px 0 rgba(0, 0, 0, 0.1); /* 阴影效果 */
-  backdrop-filter: blur(3px); /* 毛玻璃效果 */
+  border-radius: 8px;
+  box-shadow: 0 2px 1px -1px rgba(0, 0, 0, .2), 0 1px 1px 0 rgba(0, 0, 0, .14), 0 1px 3px 0 rgba(0, 0, 0, .12);
+  box-sizing: border-box;
 }
 </style>
 

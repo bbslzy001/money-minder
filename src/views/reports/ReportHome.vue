@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <el-container direction="vertical" style="height: calc(100vh - 110px);  padding: calc((100vh - 110px) / 10);">
     <el-row :gutter="60" style="height: calc(50% - 30px); margin-bottom: 60px">
       <el-col :span="6">
         <MyImageCard title="日分析报告" action-text="生成“日”分析报告" action-path="/report/daily-report"
@@ -29,14 +29,11 @@
                      :image-style="{ backgroundImage: `url(${require('@/assets/report.png')})` }"/>
       </el-col>
     </el-row>
-  </div>
+  </el-container>
 </template>
 
 <style scoped>
-.container {
-  height: calc(100vh - 110px);
-  padding: calc((100vh - 110px) / 10);
-}
+
 </style>
 
 <script setup lang="ts">

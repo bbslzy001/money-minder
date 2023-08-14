@@ -1,6 +1,6 @@
 <template>
-  <MyChart title-content="收支占比">
-    <template #analy-card-main-content>
+  <MyChart title="收支占比">
+    <template #content>
       <div id="analysis-by-inc-or-exp-percent"/>
     </template>
   </MyChart>

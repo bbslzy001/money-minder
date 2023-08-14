@@ -1,5 +1,5 @@
 <template>
-  <el-container direction="vertical" style="height: 100%;">
+  <el-container direction="vertical" style="height: calc(100vh - 110px);">
     dayreport
   </el-container>
 </template>

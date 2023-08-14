@@ -1,39 +1,41 @@
 <template>
-  <el-row :gutter="20" style="height: calc((100vh - 110px) * 1.25);">
-    <el-col :span="10">
-      <el-row style="height: calc(32% - 10px); margin-bottom: 20px;">
-        <DateChart :start-date="startDate" :end-date="endDate"/>
-      </el-row>
-      <el-row style="height: calc(68% - 10px);">
-        <TimeChart :start-date="startDate" :end-date="endDate"/>
-      </el-row>
-    </el-col>
-    <el-col :span="14">
-      <el-row :gutter="20" style="height: calc(12% - 10px); margin-bottom: 20px;">
-        <el-col :span="16">
-          <DataChart :start-date="startDate" :end-date="endDate"/>
-        </el-col>
-        <el-col :span="8">
-          <DateSettingCard :extra-content="currentDate[1]">
-            <template #link>
-              <el-link type="primary" @click="" style="font-size: 32px;">{{ currentDate[0] }}</el-link>
-            </template>
-          </DateSettingCard>
-        </el-col>
-      </el-row>
-      <el-row :gutter="20" style="height: calc(32% - 10px); margin-bottom: 20px;">
-        <el-col :span="14">
-          <CalendarChart :start-date="startDate" :end-date="endDate"/>
-        </el-col>
-        <el-col :span="10">
-          <IncOrExpPercentChart :start-date="startDate" :end-date="endDate"/>
-        </el-col>
-      </el-row>
-      <el-row style="height: calc(48% - 10px);">
-        <TypeChart :start-date="startDate" :end-date="endDate"/>
-      </el-row>
-    </el-col>
-  </el-row>
+  <el-container direction="vertical" style="height: calc((100vh - 110px) * 1.25);">
+    <el-row :gutter="20" style="height: 100%;">
+      <el-col :span="10">
+        <el-row style="height: calc(32% - 10px); margin-bottom: 20px;">
+          <DateChart :start-date="startDate" :end-date="endDate"/>
+        </el-row>
+        <el-row style="height: calc(68% - 10px);">
+          <TimeChart :start-date="startDate" :end-date="endDate"/>
+        </el-row>
+      </el-col>
+      <el-col :span="14">
+        <el-row :gutter="20" style="height: calc(12% - 10px); margin-bottom: 20px;">
+          <el-col :span="16">
+            <DataChart :start-date="startDate" :end-date="endDate"/>
+          </el-col>
+          <el-col :span="8">
+            <DateSettingCard :extra="currentDate[1]">
+              <template #link>
+                <el-link type="primary" @click="" style="font-size: 32px;">{{ currentDate[0] }}</el-link>
+              </template>
+            </DateSettingCard>
+          </el-col>
+        </el-row>
+        <el-row :gutter="20" style="height: calc(32% - 10px); margin-bottom: 20px;">
+          <el-col :span="14">
+            <CalendarChart :start-date="startDate" :end-date="endDate"/>
+          </el-col>
+          <el-col :span="10">
+            <IncOrExpPercentChart :start-date="startDate" :end-date="endDate"/>
+          </el-col>
+        </el-row>
+        <el-row style="height: calc(48% - 10px);">
+          <TypeChart :start-date="startDate" :end-date="endDate"/>
+        </el-row>
+      </el-col>
+    </el-row>
+  </el-container>
 </template>
 
 <style scoped>

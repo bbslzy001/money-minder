@@ -51,7 +51,7 @@
   display: flex;
   align-items: center;
   font-size: 20px;
-  justify-content: start;
+  justify-content: flex-start;
   padding: 8px 16px;
   background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.5) 100%);
   color: #ffffff;
@@ -63,7 +63,7 @@
   padding: 8px 16px;
   display: flex;
   align-items: center;
-  justify-content: end;
+  justify-content: flex-end;
 }
 </style>
 

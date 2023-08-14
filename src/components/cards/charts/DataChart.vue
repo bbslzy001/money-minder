@@ -1,19 +1,32 @@
 <template>
-  <MyChart>
-    <template #content>
-      <el-row style="height: 100%;">
-        <el-col :span="8">
-          <el-statistic title="交易总数" :value="txnCount" :precision="0" :suffix="'笔'"></el-statistic>
-        </el-col>
-        <el-col :span="8">
-          <el-statistic title="总收入" :value="incomeAmount" :precision="2" :suffix="'元'"></el-statistic>
-        </el-col>
-        <el-col :span="8">
-          <el-statistic title="总支出" :value="expenseAmount" :precision="2" :suffix="'元'"></el-statistic>
-        </el-col>
-      </el-row>
-    </template>
-  </MyChart>
+  <el-container direction="vertical" style="height: 100%;">
+    <el-row :gutter="20" style="height: 100%;">
+      <el-col :span="8">
+        <MyStatisticCard title="交易总数" footer-title="相较昨日" :footer-value="20"
+                         :image-style="{ backgroundImage: `url(${require('@/assets/statistics-default.png')})` }">
+          <template #content>
+            <el-statistic :value="txnCount" :precision="0" :suffix="'笔'"/>
+          </template>
+        </MyStatisticCard>
+      </el-col>
+      <el-col :span="8">
+        <MyStatisticCard color="green" title="总收入" footer-title="相较昨日" :footer-value="20"
+                         :image-style="{ backgroundImage: `url(${require('@/assets/statistics-green.png')})` }">
+          <template #content>
+            <el-statistic :value="incomeAmount" :precision="2" :suffix="'元'"/>
+          </template>
+        </MyStatisticCard>
+      </el-col>
+      <el-col :span="8">
+        <MyStatisticCard color="red" title="总支出" footer-title="相较昨日" :footer-value="-20"
+                         :image-style="{ backgroundImage: `url(${require('@/assets/statistics-red.png')})` }">
+          <template #content>
+            <el-statistic :value="expenseAmount" :precision="2" :suffix="'元'"/>
+          </template>
+        </MyStatisticCard>
+      </el-col>
+    </el-row>
+  </el-container>
 </template>
 
 <style scoped>
@@ -23,7 +36,7 @@
 <script setup lang="ts">
 import {onMounted, ref} from "vue";
 import {ElMessage} from "element-plus";
-import MyChart from "@/components/cards/charts/MyChart.vue";
+import MyStatisticCard from "@/components/cards/MyStatisticCard.vue";
 import {jsonRequest} from "@/utils/request";
 import {RequestCode} from "@/utils/requestCode";
 

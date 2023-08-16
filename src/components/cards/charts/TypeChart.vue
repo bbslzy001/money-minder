@@ -7,13 +7,13 @@
       </el-radio-group>
     </template>
     <template #content>
-      <div id="analysis-by-type"/>
+      <div id="type-chart"/>
     </template>
   </MyChart>
 </template>
 
 <style scoped>
-#analysis-by-type {
+#type-chart {
   width: 100%;
   height: 100%;
 }
@@ -89,7 +89,7 @@ const getExpenseListRequest = async () => {
 }
 
 const drawChart = () => {
-  const myChart = echarts.init(document.getElementById('analysis-by-type'));
+  const myChart = echarts.init(document.getElementById('type-chart'));
   const option = {
     tooltip: {
       trigger: 'axis',
@@ -98,7 +98,7 @@ const drawChart = () => {
       },
       confine: true,
       formatter: (params: any) => {
-        return params[0].name + ': ' + params[0].data.toFixed(2) + '元';
+        return params[0].name + ': ' + params[0].data + '元';
       },
     },
     grid: {
@@ -155,7 +155,7 @@ onMounted(async () => {
   await getIncomeListRequest();
   await getExpenseListRequest();
   const myChart = drawChart();
-  resizeChart.observe(myChart, document.getElementById('analysis-by-type'));
+  resizeChart.observe(myChart, document.getElementById('type-chart'));
 
   // 监听响应式数据变化
   watchEffect(() => {

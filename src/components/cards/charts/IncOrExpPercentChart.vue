@@ -1,13 +1,13 @@
 <template>
   <MyChart title="收支占比">
     <template #content>
-      <div id="analysis-by-inc-or-exp-percent"/>
+      <div id="inc-or-exp-percent-chart"/>
     </template>
   </MyChart>
 </template>
 
 <style scoped>
-#analysis-by-inc-or-exp-percent {
+#inc-or-exp-percent-chart {
   width: 100%;
   height: 100%;
 }
@@ -34,7 +34,7 @@ const expenseAmount = ref();
 
 const getIncomeRequest = async () => {
   try {
-    const response = await jsonRequest.post('/analysis/amount', {
+    const response = await jsonRequest.post('/analysis/amount/1', {
       startDate: props.startDate,
       endDate: props.endDate,
       incOrExp: '收入',
@@ -51,7 +51,7 @@ const getIncomeRequest = async () => {
 
 const getExpenseRequest = async () => {
   try {
-    const response = await jsonRequest.post('/analysis/amount', {
+    const response = await jsonRequest.post('/analysis/amount/1', {
       startDate: props.startDate,
       endDate: props.endDate,
       incOrExp: '支出',
@@ -67,13 +67,13 @@ const getExpenseRequest = async () => {
 };
 
 const drawChart = () => {
-  const myChart = echarts.init(document.getElementById('analysis-by-inc-or-exp-percent'));
+  const myChart = echarts.init(document.getElementById('inc-or-exp-percent-chart'));
   const option = {
     tooltip: {
       trigger: 'item',
       confine: true,
       formatter: (params: any) => {
-        return params.name + ': ' + params.value.toFixed(2) + '元 (' + params.percent.toFixed(2) + '%)';
+        return params.name + ': ' + params.value + '元 (' + params.percent + '%)';
       },
     },
     grid: {
@@ -110,7 +110,7 @@ onMounted(async () => {
   await getIncomeRequest();
   await getExpenseRequest();
   const myChart = drawChart();
-  resizeChart.observe(myChart, document.getElementById('analysis-by-inc-or-exp-percent'));
+  resizeChart.observe(myChart, document.getElementById('inc-or-exp-percent-chart'));
 });
 
 onUnmounted(() => {

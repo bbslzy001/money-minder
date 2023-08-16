@@ -1,13 +1,13 @@
 <template>
   <MyChart title="交易时间轴">
     <template #content>
-      <div id="analysis-by-time"/>
+      <div id="time-chart"/>
     </template>
   </MyChart>
 </template>
 
 <style scoped>
-#analysis-by-time {
+#time-chart {
   width: 100%;
   height: 100%;
 }
@@ -67,7 +67,7 @@ const getExpenseListRequest = async () => {
 }
 
 const drawChart = () => {
-  const myChart = echarts.init(document.getElementById('analysis-by-time'));
+  const myChart = echarts.init(document.getElementById('time-chart'));
   const option = {
     tooltip: {
       trigger: 'axis',
@@ -144,7 +144,7 @@ onMounted(async () => {
   await getIncomeListRequest();
   await getExpenseListRequest();
   const myChart = drawChart();
-  resizeChart.observe(myChart, document.getElementById('analysis-by-time'));
+  resizeChart.observe(myChart, document.getElementById('time-chart'));
 });
 
 onUnmounted(() => {

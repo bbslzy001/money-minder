@@ -2,26 +2,26 @@
   <el-container direction="vertical" style="height: 100%;">
     <el-row :gutter="20" style="height: 100%;">
       <el-col :span="8">
-        <MyStatisticCard title="交易总数" footer-title="相较昨日" :footer-value="20"
+        <MyStatisticCard :title="titles[1]" :footer-title="titles[0]" :footer-value="getPercent(txnCount.lastValue, txnCount.currentValue)"
                          :image-style="{ backgroundImage: `url(${require('@/assets/statistics-default.png')})` }">
           <template #content>
-            <el-statistic :value="txnCount" :precision="0" :suffix="'笔'"/>
+            <el-statistic :value="txnCount.currentValue" :precision="0" :suffix="'笔'"/>
           </template>
         </MyStatisticCard>
       </el-col>
       <el-col :span="8">
-        <MyStatisticCard color="green" title="总收入" footer-title="相较昨日" :footer-value="20"
+        <MyStatisticCard color="green" :title="titles[2]" :footer-title="titles[0]" :footer-value="getPercent(incomeAmount.lastValue, incomeAmount.currentValue)"
                          :image-style="{ backgroundImage: `url(${require('@/assets/statistics-green.png')})` }">
           <template #content>
-            <el-statistic :value="incomeAmount" :precision="2" :suffix="'元'"/>
+            <el-statistic :value="incomeAmount.currentValue" :precision="2" :suffix="'元'"/>
           </template>
         </MyStatisticCard>
       </el-col>
       <el-col :span="8">
-        <MyStatisticCard color="red" title="总支出" footer-title="相较昨日" :footer-value="-20"
+        <MyStatisticCard color="red" :title="titles[3]" :footer-title="titles[0]" :footer-value="getPercent(expenseAmount.lastValue, expenseAmount.currentValue)"
                          :image-style="{ backgroundImage: `url(${require('@/assets/statistics-red.png')})` }">
           <template #content>
-            <el-statistic :value="expenseAmount" :precision="2" :suffix="'元'"/>
+            <el-statistic :value="expenseAmount.currentValue" :precision="2" :suffix="'元'"/>
           </template>
         </MyStatisticCard>
       </el-col>
@@ -34,26 +34,36 @@
 </style>
 
 <script setup lang="ts">
-import {onMounted, ref} from "vue";
+import {computed, onMounted, ref} from "vue";
 import {ElMessage} from "element-plus";
 import MyStatisticCard from "@/components/cards/MyStatisticCard.vue";
 import {jsonRequest} from "@/utils/request";
 import {RequestCode} from "@/utils/requestCode";
 
 interface Props {
-  startDate: string;
-  endDate: string;
+  startDate: string[];
+  endDate: string[];
+  dateRange: string;
 }
 
 const props = defineProps<Props>();
 
-const txnCount = ref();
-const incomeAmount = ref();
-const expenseAmount = ref();
+const txnCount = ref({
+  lastValue: 0,
+  currentValue: 0,
+});
+const incomeAmount = ref({
+  lastValue: 0,
+  currentValue: 0,
+});
+const expenseAmount = ref({
+  lastValue: 0,
+  currentValue: 0,
+});
 
 const getCountRequest = async () => {
   try {
-    const response = await jsonRequest.post('/analysis/count', {
+    const response = await jsonRequest.post('/analysis/count/2', {
       startDate: props.startDate,
       endDate: props.endDate,
     });
@@ -69,7 +79,7 @@ const getCountRequest = async () => {
 
 const getIncomeRequest = async () => {
   try {
-    const response = await jsonRequest.post('/analysis/amount', {
+    const response = await jsonRequest.post('/analysis/amount/2', {
       startDate: props.startDate,
       endDate: props.endDate,
       incOrExp: '收入',
@@ -86,7 +96,7 @@ const getIncomeRequest = async () => {
 
 const getExpenseRequest = async () => {
   try {
-    const response = await jsonRequest.post('/analysis/amount', {
+    const response = await jsonRequest.post('/analysis/amount/2', {
       startDate: props.startDate,
       endDate: props.endDate,
       incOrExp: '支出',
@@ -99,6 +109,28 @@ const getExpenseRequest = async () => {
     console.error(error);
     ElMessage.error('获取失败');
   }
+};
+
+const titles = computed(() => {
+  switch (props.dateRange) {
+    case 'day':
+      return ['相较昨日','本日交易数','本日收入','本日支出'];
+    case 'week':
+      return ['相较上周','本周交易数','本周收入','本周支出'];
+    case 'month':
+      return ['相较上月','本月交易数','本月收入','本月支出'];
+    case 'year':
+      return ['相较去年','本年交易数','本年收入','本年支出'];
+    default:
+      return ['','总交易数','总收入','总支出'];
+  }
+});
+
+const getPercent = (lastValue: number, currentValue: number) => {
+  if (lastValue === 0) {
+    return 0;
+  }
+  return parseFloat(((currentValue - lastValue) / lastValue * 100).toFixed(2));
 };
 
 onMounted(() => {

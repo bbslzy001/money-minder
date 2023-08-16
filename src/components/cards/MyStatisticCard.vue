@@ -6,7 +6,7 @@
           <span>{{ props.title }}</span>
         </div>
         <slot name="content"/>
-        <div class="my-statistics-card-footer">
+        <div v-if="props.footerTitle !== ''" class="my-statistics-card-footer">
           <span>{{ props.footerTitle }}</span>
           <span v-if="props.footerValue !== 0" class="my-statistics-card-footer-extra" :style="`color: ${colorStyle.textColor};`">
             <span>{{ props.footerValue }}%</span>
@@ -47,7 +47,7 @@
 .my-statistics-card-footer-extra {
   background-color: white;
   padding: 4px;
-  margin-left: 4px;
+  margin-left: 8px;
   border-radius: 4px;
 }
 </style>

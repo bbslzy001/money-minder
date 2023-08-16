@@ -7,13 +7,13 @@
       </el-radio-group>
     </template>
     <template #content>
-      <div id="analysis-by-calendar"/>
+      <div id="calendar-chart"/>
     </template>
   </MyChart>
 </template>
 
 <style scoped>
-#analysis-by-calendar {
+#calendar-chart {
   width: 100%;
   height: 100%;
 }
@@ -42,7 +42,7 @@ const selectedForIncOrExp = ref('收入');
 
 const getIncomeListRequest = async () => {
   try {
-    const response = await jsonRequest.post('/analysis/amount-by-calendar', {
+    const response = await jsonRequest.post('/analysis/amount-by-date', {
       startDate: props.startDate,
       endDate: props.endDate,
       incOrExp: '收入',
@@ -59,7 +59,7 @@ const getIncomeListRequest = async () => {
 
 const getExpenseListRequest = async () => {
   try {
-    const response = await jsonRequest.post('/analysis/amount-by-calendar', {
+    const response = await jsonRequest.post('/analysis/amount-by-date', {
       startDate: props.startDate,
       endDate: props.endDate,
       incOrExp: '支出',
@@ -75,14 +75,14 @@ const getExpenseListRequest = async () => {
 }
 
 const drawChart = () => {
-  const myChart = echarts.init(document.getElementById('analysis-by-calendar'));
+  const myChart = echarts.init(document.getElementById('calendar-chart'));
   const option = {
     tooltip: {
       position: 'top',
       confine: true,
       formatter: (params: any) => {
         console.log(params);
-        return `${params.marker}${params.data[1].toFixed(2)}元<br/>${params.data[0]}`;
+        return `${params.marker}${params.data[1]}元<br/>${params.data[0]}`;
       },
     },
     visualMap: [
@@ -131,7 +131,7 @@ onMounted(async () => {
   await getIncomeListRequest();
   await getExpenseListRequest();
   const myChart = drawChart();
-  resizeChart.observe(myChart, document.getElementById('analysis-by-calendar'));
+  resizeChart.observe(myChart, document.getElementById('calendar-chart'));
 
   // 监听响应式数据变化
   watchEffect(() => {

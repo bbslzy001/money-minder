@@ -82,8 +82,9 @@ const drawChart = () => {
   const myChart = echarts.init(document.getElementById('date-chart'));
   const option = {
     tooltip: {
-      trigger: 'axis',
+      backgroundColor: 'rgb(252,252,252)',
       confine: true,
+      trigger: 'axis',
       formatter: (params: any) => {
         return params[0].name + ': ' + params[0].data + '元';
       },

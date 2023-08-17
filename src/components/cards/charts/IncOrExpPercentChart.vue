@@ -70,8 +70,9 @@ const drawChart = () => {
   const myChart = echarts.init(document.getElementById('inc-or-exp-percent-chart'));
   const option = {
     tooltip: {
-      trigger: 'item',
+      backgroundColor: 'rgb(252,252,252)',
       confine: true,
+      trigger: 'item',
       formatter: (params: any) => {
         return params.name + ': ' + params.value + '元 (' + params.percent + '%)';
       },
@@ -92,6 +93,17 @@ const drawChart = () => {
           {value: incomeAmount.value, name: '收入'},
           {value: expenseAmount.value, name: '支出'},
         ],
+        itemStyle: {
+          normal: {
+            color: (colors: { dataIndex: number; }) => {
+              const colorList = [
+                'rgba(0, 204, 102)',
+                'rgba(255, 106, 106)',
+              ];
+              return colorList[colors.dataIndex];
+            }
+          },
+        },
         emphasis: {
           itemStyle: {
             shadowBlur: 10,

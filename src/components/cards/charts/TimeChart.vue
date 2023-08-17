@@ -70,15 +70,18 @@ const drawChart = () => {
   const myChart = echarts.init(document.getElementById('time-chart'));
   const option = {
     tooltip: {
+      backgroundColor: 'rgb(252,252,252)',
+      confine: true,
       trigger: 'axis',
       axisPointer: {
         type: 'shadow',
       },
-      confine: true,
       formatter: (params: any) => {
-        return params[0].name + '<br/>' +
-            params[0].seriesName + ': ' + Math.abs(params[0].value) + '笔<br/>' +
-            params[1].seriesName + ': ' + Math.abs(params[1].value) + '笔<br/>';
+        let str = params[0].name + '<br/>';
+        params.forEach((item: any) => {
+          str += item.seriesName + ': ' + Math.abs(item.value) + '笔<br/>';
+        });
+        return str;
       },
     },
     legend: {
@@ -115,14 +118,32 @@ const drawChart = () => {
         type: 'bar',
         stack: '总量',
         data: expenseList.value.map((item: any) => -item.txnCount),
-        barMaxWidth: '60',
+        barMaxWidth: 60,
+        itemStyle: {
+          color: 'rgba(255, 106, 106, 0.5)',
+          borderColor: 'rgb(255, 106, 106)',
+          borderWidth: 2,
+          borderRadius: 5,
+        },
+        emphasis: {
+          focus: 'series',
+        },
       },
       {
         name: '收入',
         type: 'bar',
         stack: '总量',
         data: incomeList.value.map((item: any) => item.txnCount),
-        barMaxWidth: '60',
+        barMaxWidth: 60,
+        itemStyle: {
+          color: 'rgba(0, 204, 102, 0.5)',
+          borderColor: 'rgb(0, 204, 102)',
+          borderWidth: 2,
+          borderRadius: 5,
+        },
+        emphasis: {
+          focus: 'series',
+        },
       },
     ],
   };

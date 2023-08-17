@@ -78,8 +78,10 @@ const drawChart = () => {
   const myChart = echarts.init(document.getElementById('calendar-chart'));
   const option = {
     tooltip: {
-      position: 'top',
+      backgroundColor: 'rgb(252,252,252)',
       confine: true,
+      trigger: 'item',
+      position: 'top',
       formatter: (params: any) => {
         console.log(params);
         return `${params.marker}${params.data[1]}元<br/>${params.data[0]}`;

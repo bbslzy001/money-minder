@@ -92,11 +92,12 @@ const drawChart = () => {
   const myChart = echarts.init(document.getElementById('type-chart'));
   const option = {
     tooltip: {
+      backgroundColor: 'rgb(252,252,252)',
+      confine: true,
       trigger: 'axis',
       axisPointer: {
         type: 'shadow',
       },
-      confine: true,
       formatter: (params: any) => {
         return params[0].name + ': ' + params[0].data + '元';
       },
@@ -132,16 +133,12 @@ const drawChart = () => {
       {
         type: 'bar',
         data: selectedForIncOrExp.value === '收入' ? incomeList.value.map((item: any) => item.txnAmount) : expenseList.value.map((item: any) => item.txnAmount),
-        barMaxWidth: '60',
+        barMaxWidth: 60,
         itemStyle: {
-          color: new echarts.graphic.LinearGradient(
-              0, 0, 1, 0,
-              [
-                {offset: 0, color: '#83bff6'},
-                {offset: 0.5, color: '#188df0'},
-                {offset: 1, color: '#188df0'},
-              ],
-          ),
+          color: 'rgba(0, 153, 255, 0.5)',
+          borderColor: 'rgb(0, 153, 255)',
+          borderWidth: 2,
+          borderRadius: 5,
         },
       },
     ],

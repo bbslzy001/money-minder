@@ -21,7 +21,7 @@
   width: 100%;
   height: 100vh;
   overflow-y: scroll;
-  background: linear-gradient(to bottom, rgba(250, 250, 250, 1) 0%, rgba(210, 220, 230, 1) 100%);
+  background: #f9fafb;
 }
 
 .my-view-header {
@@ -31,7 +31,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background-color: rgb(250, 250, 250);
+  background-color: #f9fafb;
 }
 
 .my-view-header-title {

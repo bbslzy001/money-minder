@@ -1,57 +1,54 @@
 <template>
   <div class="sidebar">
     <div class="sidebar-main" :class="{ collapsed: isCollapsed, expanded: !isCollapsed }">
-      <div class="sidebar-top sidebar-container">
-        <div class="logo">
-          <img src="../assets/logo.png" alt="Logo" @click="handleCollapse"/>
-          <span class="logo-name"></span>
-        </div>
-        <i class="sidebar-button collapse-button" @click="handleCollapse">
-          <svg viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
-            <path :d="collapsedIconPath"/>
-          </svg>
-        </i>
-      </div>
-      <div class="sidebar-divider" style="padding-bottom: 16px; height: 17px;"/>
-      <div class="sidebar-nav sidebar-container">
-        <div v-for="(navButtonGroup, groupIndex) in navButtonGroups" :key="groupIndex">
-          <div class="sidebar-divider" v-if="navButtonGroup.label && navButtonGroup.label !== ''" style="padding: 24px 0; height: 49px;">
-            <span class="sidebar-divider-text">{{ navButtonGroup.label }}</span>
+      <div class="sidebar-content">
+        <div class="sidebar-top sidebar-container">
+          <div class="sidebar-logo">
+            <img src="../assets/logo.png" alt="Logo" @click="handleCollapse"/>
+            <span>Money Minder</span>
           </div>
-          <div class="nav-button-group">
+        </div>
+        <div class="sidebar-divider" style="padding-bottom: 8px; height: 9px;"/>
+        <div class="sidebar-nav sidebar-container">
+          <div v-for="(navButtonGroup, groupIndex) in navButtonGroups" :key="groupIndex">
+            <div class="sidebar-divider" v-if="navButtonGroup.label && navButtonGroup.label !== ''" style="padding: 24px 0; height: 49px;">
+              <span class="sidebar-divider-text">{{ navButtonGroup.label }}</span>
+            </div>
+            <div class="sidebar-button-group">
+              <i
+                  v-for="(navButton, buttonIndex) in navButtonGroup.buttons"
+                  :key="buttonIndex"
+                  class="sidebar-button"
+                  :class="{ selected: activeView === navButton.url }"
+                  @click="handleNavButton(navButton)"
+                  :data-tooltip="navButton.label">
+                <svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+                  <path v-for="(pathData, index) in navButton.svgPath" :key="index" :d="pathData"/>
+                </svg>
+                <span>{{ navButton.label }}</span>
+              </i>
+            </div>
+          </div>
+        </div>
+        <div class="sidebar-divider" style="padding-top: 8px; height: 9px;"/>
+        <div class="sidebar-bottom sidebar-container">
+          <div class="sidebar-button-group">
             <i
-                v-for="(navButton, buttonIndex) in navButtonGroup.buttons"
+                v-for="(extraButton, buttonIndex) in extraButtonGroup.buttons"
                 :key="buttonIndex"
-                class="sidebar-button nav-button"
-                :class="{ selected: activeView === navButton.url }"
-                @click="handleNavButton(navButton)"
-                :data-tooltip="navButton.label">
+                class="sidebar-button"
+                :data-tooltip="extraButton.label"
+                @click="handleExtraButton(extraButton)">
               <svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
-                <path v-for="(pathData, index) in navButton.svgPath" :key="index" :d="pathData"/>
+                <path v-for="(pathData, index) in extraButton.svgPath" :key="index" :d="pathData"/>
               </svg>
-              <span>{{ navButton.label }}</span>
+              <span>{{ extraButton.label }}</span>
             </i>
           </div>
         </div>
       </div>
-      <div class="sidebar-divider" style="padding-top: 16px; height: 17px;"/>
-      <div class="sidebar-bottom sidebar-container">
-        <div class="nav-button-group">
-          <i
-              v-for="(extraButton, buttonIndex) in extraButtonGroup.buttons"
-              :key="buttonIndex"
-              class="sidebar-button nav-button"
-              :data-tooltip="extraButton.label"
-              @click="handleExtraButton(extraButton)">
-            <svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
-              <path v-for="(pathData, index) in extraButton.svgPath" :key="index" :d="pathData"/>
-            </svg>
-            <span>{{ extraButton.label }}</span>
-          </i>
-        </div>
-      </div>
     </div>
-    <div class="sidebar-border"/>
+    <!--  <div class="sidebar-border"/>-->
   </div>
 </template>
 
@@ -63,29 +60,59 @@
 }
 
 .sidebar-main {
+  position: relative;
+  width: 260px;
+  background-image: url("../assets/sidebar-bg.jpg");
+  background-size: cover;
+  background-position: 50%;
+  transition: width 0.5s;
+}
+
+.sidebar-main::after, .sidebar-main::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;  /* 确保伪元素在背景之上 */
+  pointer-events: none;  /* 禁用伪元素的点击事件 */
+}
+
+.sidebar-main::before {
+  opacity: .33;
+  background: #000;
+}
+
+.sidebar-main::after {
+  opacity: .77;
+  background: linear-gradient(180deg,#9368e9 0,rgba(148,59,234,.7));
+  background-size: 150% 150%;
+}
+
+.sidebar-content {
+  position: relative;
+  z-index: 2;  /* 确保内容在父盒子的伪元素之上 */
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  width: 200px;
-  background-color: #f9fafb;
-  color: #000000;
-  transition: width 0.5s;
+  height: 100%;
 }
 
 .sidebar-border {
   width: 1px;
-  background-color: #b0b0b0;
+  background-color: rgba(176, 176 ,176 , 0.5);
 }
 
 .sidebar-container {
-  padding: 8px;
+  padding: 16px;
 }
 
 .sidebar-top {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 60px;
+  height: 80px;
 }
 
 .sidebar-nav {
@@ -106,84 +133,60 @@
   content: '';
   flex-grow: 1;
   height: 1px;
-  background-color: #b0b0b0;
+  background-color: rgba(176, 176 ,176 , 0.5);
 }
 
-.sidebar-divider-text {
+.sidebar-main .sidebar-divider span {
   padding: 0 24px;
-  font-size: 14px;
   font-style: italic;
   line-height: 49px;
+  transition: opacity 0.25s, width 0.5s, padding 0.5s; /* 添加过渡效果 */
+  opacity: 1; /* 默认完全不透明 */
+}
+
+.sidebar-main.collapsed .sidebar-divider span {
+  padding: 0; /* 在折叠时隐藏文字 */
+  width: 0; /* 在折叠时隐藏文字 */
+  opacity: 0; /* 在折叠时淡出文字 */
+}
+
+/* =============== 侧边栏文字 =============== */
+.sidebar-main span {
+  color: #ffffff;
+  font-style: normal;
+  font-size: 14px;
+  white-space: nowrap;
 }
 
 /* =============== 侧边栏按钮 =============== */
 .sidebar-button {
   cursor: pointer;
-  height: 44px;
-  padding: 8px 10px;
+  height: 48px;
+  padding: 12px;
   border-radius: 8px;
   transition: background-color 0.5s;
-}
-
-.sidebar-button:hover {
-  background-color: rgba(128, 128, 128, 0.15);
-}
-
-.sidebar-button:active {
-  background-color: rgba(128, 128, 128, 0.3);
-}
-
-.sidebar-button svg {
-  fill: #000000;
-  width: 24px;
-  height: 24px;
-}
-
-.sidebar-button span {
-  font-size: 14px;
-  font-style: normal;
-}
-
-/* =============== sidebar-top（logo相关） =============== */
-.logo {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-}
-
-.logo img {
-  cursor: pointer;
-  width: 44px;
-  height: 44px;
-  margin-right: 8px;
-}
-
-.logo-name {
-  font-size: 16px;
-  font-weight: bold;
-}
-
-/* =============== 按钮扩展 =============== */
-.collapse-button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 44px;
-}
-
-.nav-button {
+  overflow: hidden;
   position: relative;
   display: flex;
   align-items: center;
   justify-content: flex-start;
 }
 
-.nav-button.selected {
-  border-radius: 8px;
-  box-shadow: 2px 2px 1px -1px rgba(0, 0, 0, .2), 0 1px 1px 0 rgba(0, 0, 0, .14), 0 1px 3px 0 rgba(0, 0, 0, .12);
+.sidebar-button:hover {
+  background-color: hsla(0, 0%, 100%, .08);
 }
 
-.nav-button::before {
+.sidebar-button:active {
+  background-color: hsla(0, 0%, 100%, .23);
+}
+
+.sidebar-button.selected {
+  border-radius: 8px;
+  box-shadow: 2px 2px 1px -1px rgba(0, 0, 0, .2), 0 1px 1px 0 rgba(0, 0, 0, .14), 0 1px 3px 0 rgba(0, 0, 0, .12);
+  background-color: hsla(0, 0%, 100%, .08);
+}
+
+.sidebar-button::before {
   content: attr(data-tooltip);
   position: absolute;
   top: 50%;
@@ -191,6 +194,7 @@
   transform: translateY(-50%);
   background-color: rgba(0, 0, 0, 0.7);
   color: white;
+  margin-left: 16px;
   padding: 8px 16px;
   border-radius: 4px;
   font-size: 12px;
@@ -202,33 +206,64 @@
   height: auto;
 }
 
-.nav-button.selected svg {
-  fill: rgb(22, 123, 223);
+.sidebar-button svg {
+  fill: #ffffff;
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
 }
 
-.nav-button-group > *:not(:last-child) {
+.sidebar-main .sidebar-button span {
+  margin-left: 16px;
+  opacity: 1;
+  transition: opacity 1s;
+}
+
+.sidebar-button-group > *:not(:last-child) {
   margin-bottom: 8px;
+}
+
+/* =============== sidebar-top（logo相关） =============== */
+.sidebar-logo {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  overflow: hidden;
+}
+
+.sidebar-logo img {
+  cursor: pointer;
+  width: 48px;
+  height: 48px;
+}
+
+.sidebar-main .sidebar-logo span {
+  margin-left: 16px;
+  font-size: 20px;
+  font-weight: bold;
+  opacity: 1;
+  transition: opacity 1s;
 }
 
 /* =============== 侧边栏（展开折叠） =============== */
 .sidebar-main.collapsed {
-  width: 60px;
+  width: 80px;
 }
 
-.sidebar-main.collapsed span {
-  display: none;
+.sidebar-main.collapsed .sidebar-button:hover {
+  overflow: visible;
 }
 
-.sidebar-main.collapsed .collapse-button {
-  display: none;
-}
-
-.sidebar-main.collapsed .nav-button:hover::before {
+.sidebar-main.collapsed .sidebar-button:hover::before {
   display: block;
 }
 
-.sidebar-main.expanded .nav-button svg {
-  margin-right: 16px;
+.sidebar-main.collapsed .sidebar-button span {
+  opacity: 0;
+}
+
+.sidebar-main.collapsed .sidebar-logo span {
+  opacity: 0;
 }
 </style>
 

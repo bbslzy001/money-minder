@@ -51,7 +51,6 @@ const getIncomeListRequest = async () => {
     });
     if (response.status === RequestCode.SUCCESS) {
       incomeList.value = preprocessData(response.data.result);
-      console.log('incomeList',incomeList.value);
       ElMessage.success(response.data.message);
     }
   } catch (error) {
@@ -69,7 +68,6 @@ const getExpenseListRequest = async () => {
     });
     if (response.status === RequestCode.SUCCESS) {
       expenseList.value = preprocessData(response.data.result);
-      console.log('expenseList',expenseList.value);
       ElMessage.success(response.data.message);
     }
   } catch (error) {

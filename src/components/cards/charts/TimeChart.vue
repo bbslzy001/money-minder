@@ -79,7 +79,8 @@ const drawChart = () => {
       formatter: (params: any) => {
         let str = params[0].name + '<br/>';
         params.forEach((item: any) => {
-          str += item.seriesName + ': ' + Math.abs(item.value) + '笔<br/>';
+          let value = item.value ? item.value : 0;
+          str += item.seriesName + ': ' + Math.abs(value) + '笔<br/>';
         });
         return str;
       },
@@ -117,7 +118,7 @@ const drawChart = () => {
         name: '支出',
         type: 'bar',
         stack: '总量',
-        data: expenseList.value.map((item: any) => -item.txnCount),
+        data: expenseList.value.map((item: any) => item.txnCount !== 0 ? -item.txnCount : null),
         barMaxWidth: 60,
         itemStyle: {
           color: 'rgba(255, 106, 106, 0.5)',
@@ -133,7 +134,7 @@ const drawChart = () => {
         name: '收入',
         type: 'bar',
         stack: '总量',
-        data: incomeList.value.map((item: any) => item.txnCount),
+        data: incomeList.value.map((item: any) => item.txnCount !== 0 ? item.txnCount : null),
         barMaxWidth: 60,
         itemStyle: {
           color: 'rgba(0, 204, 102, 0.5)',

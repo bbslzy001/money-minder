@@ -1,11 +1,11 @@
 <template>
   <MyView>
     <template #title>
-      <el-icon :size="20"><PieChart/></el-icon>
+      <el-icon :size="24"><PieChart/></el-icon>
       <span class="title-text">仪表板</span>
     </template>
     <template #extra>
-      <MyCard style="display: flex; align-items: center; justify-content: space-evenly; width: 280px; height: 50px;">
+      <MyCard style="display: flex; align-items: center; justify-content: space-evenly; width: 340px; height: 48px;">
         <template #content>
           <img src="../assets/day.png" alt="day" class="image-button" @click="$router.push('/dashboard/daily-dashboard')" :class="{selected: activeView === 'daily-dashboard'}"/>
           <img src="../assets/week.png" alt="week" class="image-button" @click="$router.push('/dashboard/weekly-dashboard')" :class="{selected: activeView === 'weekly-dashboard'}"/>
@@ -23,25 +23,29 @@
 
 <style scoped>
 .title-text {
-  margin-left: 8px;
-  font-size: 20px;
+  margin-left: 16px;
+  font-size: 24px;
 }
 
 .image-button {
-  width: 32px;
-  height: 32px;
+  cursor: pointer;
+  width: 52px;
+  height: 40px;
+  padding: 0 8px 2px;
   filter: grayscale(100%);
   transition: filter 0.3s, transform 0.3s;
 }
 
 .image-button:hover {
   filter: grayscale(0%);
+  background-color: hsla(0, 0%, 100%, .08);
 }
 
 .image-button.selected {
+  border-radius: 8px;
   filter: grayscale(0%);
-  transform: scale(1.1);
-  box-shadow: 3px 3px rgb(22, 123, 223, 0.5);
+  border: 2px solid #409EFF;
+  background-color: hsla(0, 0%, 100%, .08);
 }
 </style>
 

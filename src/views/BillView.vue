@@ -1,11 +1,11 @@
 <template>
   <MyView>
     <template #title>
-      <el-icon :size="20"><Files/></el-icon>
+      <el-icon :size="24"><Files/></el-icon>
       <span class="title-text">管理账单</span>
     </template>
     <template #content>
-      <el-container direction="vertical" style="height: calc(100vh - 110px);">
+      <el-container direction="vertical" style="height: calc(100vh - 128px);">
         <MyTableCard title="账单列表">
           <template #header-extra>
             <el-radio-group v-model="selectedForBillType">
@@ -15,27 +15,29 @@
             </el-radio-group>
           </template>
           <template #content>
-            <el-table :data="billListForTable" size="default" table-layout="auto" max-height="calc(100vh - 210px)" show-overflow-tooltip>
-              <el-table-column prop="billName" label="账单名称" sortable min-width="180"/>
-              <el-table-column prop="startDate" label="起始日期" sortable/>
-              <el-table-column prop="endDate" label="截止日期" sortable/>
-              <el-table-column prop="billType" label="账单类型">
-                <template #default="scope">
-                  <el-tag v-if="scope.row.billType === 'alipay'">支付宝</el-tag>
-                  <el-tag v-else-if="scope.row.billType === 'wechat'" type="success">微信</el-tag>
-                </template>
-              </el-table-column>
-              <el-table-column align="right" label="操作">
-                <template #default="scope">
-                  <el-button size="small" type="primary" @click="openUpdateBillForm(scope.$index, scope.row)">编辑</el-button>
-                  <el-popconfirm title="是否删除该账单" confirm-button-text="删除" @confirm="deleteBillRequest(scope.$index, scope.row)" cancel-button-text="取消" width="200">
-                    <template #reference>
-                      <el-button size="small" type="danger">删除</el-button>
-                    </template>
-                  </el-popconfirm>
-                </template>
-              </el-table-column>
-            </el-table>
+            <MyTable :table-data="billListForTable">
+              <template #table-content>
+                <el-table-column prop="billName" label="账单名称" sortable min-width="180"/>
+                <el-table-column prop="startDate" label="起始日期" sortable/>
+                <el-table-column prop="endDate" label="截止日期" sortable/>
+                <el-table-column prop="billType" label="账单类型">
+                  <template #default="scope">
+                    <el-tag v-if="scope.row.billType === 'alipay'">支付宝</el-tag>
+                    <el-tag v-else-if="scope.row.billType === 'wechat'" type="success">微信</el-tag>
+                  </template>
+                </el-table-column>
+                <el-table-column align="right" label="操作">
+                  <template #default="scope">
+                    <el-button size="small" type="primary" @click="openUpdateBillForm(scope.$index, scope.row)">编辑</el-button>
+                    <el-popconfirm title="是否删除该账单" confirm-button-text="删除" @confirm="deleteBillRequest(scope.$index, scope.row)" cancel-button-text="取消" width="200">
+                      <template #reference>
+                        <el-button size="small" type="danger">删除</el-button>
+                      </template>
+                    </el-popconfirm>
+                  </template>
+                </el-table-column>
+              </template>
+            </MyTable>
           </template>
         </MyTableCard>
       </el-container>
@@ -71,8 +73,8 @@
 
 <style scoped>
 .title-text {
-  margin-left: 8px;
-  font-size: 20px;
+  margin-left: 16px;
+  font-size: 24px;
 }
 
 .el-dialog .el-form {
@@ -94,6 +96,7 @@ import {ElMessage, ElPopconfirm, FormInstance, FormRules} from "element-plus";
 import {Files} from "@element-plus/icons-vue";
 import MyView from "@/views/MyView.vue";
 import MyTableCard from "@/components/cards/MyTableCard.vue";
+import MyTable from "@/components/MyTable.vue";
 import {jsonRequest} from "@/utils/request";
 import {RequestCode} from "@/utils/requestCode";
 
@@ -202,6 +205,7 @@ const billListForTable = computed(() => {
     return [];
   }
 });
+
 onMounted(() => {
   getBillRequest();
 });

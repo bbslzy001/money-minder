@@ -5,7 +5,7 @@
         <div class="my-statistics-card-header">
           <span>{{ props.title }}</span>
         </div>
-        <slot name="content"/>
+        <div class="my-statistics-card-content">{{ formatValue(props.value, props.precision, props.prefix, props.suffix) }}</div>
         <div v-if="props.footerTitle !== ''" class="my-statistics-card-footer">
           <span>{{ props.footerTitle }}</span>
           <span v-if="props.footerValue !== 0" class="my-statistics-card-footer-extra" :style="`color: ${colorStyle.textColor};`">
@@ -32,15 +32,20 @@
 }
 
 .my-statistics-card-header {
-  font-size: 12px;
+  font-size: 14px;
   color: var(--el-text-color-regular);
+}
+
+.my-statistics-card-content {
+  font-size: 24px;
+  color: #000000;
 }
 
 .my-statistics-card-footer {
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  font-size: 12px;
+  font-size: 14px;
   color: var(--el-text-color-regular);
 }
 
@@ -60,12 +65,26 @@ import MyChart from "@/components/cards/charts/MyChart.vue";
 interface Props {
   color?: string;
   title: string;
+  value: number;
+  precision?: number;
+  prefix?: string;
+  suffix?: string;
   footerTitle: string;
   footerValue: number;
   imageStyle: object;
 }
 
 const props = defineProps<Props>();
+
+const formatValue = (
+    value: number,
+    precision: number = 0,
+    prefix: string = '',
+    suffix: string = ''
+) => {
+  const formattedValue = value.toFixed(precision).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  return `${prefix}${formattedValue}${suffix}`;
+};
 
 const colorStyle = computed(() => {
   let backgroundColor;

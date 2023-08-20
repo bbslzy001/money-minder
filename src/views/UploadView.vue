@@ -1,7 +1,7 @@
 <template>
   <MyView>
     <template #title>
-      <el-icon :size="20"><Upload/></el-icon>
+      <el-icon :size="24"><Upload/></el-icon>
       <span class="title-text">上传</span>
     </template>
     <template #content>
@@ -12,8 +12,8 @@
 
 <style scoped>
 .title-text {
-  margin-left: 8px;
-  font-size: 20px;
+  margin-left: 16px;
+  font-size: 24px;
 }
 </style>
 

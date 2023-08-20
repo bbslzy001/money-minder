@@ -1,5 +1,5 @@
 <template>
-  <el-container direction="vertical" style="height: calc((100vh - 110px) * 1.25);">
+  <el-container direction="vertical" style="height: calc((100vh - 128px) * 1.25);">
     <el-row :gutter="20" style="height: 100%;">
       <el-col :span="10">
         <el-row style="height: calc(32% - 10px); margin-bottom: 20px;">

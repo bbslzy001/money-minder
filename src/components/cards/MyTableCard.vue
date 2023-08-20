@@ -17,8 +17,8 @@
 
 <style scoped>
 .my-table-card {
-  height: auto;
-  padding: 20px;
+  height: 100%;
+  padding: 24px;
   display: flex;
   flex-direction: column;
 }
@@ -45,6 +45,7 @@
 
 .my-table-card-content {
   flex: 1;
+  overflow: auto;
 }
 </style>
 

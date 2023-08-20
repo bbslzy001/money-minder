@@ -21,17 +21,17 @@
   width: 100%;
   height: 100vh;
   overflow-y: scroll;
-  background: #f9fafb;
+  background-color: rgb(239, 243, 244);
 }
 
 .my-view-header {
   width: 100%;
-  height: 70px;
-  padding: 10px 20px 0;
+  height: 80px;
+  padding: 16px 24px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background-color: #f9fafb;
+  background-color: rgb(239, 243, 244);
 }
 
 .my-view-header-title {
@@ -42,6 +42,8 @@
 
 .my-view-content {
   width: 100%;
+  height: auto;
+  padding: 24px;
 }
 </style>
 

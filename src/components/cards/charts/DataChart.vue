@@ -3,26 +3,20 @@
     <el-row :gutter="20" style="height: 100%;">
       <el-col :span="8">
         <MyStatisticCard :title="titles[1]" :footer-title="titles[0]" :footer-value="getPercent(txnCount.lastValue, txnCount.currentValue)"
+                         :value="txnCount.currentValue" :precision="0" :suffix="'笔'"
                          :image-style="{ backgroundImage: `url(${require('@/assets/statistics-default.png')})` }">
-          <template #content>
-            <el-statistic :value="txnCount.currentValue" :precision="0" :suffix="'笔'"/>
-          </template>
         </MyStatisticCard>
       </el-col>
       <el-col :span="8">
         <MyStatisticCard color="green" :title="titles[2]" :footer-title="titles[0]" :footer-value="getPercent(incomeAmount.lastValue, incomeAmount.currentValue)"
+                         :value="incomeAmount.currentValue" :precision="2" :suffix="'元'"
                          :image-style="{ backgroundImage: `url(${require('@/assets/statistics-green.png')})` }">
-          <template #content>
-            <el-statistic :value="incomeAmount.currentValue" :precision="2" :suffix="'元'"/>
-          </template>
         </MyStatisticCard>
       </el-col>
       <el-col :span="8">
         <MyStatisticCard color="red" :title="titles[3]" :footer-title="titles[0]" :footer-value="getPercent(expenseAmount.lastValue, expenseAmount.currentValue)"
+                         :value="expenseAmount.currentValue" :precision="2" :suffix="'元'"
                          :image-style="{ backgroundImage: `url(${require('@/assets/statistics-red.png')})` }">
-          <template #content>
-            <el-statistic :value="expenseAmount.currentValue" :precision="2" :suffix="'元'"/>
-          </template>
         </MyStatisticCard>
       </el-col>
     </el-row>
@@ -114,15 +108,15 @@ const getExpenseRequest = async () => {
 const titles = computed(() => {
   switch (props.dateRange) {
     case 'day':
-      return ['相较昨日','本日交易数','本日收入','本日支出'];
+      return ['相较昨日', '本日交易数', '本日收入', '本日支出'];
     case 'week':
-      return ['相较上周','本周交易数','本周收入','本周支出'];
+      return ['相较上周', '本周交易数', '本周收入', '本周支出'];
     case 'month':
-      return ['相较上月','本月交易数','本月收入','本月支出'];
+      return ['相较上月', '本月交易数', '本月收入', '本月支出'];
     case 'year':
-      return ['相较去年','本年交易数','本年收入','本年支出'];
+      return ['相较去年', '本年交易数', '本年收入', '本年支出'];
     default:
-      return ['','总交易数','总收入','总支出'];
+      return ['', '总交易数', '总收入', '总支出'];
   }
 });
 

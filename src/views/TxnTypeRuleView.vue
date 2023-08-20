@@ -1,29 +1,33 @@
 <template>
   <MyView>
     <template #title>
-      <el-icon :size="20"><CollectionTag/></el-icon>
+      <el-icon :size="24"><CollectionTag/></el-icon>
       <span class="title-text">管理交易类型及匹配规则</span>
     </template>
     <template #content>
-      <el-container direction="vertical" style="height: calc(100vh - 110px);">
-        <el-row :gutter="20" style="height: 100%;">
+      <el-container direction="vertical" style="height: calc(100vh - 128px);">
+        <el-row :gutter="24" style="height: 100%;">
           <el-col :span="6">
             <MyTableCard title="交易类型列表" :show-title-tip="true" :tip-handle="openTxnTypeIntro">
               <template #content>
-                <el-table :data="txnTypeList" size="default" max-height="calc(100vh - 240px)" show-overflow-tooltip>
-                  <el-table-column prop="txnTypeName" label="类型名称" width="auto" sortable/>
-                  <el-table-column align="right" label="操作" width="180">
-                    <template #default="scope">
-                      <el-button size="small" type="primary" @click="openUpdateTxnTypeForm(scope.$index, scope.row)" :disabled="scope.row.txnTypeId === 1">编辑</el-button>
-                      <el-popconfirm title="是否删除该交易类型" confirm-button-text="删除" @confirm="deleteTxnTypeRequest(scope.$index, scope.row)" cancel-button-text="取消" width="200">
-                        <template #reference>
-                          <el-button size="small" type="danger" :disabled="scope.row.txnTypeId === 1">删除</el-button>
-                        </template>
-                      </el-popconfirm>
-                    </template>
-                  </el-table-column>
-                </el-table>
-                <el-button type="primary" plain style="width: 100%; margin-top: 16px;" @click="openAddTxnTypeForm">添加</el-button>
+                <MyTable :table-data="txnTypeList" :bottom-space="48">
+                  <template #table-content>
+                    <el-table-column prop="txnTypeName" label="类型名称" width="auto" sortable/>
+                    <el-table-column align="right" label="操作" width="180">
+                      <template #default="scope">
+                        <el-button size="small" type="primary" @click="openUpdateTxnTypeForm(scope.$index, scope.row)" :disabled="scope.row.txnTypeId === 1">编辑</el-button>
+                        <el-popconfirm title="是否删除该交易类型" confirm-button-text="删除" @confirm="deleteTxnTypeRequest(scope.$index, scope.row)" cancel-button-text="取消" width="200">
+                          <template #reference>
+                            <el-button size="small" type="danger" :disabled="scope.row.txnTypeId === 1">删除</el-button>
+                          </template>
+                        </el-popconfirm>
+                      </template>
+                    </el-table-column>
+                  </template>
+                  <template #table-extra-content>
+                    <el-button type="primary" plain style="width: 100%; margin-top: 16px;" @click="openAddTxnTypeForm">添加</el-button>
+                  </template>
+                </MyTable>
               </template>
             </MyTableCard>
           </el-col>
@@ -56,29 +60,33 @@
                 </el-popover>
               </template>
               <template #content>
-                <el-table :data="ruleList" size="default" max-height="calc(100vh - 240px)" show-overflow-tooltip>
-                  <el-table-column prop="txnTypeId" label="交易类型" width="180" sortable>
-                    <template #default="scope">
-                      <template v-for="o in txnTypeList" :key="o.txnTypeId">
-                        <span v-if="scope.row.txnTypeId === o.txnTypeId" v-text="o.txnTypeName"/>
-                      </template>
-                    </template>
-                  </el-table-column>
-                  <el-table-column prop="originTxnType" label="原类型名称" width="180"/>
-                  <el-table-column prop="txnCpty" label="交易方" width="240"/>
-                  <el-table-column prop="prodDesc" label="商品描述" width="auto"/>
-                  <el-table-column align="right" label="操作" width="180">
-                    <template #default="scope">
-                      <el-button size="small" type="primary" @click="openUpdateRuleForm(scope.$index, scope.row)">编辑</el-button>
-                      <el-popconfirm title="是否删除该匹配规则" confirm-button-text="删除" @confirm="deleteRuleRequest(scope.$index, scope.row)" cancel-button-text="取消" width="200">
-                        <template #reference>
-                          <el-button size="small" type="danger">删除</el-button>
+                <MyTable :table-data="ruleList" :bottom-space="48">
+                  <template #table-content>
+                    <el-table-column prop="txnTypeId" label="交易类型" width="180" sortable>
+                      <template #default="scope">
+                        <template v-for="o in txnTypeList" :key="o.txnTypeId">
+                          <span v-if="scope.row.txnTypeId === o.txnTypeId" v-text="o.txnTypeName"/>
                         </template>
-                      </el-popconfirm>
-                    </template>
-                  </el-table-column>
-                </el-table>
-                <el-button type="primary" plain style="width: 100%; margin-top: 16px;" @click="openAddRuleForm">添加</el-button>
+                      </template>
+                    </el-table-column>
+                    <el-table-column prop="originTxnType" label="原类型名称" width="180"/>
+                    <el-table-column prop="txnCpty" label="交易方" width="240"/>
+                    <el-table-column prop="prodDesc" label="商品描述" width="auto"/>
+                    <el-table-column align="right" label="操作" width="180">
+                      <template #default="scope">
+                        <el-button size="small" type="primary" @click="openUpdateRuleForm(scope.$index, scope.row)">编辑</el-button>
+                        <el-popconfirm title="是否删除该匹配规则" confirm-button-text="删除" @confirm="deleteRuleRequest(scope.$index, scope.row)" cancel-button-text="取消" width="200">
+                          <template #reference>
+                            <el-button size="small" type="danger">删除</el-button>
+                          </template>
+                        </el-popconfirm>
+                      </template>
+                    </el-table-column>
+                  </template>
+                  <template #table-extra-content>
+                    <el-button type="primary" plain style="width: 100%; margin-top: 16px;" @click="openAddRuleForm">添加</el-button>
+                  </template>
+                </MyTable>
               </template>
             </MyTableCard>
           </el-col>
@@ -176,8 +184,8 @@
 
 <style scoped>
 .title-text {
-  margin-left: 8px;
-  font-size: 20px;
+  margin-left: 16px;
+  font-size: 24px;
 }
 
 .el-dialog .el-input {
@@ -195,6 +203,7 @@ import {ElMessage, FormInstance, FormRules} from "element-plus";
 import {Check, Close, CollectionTag} from "@element-plus/icons-vue";
 import MyView from "@/views/MyView.vue";
 import MyTableCard from "@/components/cards/MyTableCard.vue";
+import MyTable from "@/components/MyTable.vue";
 import {jsonRequest} from "@/utils/request";
 import {RequestCode} from "@/utils/requestCode";
 import {parseMarkdownFile} from '@/utils/markdownParser';

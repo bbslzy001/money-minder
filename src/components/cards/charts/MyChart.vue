@@ -20,7 +20,7 @@
 
 <style scoped>
 .my-chart-card {
-  padding: 20px;
+  padding: 24px;
   display: flex;
   flex-direction: column;
 }

@@ -20,7 +20,7 @@
 </style>
 
 <script setup lang="ts">
-import {onMounted, ref} from "vue";
+import {onMounted, ref, watch} from "vue";
 import {ElMessage} from "element-plus";
 import MyChart from "@/components/cards/charts/MyChart.vue";
 import {jsonRequest} from "@/utils/request";
@@ -71,6 +71,11 @@ const getExpenseListRequest = async () => {
     ElMessage.error('获取失败');
   }
 };
+
+watch(props, () => {
+  getIncomeListRequest();
+  getExpenseListRequest();
+});
 
 onMounted(() => {
   getIncomeListRequest();

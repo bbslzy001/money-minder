@@ -5,11 +5,7 @@
         <DataChart :start-date="dateRange.startDate" :end-date="dateRange.endDate" date-range="day"/>
       </el-col>
       <el-col :span="6" style="height: 160px;">
-        <DateSettingCard :extra="dateRange.currentDate[1]">
-          <template #link>
-            <el-link type="primary" @click="" style="font-size: 32px;">{{ dateRange.currentDate[0] }}</el-link>
-          </template>
-        </DateSettingCard>
+        <DateSettingCard :date="dateRange.currentDate[1]" :date-extra="dateRange.currentDate[2]" :date-value="dateRange.currentDate[0]" date-type="day" @handle-date-change="updateDate"/>
       </el-col>
     </el-row>
     <el-row :gutter="24">
@@ -40,6 +36,7 @@
 </style>
 
 <script setup lang="ts">
+import {computed, ref} from "vue";
 import DateSettingCard from "@/components/cards/DateSettingCard.vue";
 import DataChart from "@/components/cards/charts/DataChart.vue";
 import IncOrExpPercentChart from "@/components/cards/charts/IncOrExpPercentChart.vue";
@@ -48,5 +45,12 @@ import TimeChart from "@/components/cards/charts/TimeChart.vue";
 import TypeChart from "@/components/cards/charts/TypeChart.vue";
 import {getDateRange} from "@/utils/getDateRange";
 
-const dateRange = getDateRange('day');
+const currentDate = ref((new Date()).toLocaleDateString());
+const dateRange = computed(() => {
+  return getDateRange('day', currentDate.value);
+});
+
+const updateDate = (newDate: string) => {
+  currentDate.value = newDate;
+};
 </script>

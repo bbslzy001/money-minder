@@ -1,20 +1,26 @@
 <template>
   <MyChart title="收支程度">
+    <template #header-extra>
+      <el-radio-group v-model="selectedForIncOrExp">
+        <el-radio-button label="收入">收入</el-radio-button>
+        <el-radio-button label="支出">支出</el-radio-button>
+      </el-radio-group>
+    </template>
     <template #content>
-      <div id="calendar-chart"/>
+      <div id="year-calendar-chart"/>
     </template>
   </MyChart>
 </template>
 
 <style scoped>
-#calendar-chart {
+#year-calendar-chart {
   width: 100%;
   height: 100%;
 }
 </style>
 
 <script setup lang="ts">
-import {onMounted, onUnmounted, ref, watchEffect} from "vue";
+import {onMounted, onUnmounted, ref, watch, watchEffect} from "vue";
 import {ElMessage} from "element-plus";
 import * as echarts from "echarts";
 import MyChart from "@/components/cards/charts/MyChart.vue";
@@ -31,6 +37,8 @@ const props = defineProps<Props>();
 
 const incomeList = ref([]);
 const expenseList = ref([]);
+
+const selectedForIncOrExp = ref('收入');
 
 const getIncomeListRequest = async () => {
   try {
@@ -71,7 +79,7 @@ const isEmpty = (incomeList: any[], expenseList: any[]) => {
 };
 
 const drawChart = () => {
-  const myChart = echarts.init(document.getElementById('calendar-chart'));
+  const myChart = echarts.init(document.getElementById('year-calendar-chart'));
   let option;
   if (isEmpty(incomeList.value, expenseList.value)) {
     option = {
@@ -84,18 +92,6 @@ const drawChart = () => {
     };
   } else {
     option = {
-      title: [
-        {
-          top: '0%',
-          left: '20%',
-          text: '收入'
-        },
-        {
-          top: '0%',
-          right: '20%',
-          text: '支出'
-        },
-      ],
       tooltip: {
         backgroundColor: 'rgb(252,252,252)',
         confine: true,
@@ -108,7 +104,6 @@ const drawChart = () => {
       },
       visualMap: [
         {
-          seriesIndex: [0, 1],
           calculable: true,
           orient: 'horizontal',
           left: 'center',
@@ -120,7 +115,6 @@ const drawChart = () => {
       ],
       calendar: [
         {
-          orient: 'vertical',
           yearLabel: {
             show: false,
           },
@@ -131,41 +125,18 @@ const drawChart = () => {
             firstDay: 1,
             nameMap: 'cn',
           },
-          cellSize: 30,
-          top: '20%',
-          left: '5%',
-          range: [props.startDate, props.endDate],
-        },
-        {
-          orient: 'vertical',
-          yearLabel: {
-            show: false,
-          },
-          monthLabel: {
-            show: false,
-          },
-          dayLabel: {
-            firstDay: 1,
-            nameMap: 'cn',
-          },
-          cellSize: 30,
-          top: '20%',
-          right: '5%',
+          cellSize: ['auto', 25],
+          top: '8%',
+          left: '2%',
+          right: '1%',
           range: [props.startDate, props.endDate],
         },
       ],
       series: [
         {
-          calendarIndex: 0,
           type: 'heatmap',
           coordinateSystem: 'calendar',
-          data: incomeList.value.map((item: any) => [item.txnDate, item.txnAmount]),
-        },
-        {
-          calendarIndex: 1,
-          type: 'heatmap',
-          coordinateSystem: 'calendar',
-          data: expenseList.value.map((item: any) => [item.txnDate, item.txnAmount]),
+          data: selectedForIncOrExp.value === '收入' ? incomeList.value.map((item: any) => [item.txnDate, item.txnAmount]) : expenseList.value.map((item: any) => [item.txnDate, item.txnAmount]),
         },
       ],
     };
@@ -174,11 +145,23 @@ const drawChart = () => {
   return myChart;
 };
 
+watch(props, async () => {
+  await getIncomeListRequest();
+  await getExpenseListRequest();
+  const myChart = drawChart();
+  resizeChart.observe(myChart, document.getElementById('year-calendar-chart'));
+
+  // 监听响应式数据变化
+  watchEffect(() => {
+    drawChart();
+  });
+});
+
 onMounted(async () => {
   await getIncomeListRequest();
   await getExpenseListRequest();
   const myChart = drawChart();
-  resizeChart.observe(myChart, document.getElementById('calendar-chart'));
+  resizeChart.observe(myChart, document.getElementById('year-calendar-chart'));
 
   // 监听响应式数据变化
   watchEffect(() => {

@@ -20,7 +20,7 @@
 </style>
 
 <script setup lang="ts">
-import {onMounted, onUnmounted, ref, watchEffect} from "vue";
+import {onMounted, onUnmounted, ref, watch, watchEffect} from "vue";
 import {ElMessage} from "element-plus";
 import * as echarts from "echarts";
 import MyChart from "@/components/cards/charts/MyChart.vue";
@@ -162,6 +162,19 @@ const drawChart = () => {
   myChart.setOption(option);
   return myChart;
 };
+
+watch(props, async () => {
+  await getTxnTypeRequest();
+  await getIncomeListRequest();
+  await getExpenseListRequest();
+  const myChart = drawChart();
+  resizeChart.observe(myChart, document.getElementById('type-chart'));
+
+  // 监听响应式数据变化
+  watchEffect(() => {
+    drawChart();
+  });
+});
 
 onMounted(async () => {
   await getTxnTypeRequest();

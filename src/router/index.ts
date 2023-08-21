@@ -9,7 +9,7 @@ import DailyDashboard from "@/views/dashboards/DailyDashboard.vue";
 import WeeklyDashboard from "@/views/dashboards/WeeklyDashboard.vue";
 import MonthlyDashboard from "@/views/dashboards/MonthlyDashboard.vue";
 import YearlyDashboard from "@/views/dashboards/YearlyDashboard.vue";
-import OverallDashboard from "@/views/dashboards/OverallDashboard.vue";
+import CustomDashboard from "@/views/dashboards/CustomDashboard.vue";
 import ReportHome from "@/views/reports/ReportHome.vue";
 import DailyReport from "@/views/reports/DailyReport.vue";
 import WeeklyReport from "@/views/reports/WeeklyReport.vue";
@@ -83,9 +83,9 @@ const routes = [
         component: YearlyDashboard,
       },
       {
-        path: 'overall-dashboard',
-        name: 'overall-dashboard',
-        component: OverallDashboard,
+        path: 'custom-dashboard',
+        name: 'custom-dashboard',
+        component: CustomDashboard,
       },
     ],
   },

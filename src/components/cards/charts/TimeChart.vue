@@ -14,7 +14,7 @@
 </style>
 
 <script setup lang="ts">
-import {onMounted, onUnmounted, ref} from "vue";
+import {onMounted, onUnmounted, ref, watch} from "vue";
 import {ElMessage} from "element-plus";
 import * as echarts from "echarts";
 import MyChart from "@/components/cards/charts/MyChart.vue";
@@ -188,6 +188,13 @@ const drawChart = () => {
 
   return myChart;
 };
+
+watch(props, async () => {
+  await getIncomeListRequest();
+  await getExpenseListRequest();
+  const myChart = drawChart();
+  resizeChart.observe(myChart, document.getElementById('time-chart'));
+});
 
 onMounted(async () => {
   await getIncomeListRequest();

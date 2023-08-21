@@ -11,7 +11,7 @@
           <img src="../assets/week.png" alt="week" class="image-button" @click="$router.push('/dashboard/weekly-dashboard')" :class="{selected: activeView === 'weekly-dashboard'}"/>
           <img src="../assets/month.png" alt="month" class="image-button" @click="$router.push('/dashboard/monthly-dashboard')" :class="{selected: activeView === 'monthly-dashboard'}"/>
           <img src="../assets/year.png" alt="year" class="image-button" @click="$router.push('/dashboard/yearly-dashboard')" :class="{selected: activeView === 'yearly-dashboard'}"/>
-          <img src="../assets/all.png" alt="all" class="image-button" @click="$router.push('/dashboard/overall-dashboard')" :class="{selected: activeView === 'overall-dashboard'}"/>
+          <img src="../assets/custom.png" alt="custom" class="image-button" @click="$router.push('/dashboard/custom-dashboard')" :class="{selected: activeView === 'custom-dashboard'}"/>
         </template>
       </MyCard>
     </template>
@@ -63,7 +63,7 @@ const activeView = computed(() => {
   if (route.path === '/dashboard/weekly-dashboard') return 'weekly-dashboard';
   if (route.path === '/dashboard/monthly-dashboard') return 'monthly-dashboard';
   if (route.path === '/dashboard/yearly-dashboard') return 'yearly-dashboard';
-  if (route.path === '/dashboard/overall-dashboard') return 'overall-dashboard';
+  if (route.path === '/dashboard/custom-dashboard') return 'custom-dashboard';
   return '';
 });
 </script>

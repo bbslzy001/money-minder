@@ -10,6 +10,7 @@
     "axios": "^1.4.0",
     "core-js": "^3.8.3",
     "date-fns": "^2.30.0",
+    "dayjs": "^1.11.9",
     "echarts": "^5.4.3",
     "element-plus": "^2.3.7",
     "marked": "^5.1.1",

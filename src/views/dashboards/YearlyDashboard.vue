@@ -1,5 +1,48 @@
 <template>
-  year
+  <el-container direction="vertical">
+    <el-row :gutter="24" style="margin-bottom: 24px;">
+      <el-col :span="18" style="height: 160px;">
+        <DataChart :start-date="dateRange.startDate" :end-date="dateRange.endDate" date-range="year"/>
+      </el-col>
+      <el-col :span="6" style="height: 160px;">
+        <DateSettingCard :date="dateRange.currentDate[1]" :date-extra="dateRange.currentDate[2]" :date-value="dateRange.currentDate[0]" date-type="year" @handle-date-change="updateDate"/>
+      </el-col>
+    </el-row>
+    <el-row :gutter="24" style="margin-bottom: 24px;">
+      <el-col :span="24" style="height: 350px;">
+        <YearCalendarChart :start-date="dateRange.startDate[1]" :end-date="dateRange.endDate[1]"/>
+      </el-col>
+    </el-row>
+    <el-row :gutter="24">
+      <el-col :span="14">
+        <el-row :gutter="24" style="margin-bottom: 24px;">
+          <el-col :span="14" style="height: 350px;">
+            <IncOrExpRankChart :start-date="dateRange.startDate[1]" :end-date="dateRange.endDate[1]"/>
+          </el-col>
+          <el-col :span="10" style="height: 350px;">
+            <IncOrExpPercentChart :start-date="dateRange.startDate[1]" :end-date="dateRange.endDate[1]"/>
+          </el-col>
+        </el-row>
+        <el-row :gutter="24" style="margin-bottom: 24px;">
+          <el-col :span="24" style="height: 350px;">
+            <DateChart :start-date="dateRange.startDate[1]" :end-date="dateRange.endDate[1]" date-range="year"/>
+          </el-col>
+        </el-row>
+        <el-row :gutter="24">
+          <el-col :span="24" style="height: 500px;">
+            <TypeChart :start-date="dateRange.startDate[1]" :end-date="dateRange.endDate[1]"/>
+          </el-col>
+        </el-row>
+      </el-col>
+      <el-col :span="10">
+        <el-row :gutter="24">
+          <el-col :span="24" style="height: 800px;">
+            <TimeChart :start-date="dateRange.startDate[1]" :end-date="dateRange.endDate[1]"/>
+          </el-col>
+        </el-row>
+      </el-col>
+    </el-row>
+  </el-container>
 </template>
 
 <style scoped>
@@ -7,5 +50,23 @@
 </style>
 
 <script setup lang="ts">
+import {computed, ref} from "vue";
+import DataChart from "@/components/cards/charts/DataChart.vue";
+import DateSettingCard from "@/components/cards/DateSettingCard.vue";
+import IncOrExpPercentChart from "@/components/cards/charts/IncOrExpPercentChart.vue";
+import IncOrExpRankChart from "@/components/cards/charts/IncOrExpRankChart.vue";
+import TimeChart from "@/components/cards/charts/TimeChart.vue";
+import DateChart from "@/components/cards/charts/DateChart.vue";
+import TypeChart from "@/components/cards/charts/TypeChart.vue";
+import {getDateRange} from "@/utils/getDateRange";
+import YearCalendarChart from "@/components/cards/charts/YearCalendarChart.vue";
 
+const currentDate = ref((new Date()).toLocaleDateString());
+const dateRange = computed(() => {
+  return getDateRange('year', currentDate.value);
+});
+
+const updateDate = (newDate: string) => {
+  currentDate.value = newDate;
+};
 </script>

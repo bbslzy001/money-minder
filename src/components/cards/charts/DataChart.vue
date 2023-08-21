@@ -28,7 +28,7 @@
 </style>
 
 <script setup lang="ts">
-import {computed, onMounted, ref} from "vue";
+import {computed, onMounted, ref, watch} from "vue";
 import {ElMessage} from "element-plus";
 import MyStatisticCard from "@/components/cards/MyStatisticCard.vue";
 import {jsonRequest} from "@/utils/request";
@@ -126,6 +126,12 @@ const getPercent = (lastValue: number, currentValue: number) => {
   }
   return parseFloat(((currentValue - lastValue) / lastValue * 100).toFixed(2));
 };
+
+watch(props, () => {
+  getCountRequest();
+  getIncomeRequest();
+  getExpenseRequest();
+});
 
 onMounted(() => {
   getCountRequest();

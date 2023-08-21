@@ -35,7 +35,7 @@
       </el-col>
       <el-col :span="10">
         <el-row :gutter="24" style="margin-bottom: 24px;">
-          <el-col :span="24" style="height: 350px;">
+          <el-col :span="24" style="height: 400px;">
             <CalendarChart :start-date="dateRange.startDate[1]" :end-date="dateRange.endDate[1]"/>
           </el-col>
         </el-row>

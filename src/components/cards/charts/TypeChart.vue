@@ -69,7 +69,7 @@ const getIncomeListRequest = async () => {
     console.error(error);
     ElMessage.error('获取失败');
   }
-}
+};
 
 const getExpenseListRequest = async () => {
   try {
@@ -86,66 +86,82 @@ const getExpenseListRequest = async () => {
     console.error(error);
     ElMessage.error('获取失败');
   }
-}
+};
+
+const isEmpty = (incomeList: any[], expenseList: any[]) => {
+  return incomeList.length === 0 && expenseList.length === 0;
+};
 
 const drawChart = () => {
   const myChart = echarts.init(document.getElementById('type-chart'));
-  const option = {
-    tooltip: {
-      backgroundColor: 'rgb(252,252,252)',
-      confine: true,
-      trigger: 'axis',
-      axisPointer: {
-        type: 'shadow',
+  let option;
+  if (isEmpty(incomeList.value, expenseList.value)) {
+    option = {
+      title: {
+        text: '暂无数据',
+        left: 'center',
+        top: 'center',
+        textStyle: {fontSize: 24, fontWeight: '100'},
       },
-      formatter: (params: any) => {
-        return params[0].name + ': ' + params[0].data + '元';
-      },
-    },
-    grid: {
-      left: '2%',
-      right: '5%',
-      top: '3%',
-      bottom: '3%',
-      containLabel: true,
-    },
-    xAxis: {
-      type: 'value',
-      axisLabel: {
-        formatter: '{value}元',
-      },
-      minInterval: 0.01,
-    },
-    yAxis: {
-      type: 'category',
-      inverse: true,
-      data: selectedForIncOrExp.value === '收入' ?
-          incomeList.value.map((item: any) => {
-            const type = txnTypeList.value.find((typeItem: any) => typeItem.txnTypeId === item.txnTypeId) as any;
-            return type ? type.txnTypeName : '未知';
-          }) :
-          expenseList.value.map((item: any) => {
-            const type = txnTypeList.value.find((typeItem: any) => typeItem.txnTypeId === item.txnTypeId) as any;
-            return type ? type.txnTypeName : '未知';
-          }),
-    },
-    series: [
-      {
-        type: 'bar',
-        data: selectedForIncOrExp.value === '收入' ? incomeList.value.map((item: any) => item.txnAmount) : expenseList.value.map((item: any) => item.txnAmount),
-        barMaxWidth: 60,
-        itemStyle: {
-          color: 'rgba(0, 153, 255, 0.5)',
-          borderColor: 'rgb(0, 153, 255)',
-          borderWidth: 2,
-          borderRadius: 5,
+    };
+  } else {
+    option = {
+      tooltip: {
+        backgroundColor: 'rgb(252,252,252)',
+        confine: true,
+        trigger: 'axis',
+        axisPointer: {
+          type: 'shadow',
+        },
+        formatter: (params: any) => {
+          return params[0].name + ': ' + params[0].data + '元';
         },
       },
-    ],
-  };
+      grid: {
+        left: '2%',
+        right: '5%',
+        top: '3%',
+        bottom: '3%',
+        containLabel: true,
+      },
+      xAxis: {
+        type: 'value',
+        axisLabel: {
+          formatter: '{value}元',
+        },
+        minInterval: 0.01,
+      },
+      yAxis: {
+        type: 'category',
+        inverse: true,
+        data: selectedForIncOrExp.value === '收入' ?
+            incomeList.value.map((item: any) => {
+              const type = txnTypeList.value.find((typeItem: any) => typeItem.txnTypeId === item.txnTypeId) as any;
+              return type ? type.txnTypeName : '未知';
+            }) :
+            expenseList.value.map((item: any) => {
+              const type = txnTypeList.value.find((typeItem: any) => typeItem.txnTypeId === item.txnTypeId) as any;
+              return type ? type.txnTypeName : '未知';
+            }),
+      },
+      series: [
+        {
+          type: 'bar',
+          data: selectedForIncOrExp.value === '收入' ? incomeList.value.map((item: any) => item.txnAmount) : expenseList.value.map((item: any) => item.txnAmount),
+          barMaxWidth: 60,
+          itemStyle: {
+            color: 'rgba(0, 153, 255, 0.5)',
+            borderColor: 'rgb(0, 153, 255)',
+            borderWidth: 2,
+            borderRadius: 5,
+          },
+        },
+      ],
+    };
+  }
   myChart.setOption(option);
   return myChart;
-}
+};
 
 onMounted(async () => {
   await getTxnTypeRequest();

@@ -29,8 +29,8 @@ interface Props {
 
 const props = defineProps<Props>();
 
-const incomeAmount = ref();
-const expenseAmount = ref();
+const incomeAmount = ref(0);
+const expenseAmount = ref(0);
 
 const getIncomeRequest = async () => {
   try {
@@ -66,54 +66,76 @@ const getExpenseRequest = async () => {
   }
 };
 
+const isEmpty = (incomeAmount: any, expenseAmount: any) => {
+  return incomeAmount === 0 && expenseAmount === 0;
+};
+
 const drawChart = () => {
   const myChart = echarts.init(document.getElementById('inc-or-exp-percent-chart'));
-  const option = {
-    tooltip: {
-      backgroundColor: 'rgb(252,252,252)',
-      confine: true,
-      trigger: 'item',
-      formatter: (params: any) => {
-        return params.name + ': ' + params.value + '元 (' + params.percent + '%)';
+  let option;
+  if (isEmpty(incomeAmount.value, expenseAmount.value)) {
+    option = {
+      title: {
+        text: '暂无数据',
+        x: 'center',
+        y: 'center',
+        textStyle: {fontSize: 24, fontWeight: '100'},
       },
-    },
-    grid: {
-      left: '3%',
-      right: '3%',
-      top: '3%',
-      bottom: '3%',
-      containLabel: true
-    },
-    series: [
-      {
-        name: '收支占比',
-        type: 'pie',
-        radius: '75%',
-        data: [
-          {value: incomeAmount.value, name: '收入'},
-          {value: expenseAmount.value, name: '支出'},
-        ],
-        itemStyle: {
-          normal: {
-            color: (colors: { dataIndex: number; }) => {
-              const colorList = [
-                'rgba(0, 204, 102)',
-                'rgba(255, 106, 106)',
-              ];
-              return colorList[colors.dataIndex];
-            }
-          },
+    };
+  } else {
+    option = {
+      tooltip: {
+        backgroundColor: 'rgb(252,252,252)',
+        confine: true,
+        trigger: 'item',
+        formatter: (params: any) => {
+          return params.name + ': ' + params.value + '元 (' + params.percent + '%)';
         },
-        emphasis: {
+      },
+      grid: {
+        left: '3%',
+        right: '3%',
+        top: '3%',
+        bottom: '3%',
+        containLabel: true
+      },
+      series: [
+        {
+          name: '收支占比',
+          type: 'pie',
+          radius: '75%',
+          data: [
+            {
+              value: incomeAmount.value === 0 ? null : incomeAmount.value,
+              name: '收入'
+            },
+            {
+              value: expenseAmount.value === 0 ? null : expenseAmount.value,
+              name: '支出'
+            },
+          ],
           itemStyle: {
-            shadowBlur: 10,
-            shadowOffsetX: 0,
-            shadowColor: 'rgba(0, 0, 0, 0.5)',
+            normal: {
+              color: (colors: { dataIndex: number; }) => {
+                const colorList = [
+                  'rgba(0, 204, 102)',
+                  'rgba(255, 106, 106)',
+                ];
+                return colorList[colors.dataIndex];
+              }
+            },
+          },
+          emphasis: {
+            itemStyle: {
+              shadowBlur: 10,
+              shadowOffsetX: 0,
+              shadowColor: 'rgba(0, 0, 0, 0.5)',
+            },
           },
         },
-      },
-    ],
-  };
+      ],
+    };
+  }
   myChart.setOption(option);
   return myChart;
 };

@@ -47,7 +47,7 @@ const getIncomeListRequest = async () => {
     console.error(error);
     ElMessage.error('获取失败');
   }
-}
+};
 
 const getExpenseListRequest = async () => {
   try {
@@ -64,90 +64,117 @@ const getExpenseListRequest = async () => {
     console.error(error);
     ElMessage.error('获取失败');
   }
-}
+};
+
+const isEmpty = (incomeList: any[], expenseList: any[]) => {
+  for (let i = 0; i < incomeList.length; i++) {
+    if (incomeList[i].txnCount !== 0) {
+      return false;
+    }
+  }
+
+  for (let i = 0; i < expenseList.length; i++) {
+    if (expenseList[i].txnCount !== 0) {
+      return false;
+    }
+  }
+  return true;
+};
 
 const drawChart = () => {
   const myChart = echarts.init(document.getElementById('time-chart'));
-  const option = {
-    tooltip: {
-      backgroundColor: 'rgb(252,252,252)',
-      confine: true,
-      trigger: 'axis',
-      axisPointer: {
-        type: 'shadow',
+  let option;
+  if (isEmpty(incomeList.value, expenseList.value)) {
+    option = {
+      title: {
+        text: '暂无数据',
+        left: 'center',
+        top: 'center',
+        textStyle: {fontSize: 24, fontWeight: '100'},
       },
-      formatter: (params: any) => {
-        let str = params[0].name + '<br/>';
-        params.forEach((item: any) => {
-          let value = item.value ? item.value : 0;
-          str += item.seriesName + ': ' + Math.abs(value) + '笔<br/>';
-        });
-        return str;
+    };
+  } else {
+    option = {
+      tooltip: {
+        backgroundColor: 'rgb(252,252,252)',
+        confine: true,
+        trigger: 'axis',
+        axisPointer: {
+          type: 'shadow',
+        },
+        formatter: (params: any) => {
+          let str = params[0].name + '<br/>';
+          params.forEach((item: any) => {
+            let value = item.value ? item.value : 0;
+            str += item.seriesName + ': ' + Math.abs(value) + '笔<br/>';
+          });
+          return str;
+        },
       },
-    },
-    legend: {
-      data: ['支出', '收入'],
-      left: 'left',
-    },
-    grid: {
-      left: '2%',
-      right: '5%',
-      top: '8%',
-      bottom: '3%',
-      containLabel: true,
-    },
-    xAxis: [
-      {
-        type: 'value',
-        boundaryGap: [0, 0.01],
-        minInterval: 1,
-        axisLabel: {
-          formatter: (value: any) => {
-            return Math.abs(value) + '笔';
+      legend: {
+        data: ['支出', '收入'],
+        left: 'left',
+      },
+      grid: {
+        left: '2%',
+        right: '5%',
+        top: '8%',
+        bottom: '3%',
+        containLabel: true,
+      },
+      xAxis: [
+        {
+          type: 'value',
+          boundaryGap: [0, 0.01],
+          minInterval: 1,
+          axisLabel: {
+            formatter: (value: any) => {
+              return Math.abs(value) + '笔';
+            },
           },
         },
+      ],
+      yAxis: {
+        type: 'category',
+        inverse: true,
+        data: incomeList.value.map((item: any) => item.timeRange),
       },
-    ],
-    yAxis: {
-      type: 'category',
-      inverse: true,
-      data: incomeList.value.map((item: any) => item.timeRange),
-    },
-    series: [
-      {
-        name: '支出',
-        type: 'bar',
-        stack: '总量',
-        data: expenseList.value.map((item: any) => item.txnCount !== 0 ? -item.txnCount : null),
-        barMaxWidth: 60,
-        itemStyle: {
-          color: 'rgba(255, 106, 106, 0.5)',
-          borderColor: 'rgb(255, 106, 106)',
-          borderWidth: 2,
-          borderRadius: 5,
+      series: [
+        {
+          name: '支出',
+          type: 'bar',
+          stack: '总量',
+          data: expenseList.value.map((item: any) => item.txnCount !== 0 ? -item.txnCount : null),
+          barMaxWidth: 60,
+          itemStyle: {
+            color: 'rgba(255, 106, 106, 0.5)',
+            borderColor: 'rgb(255, 106, 106)',
+            borderWidth: 2,
+            borderRadius: 5,
+          },
+          emphasis: {
+            focus: 'series',
+          },
         },
-        emphasis: {
-          focus: 'series',
+        {
+          name: '收入',
+          type: 'bar',
+          stack: '总量',
+          data: incomeList.value.map((item: any) => item.txnCount !== 0 ? item.txnCount : null),
+          barMaxWidth: 60,
+          itemStyle: {
+            color: 'rgba(0, 204, 102, 0.5)',
+            borderColor: 'rgb(0, 204, 102)',
+            borderWidth: 2,
+            borderRadius: 5,
+          },
+          emphasis: {
+            focus: 'series',
+          },
         },
-      },
-      {
-        name: '收入',
-        type: 'bar',
-        stack: '总量',
-        data: incomeList.value.map((item: any) => item.txnCount !== 0 ? item.txnCount : null),
-        barMaxWidth: 60,
-        itemStyle: {
-          color: 'rgba(0, 204, 102, 0.5)',
-          borderColor: 'rgb(0, 204, 102)',
-          borderWidth: 2,
-          borderRadius: 5,
-        },
-        emphasis: {
-          focus: 'series',
-        },
-      },
-    ],
-  };
+      ],
+    };
+  }
   myChart.setOption(option);
 
   // 不允许取消所有legend
@@ -160,7 +187,7 @@ const drawChart = () => {
   });
 
   return myChart;
-}
+};
 
 onMounted(async () => {
   await getIncomeListRequest();

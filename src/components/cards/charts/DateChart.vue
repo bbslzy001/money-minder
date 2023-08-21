@@ -50,14 +50,15 @@ const getIncomeListRequest = async () => {
       incOrExp: '收入',
     });
     if (response.status === RequestCode.SUCCESS) {
-      incomeList.value = preprocessData(response.data.result);
+      const result = response.data.result;
+      if (result.length !== 0) incomeList.value = preprocessData(result);
       ElMessage.success(response.data.message);
     }
   } catch (error) {
     console.error(error);
     ElMessage.error('获取失败');
   }
-}
+};
 
 const getExpenseListRequest = async () => {
   try {
@@ -67,58 +68,75 @@ const getExpenseListRequest = async () => {
       incOrExp: '支出',
     });
     if (response.status === RequestCode.SUCCESS) {
-      expenseList.value = preprocessData(response.data.result);
+      const result = response.data.result;
+      if (result.length !== 0) expenseList.value = preprocessData(result);
       ElMessage.success(response.data.message);
     }
   } catch (error) {
     console.error(error);
     ElMessage.error('获取失败');
   }
-}
+};
+
+const isEmpty = (incomeList: any[], expenseList: any[]) => {
+  return incomeList.length === 0 && expenseList.length === 0;
+};
 
 const drawChart = () => {
   const myChart = echarts.init(document.getElementById('date-chart'));
-  const option = {
-    tooltip: {
-      backgroundColor: 'rgb(252,252,252)',
-      confine: true,
-      trigger: 'axis',
-      formatter: (params: any) => {
-        return params[0].name + ': ' + params[0].data + '元';
+  let option;
+  if (isEmpty(incomeList.value, expenseList.value)) {
+    option = {
+      title: {
+        text: '暂无数据',
+        left: 'center',
+        top: 'center',
+        textStyle: {fontSize: 24, fontWeight: '100'},
       },
-    },
-    grid: {
-      left: '2%',
-      right: '5%',
-      top: '3%',
-      bottom: '3%',
-      containLabel: true,
-    },
-    xAxis: {
-      type: 'category',
-      boundaryGap: false,
-      data: xAxisSetting.value.dataList,
-      axisLabel: {
-        interval: xAxisSetting.value.interval,
+    };
+  } else {
+    option = {
+      tooltip: {
+        backgroundColor: 'rgb(252,252,252)',
+        confine: true,
+        trigger: 'axis',
+        formatter: (params: any) => {
+          return params[0].name + ': ' + params[0].data + '元';
+        },
       },
-    },
-    yAxis: {
-      type: 'value',
-      axisLabel: {
-        formatter: '{value}元',
+      grid: {
+        left: '2%',
+        right: '5%',
+        top: '3%',
+        bottom: '3%',
+        containLabel: true,
       },
-      minInterval: 0.01,
-    },
-    series: [
-      {
-        type: 'line',
-        data: selectedForIncOrExp.value === '收入' ? incomeList.value.map((item: any) => item.txnAmount) : expenseList.value.map((item: any) => item.txnAmount),
+      xAxis: {
+        type: 'category',
+        boundaryGap: false,
+        data: xAxisSetting.value.dataList,
+        axisLabel: {
+          interval: xAxisSetting.value.interval,
+        },
       },
-    ],
-  };
+      yAxis: {
+        type: 'value',
+        axisLabel: {
+          formatter: '{value}元',
+        },
+        minInterval: 0.01,
+      },
+      series: [
+        {
+          type: 'line',
+          data: selectedForIncOrExp.value === '收入' ? incomeList.value.map((item: any) => item.txnAmount) : expenseList.value.map((item: any) => item.txnAmount),
+        },
+      ],
+    };
+  }
   myChart.setOption(option);
   return myChart;
-}
+};
 
 const xAxisSetting = computed(() => {
   let dataList: string[];

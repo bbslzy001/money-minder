@@ -83,7 +83,7 @@ const formatValue = (
     suffix: string = ''
 ) => {
   const formattedValue = value.toFixed(precision).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-  return `${prefix}${formattedValue}${suffix}`;
+  return `${prefix} ${formattedValue} ${suffix}`;
 };
 
 const colorStyle = computed(() => {

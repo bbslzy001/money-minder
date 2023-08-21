@@ -53,7 +53,7 @@ const getIncomeListRequest = async () => {
     console.error(error);
     ElMessage.error('获取失败');
   }
-}
+};
 
 const getExpenseListRequest = async () => {
   try {
@@ -70,7 +70,7 @@ const getExpenseListRequest = async () => {
     console.error(error);
     ElMessage.error('获取失败');
   }
-}
+};
 
 onMounted(() => {
   getIncomeListRequest();

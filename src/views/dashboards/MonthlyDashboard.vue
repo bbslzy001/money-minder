@@ -61,12 +61,12 @@ import TypeChart from "@/components/cards/charts/TypeChart.vue";
 import IncOrExpRankChart from "@/components/cards/charts/IncOrExpRankChart.vue";
 import {getDateRange} from "@/utils/getDateRange";
 
-const currentDate = ref((new Date()).toLocaleDateString());
+const currentDate = ref([(new Date()).toLocaleDateString(), (new Date()).toLocaleDateString()]);
 const dateRange = computed(() => {
   return getDateRange('month', currentDate.value);
 });
 
-const updateDate = (newDate: string) => {
+const updateDate = (newDate: string[]) => {
   currentDate.value = newDate;
 };
 </script>

@@ -1,6 +1,6 @@
 <template>
-  <el-container direction="vertical" style="height: calc(100vh - 110px);">
-    monthreport
+  <el-container direction="vertical" style="height: calc(100vh - 128px);">
+    <el-empty description="敬请期待"/>
   </el-container>
 </template>
 

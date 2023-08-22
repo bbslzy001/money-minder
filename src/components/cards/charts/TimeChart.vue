@@ -77,7 +77,10 @@ const isEmpty = (incomeList: any[], expenseList: any[]) => {
 };
 
 const drawChart = () => {
-  const myChart = echarts.init(document.getElementById('time-chart'));
+  let myChart = echarts.getInstanceByDom(document.getElementById('time-chart') as HTMLElement);
+  if (myChart === undefined) {
+    myChart = echarts.init(document.getElementById('time-chart') as HTMLElement);
+  }
   let option;
   if (isEmpty(incomeList.value, expenseList.value)) {
     option = {

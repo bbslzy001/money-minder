@@ -3,7 +3,7 @@
     <template #content>
       <div class="my-date-setting-card">
         <div class="my-date-setting-card-content">
-          <el-popover :visible="dateSettingFormVisible" placement="left-start" :width="300" @close="resetDateSettingForm">
+          <el-popover :visible="dateSettingFormVisible" placement="left-start" :width="props.dateType !== 'custom' ? 300 : 600" @close="resetDateSettingForm">
             <template #reference>
               <el-link @click="openDateSettingForm" style="font-size: 36px; color: rgb(126, 94, 139);">{{ props.date }}</el-link>
             </template>
@@ -12,18 +12,27 @@
               <el-date-picker
                   v-model="dateSettingForm[0]"
                   :type="dateSettingFormData.type"
-                  :format = "dateSettingFormData.format"
+                  :format="dateSettingFormData.format"
                   value-format="YYYY-MM-DD"
-                  placeholder="请选择日期范围"
+                  :placeholder="props.dateType !== 'custom' ? '请选择日期范围' : '请选择起始日期'"
+              />
+              <span v-if="props.dateType === 'custom'" style="padding: 0 20px;">至</span>
+              <el-date-picker
+                  v-if="props.dateType === 'custom'"
+                  v-model="dateSettingForm[1]"
+                  :type="dateSettingFormData.type"
+                  :format="dateSettingFormData.format"
+                  value-format="YYYY-MM-DD"
+                  placeholder="请选择截止日期"
               />
             </div>
             <div style="padding: 4px; display: flex; flex-direction: row; justify-content: flex-end;">
               <el-button @click="closeDateSettingForm">取消</el-button>
-              <el-button type="primary" @click="submitDateSettingForm">保存</el-button>
+              <el-button type="primary" @click="submitDateSettingForm">确定</el-button>
             </div>
           </el-popover>
         </div>
-        <div class="my-date-setting-card-extra" v-if="props.dateExtra">{{ props.dateExtra }}</div>
+        <div class="my-date-setting-card-extra" v-if="props.dateExtra" v-html="props.dateExtra"/>
       </div>
     </template>
   </MyCard>
@@ -70,8 +79,8 @@ import {computed, ref} from "vue";
 interface Props {
   date: string;
   dateExtra?: string;
-  dateValue: string;
-  dateType: string;
+  dateValue: string[];
+  dateType: 'day' | 'week' | 'month' | 'year' | 'custom';
 }
 
 const props = defineProps<Props>();
@@ -82,7 +91,7 @@ const dateSettingFormVisible = ref<boolean>(false);
 const dateSettingForm = ref<string[]>([]);
 
 const openDateSettingForm = () => {
-  dateSettingForm.value = [props.dateValue];
+  dateSettingForm.value = props.dateValue;
   dateSettingFormVisible.value = true;
 };
 
@@ -91,7 +100,7 @@ const closeDateSettingForm = () => {
 };
 
 const submitDateSettingForm = () => {
-  emit('handle-date-change', (dateSettingForm.value as string[])[0]);
+  emit('handle-date-change', dateSettingForm.value);
   dateSettingFormVisible.value = false;
 };
 
@@ -100,9 +109,9 @@ const resetDateSettingForm = () => {
 };
 
 const dateSettingFormData = computed(() => {
-  let title;
-  let type = props.dateType;
-  let format;
+  let title: string;
+  let type: string;
+  let format: string;
   switch (props.dateType) {
     case "day":
       title = "日历";
@@ -111,18 +120,22 @@ const dateSettingFormData = computed(() => {
       break;
     case "week":
       title = "周历";
+      type = "week";
       format = "YYYY年第ww周";
       break;
     case "month":
       title = "月历";
+      type = "month";
       format = "YYYY年MM月";
       break;
     case "year":
       title = "年历";
+      type = "year";
       format = "YYYY年";
       break;
-    default:
-      title = "日历";
+    case "custom":
+      title = "自定义日期范围";
+      type = "date";
       format = "YYYY年MM月DD日";
       break;
   }

@@ -5,7 +5,12 @@
         <DataChart :start-date="dateRange.startDate" :end-date="dateRange.endDate" date-range="custom"/>
       </el-col>
       <el-col :span="6" style="height: 160px;">
-        <DateSettingCard :date="dateRange.currentDate[1]" :date-extra="dateRange.currentDate[2]" :date-value="dateRange.currentDate[0]" date-type="custom" @handle-date-change="updateDate"/>
+        <DateSettingCard :date="'日期范围'" :date-extra="`自：${dateRange.currentDate[1]}<br/>至：${dateRange.currentDate[2]}`" :date-value="dateRange.currentDate[0]" date-type="custom" @handle-date-change="updateDate"/>
+      </el-col>
+    </el-row>
+    <el-row :gutter="24" style="margin-bottom: 24px;">
+      <el-col :span="24" style="height: 400px;">
+        <DateChart :start-date="dateRange.startDate[1]" :end-date="dateRange.endDate[1]" date-range="custom"/>
       </el-col>
     </el-row>
     <el-row :gutter="24">
@@ -16,11 +21,6 @@
           </el-col>
           <el-col :span="10" style="height: 350px;">
             <IncOrExpPercentChart :start-date="dateRange.startDate[1]" :end-date="dateRange.endDate[1]"/>
-          </el-col>
-        </el-row>
-        <el-row :gutter="24" style="margin-bottom: 24px;">
-          <el-col :span="24" style="height: 350px;">
-            <DateChart :start-date="dateRange.startDate[1]" :end-date="dateRange.endDate[1]" date-range="custom"/>
           </el-col>
         </el-row>
         <el-row :gutter="24">
@@ -55,12 +55,12 @@ import DateChart from "@/components/cards/charts/DateChart.vue";
 import TypeChart from "@/components/cards/charts/TypeChart.vue";
 import {getDateRange} from "@/utils/getDateRange";
 
-const currentDate = ref((new Date()).toLocaleDateString());
+const currentDate = ref([(new Date()).toLocaleDateString(), (new Date()).toLocaleDateString()]);
 const dateRange = computed(() => {
   return getDateRange('custom', currentDate.value);
 });
 
-const updateDate = (newDate: string) => {
+const updateDate = (newDate: string[]) => {
   currentDate.value = newDate;
 };
 </script>

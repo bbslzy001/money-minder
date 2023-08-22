@@ -66,7 +66,10 @@ const isEmpty = (incomeList: any[], expenseList: any[]) => {
 };
 
 const drawChart = () => {
-  const myChart = echarts.init(document.getElementById('month-calendar-chart'));
+  let myChart = echarts.getInstanceByDom(document.getElementById('month-calendar-chart') as HTMLElement);
+  if (myChart === undefined) {
+    myChart = echarts.init(document.getElementById('month-calendar-chart') as HTMLElement);
+  }
   let option;
   if (isEmpty(incomeList.value, expenseList.value)) {
     option = {

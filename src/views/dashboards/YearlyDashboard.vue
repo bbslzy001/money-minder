@@ -61,12 +61,12 @@ import TypeChart from "@/components/cards/charts/TypeChart.vue";
 import {getDateRange} from "@/utils/getDateRange";
 import YearCalendarChart from "@/components/cards/charts/YearCalendarChart.vue";
 
-const currentDate = ref((new Date()).toLocaleDateString());
+const currentDate = ref([(new Date()).toLocaleDateString(), (new Date()).toLocaleDateString()]);
 const dateRange = computed(() => {
   return getDateRange('year', currentDate.value);
 });
 
-const updateDate = (newDate: string) => {
+const updateDate = (newDate: string[]) => {
   currentDate.value = newDate;
 };
 </script>

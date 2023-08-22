@@ -66,7 +66,10 @@ const isEmpty = (incomeAmount: any, expenseAmount: any) => {
 };
 
 const drawChart = () => {
-  const myChart = echarts.init(document.getElementById('inc-or-exp-percent-chart'));
+  let myChart = echarts.getInstanceByDom(document.getElementById('inc-or-exp-percent-chart') as HTMLElement);
+  if (myChart === undefined) {
+    myChart = echarts.init(document.getElementById('inc-or-exp-percent-chart') as HTMLElement);
+  }
   let option;
   if (isEmpty(incomeAmount.value, expenseAmount.value)) {
     option = {
@@ -110,15 +113,13 @@ const drawChart = () => {
             },
           ],
           itemStyle: {
-            normal: {
-              color: (colors: { dataIndex: number; }) => {
-                const colorList = [
-                  'rgba(0, 204, 102)',
-                  'rgba(255, 106, 106)',
-                ];
-                return colorList[colors.dataIndex];
-              }
-            },
+            color: (colors: { dataIndex: number; }) => {
+              const colorList = [
+                'rgba(0, 204, 102)',
+                'rgba(255, 106, 106)',
+              ];
+              return colorList[colors.dataIndex];
+            }
           },
           emphasis: {
             itemStyle: {

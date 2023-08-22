@@ -21,7 +21,6 @@
 
 <script setup lang="ts">
 import {onMounted, ref, watch} from "vue";
-import {ElMessage} from "element-plus";
 import MyChart from "@/components/cards/charts/MyChart.vue";
 import {jsonRequest} from "@/utils/request";
 import {RequestCode} from "@/utils/requestCode";
@@ -47,11 +46,9 @@ const getIncomeListRequest = async () => {
     });
     if (response.status === RequestCode.SUCCESS) {
       incomeList.value = response.data.result;
-      ElMessage.success(response.data.message);
     }
   } catch (error) {
     console.error(error);
-    ElMessage.error('获取失败');
   }
 };
 
@@ -64,11 +61,9 @@ const getExpenseListRequest = async () => {
     });
     if (response.status === RequestCode.SUCCESS) {
       expenseList.value = response.data.result;
-      ElMessage.success(response.data.message);
     }
   } catch (error) {
     console.error(error);
-    ElMessage.error('获取失败');
   }
 };
 

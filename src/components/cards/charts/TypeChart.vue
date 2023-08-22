@@ -21,7 +21,6 @@
 
 <script setup lang="ts">
 import {onMounted, onUnmounted, ref, watch, watchEffect} from "vue";
-import {ElMessage} from "element-plus";
 import * as echarts from "echarts";
 import MyChart from "@/components/cards/charts/MyChart.vue";
 import {jsonRequest} from "@/utils/request";
@@ -46,11 +45,9 @@ const getTxnTypeRequest = async () => {
     const response = await jsonRequest.get('/txn-type/getall');
     if (response.status === RequestCode.SUCCESS) {
       txnTypeList.value = response.data.result;
-      ElMessage.success(response.data.message);
     }
   } catch (error) {
     console.error(error);
-    ElMessage.error('获取失败');
   }
 };
 
@@ -63,11 +60,9 @@ const getIncomeListRequest = async () => {
     });
     if (response.status === RequestCode.SUCCESS) {
       incomeList.value = response.data.result;
-      ElMessage.success(response.data.message);
     }
   } catch (error) {
     console.error(error);
-    ElMessage.error('获取失败');
   }
 };
 
@@ -80,11 +75,9 @@ const getExpenseListRequest = async () => {
     });
     if (response.status === RequestCode.SUCCESS) {
       expenseList.value = response.data.result;
-      ElMessage.success(response.data.message);
     }
   } catch (error) {
     console.error(error);
-    ElMessage.error('获取失败');
   }
 };
 

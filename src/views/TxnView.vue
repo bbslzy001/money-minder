@@ -392,11 +392,9 @@ const getRuleConfigRequest = async () => {
     const response = await jsonRequest.get('/config/get/1');
     if (response.status === RequestCode.SUCCESS) {
       ruleConfig.value = response.data.result.configValue;
-      ElMessage.success(response.data.message);
     }
   } catch (error) {
     console.error(error);
-    ElMessage.error('获取失败');
   }
 };
 
@@ -404,7 +402,7 @@ const deleteTxnRequest = async (index: number, row: Txn) => {
   try {
     const response = await jsonRequest.delete(`/txn/delete/${row.txnId}`);
     if (response.status === RequestCode.SUCCESS) {
-      ElMessage.success(response.data.message);
+      ElMessage.success('删除成功');
       await getTxnRequest();
     }
   } catch (error) {
@@ -425,7 +423,7 @@ const updateTxnRequest = async () => {
     });
     if (response.status === RequestCode.SUCCESS) {
       closeUpdateTxnForm();
-      ElMessage.success(response.data.message);
+      ElMessage.success('更新成功');
       await getTxnRequest();
     }
   } catch (error) {
@@ -439,11 +437,9 @@ const getTxnRequest = async () => {
     const response = await jsonRequest.get('/txn/getall');
     if (response.status === RequestCode.SUCCESS) {
       txnList.value = response.data.result;
-      ElMessage.success(response.data.message);
     }
   } catch (error) {
     console.error(error);
-    ElMessage.error('获取失败');
   }
 };
 
@@ -452,11 +448,9 @@ const getTxnTypeRequest = async () => {
     const response = await jsonRequest.get('/txn-type/getall');
     if (response.status === RequestCode.SUCCESS) {
       txnTypeList.value = response.data.result;
-      ElMessage.success(response.data.message);
     }
   } catch (error) {
     console.error(error);
-    ElMessage.error('获取失败');
   }
 };
 
@@ -476,7 +470,7 @@ const addRuleRequest = async () => {
     if (response.status === RequestCode.SUCCESS) {
       closeAddRuleForm();
       closeUpdateTxnForm();
-      ElMessage.success(response.data.message);
+      ElMessage.success('添加成功');
       if ((ruleConfig.value as RuleConfig).addRuleApplyTxns) {
         await getTxnRequest();
       }

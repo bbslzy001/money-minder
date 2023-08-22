@@ -156,7 +156,7 @@ const deleteBillRequest = async (index: number, row: Bill) => {
   try {
     const response = await jsonRequest.delete(`/bill/delete/${row.billId}`);
     if (response.status === RequestCode.SUCCESS) {
-      ElMessage.success(response.data.message);
+      ElMessage.success('删除成功');
       await getBillRequest();
     }
   } catch (error) {
@@ -173,7 +173,7 @@ const updateBillRequest = async () => {
     });
     if (response.status === RequestCode.SUCCESS) {
       closeUpdateBillForm();
-      ElMessage.success(response.data.message);
+      ElMessage.success('更新成功');
       await getBillRequest();
     }
   } catch (error) {
@@ -187,11 +187,9 @@ const getBillRequest = async () => {
     const response = await jsonRequest.get('/bill/getall');
     if (response.status === RequestCode.SUCCESS) {
       billList.value = response.data.result;
-      ElMessage.success(response.data.message);
     }
   } catch (error) {
     console.error(error);
-    ElMessage.error('获取失败');
   }
 };
 

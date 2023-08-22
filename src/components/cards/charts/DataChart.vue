@@ -29,7 +29,6 @@
 
 <script setup lang="ts">
 import {computed, onMounted, ref, watch} from "vue";
-import {ElMessage} from "element-plus";
 import MyStatisticCard from "@/components/cards/MyStatisticCard.vue";
 import {jsonRequest} from "@/utils/request";
 import {RequestCode} from "@/utils/requestCode";
@@ -63,11 +62,9 @@ const getCountRequest = async () => {
     });
     if (response.status === RequestCode.SUCCESS) {
       txnCount.value = response.data.result.txnCount;
-      ElMessage.success(response.data.message);
     }
   } catch (error) {
     console.error(error);
-    ElMessage.error('获取失败');
   }
 };
 
@@ -80,11 +77,9 @@ const getIncomeRequest = async () => {
     });
     if (response.status === RequestCode.SUCCESS) {
       incomeAmount.value = response.data.result.txnAmount;
-      ElMessage.success(response.data.message);
     }
   } catch (error) {
     console.error(error);
-    ElMessage.error('获取失败');
   }
 };
 
@@ -97,11 +92,9 @@ const getExpenseRequest = async () => {
     });
     if (response.status === RequestCode.SUCCESS) {
       expenseAmount.value = response.data.result.txnAmount;
-      ElMessage.success(response.data.message);
     }
   } catch (error) {
     console.error(error);
-    ElMessage.error('获取失败');
   }
 };
 

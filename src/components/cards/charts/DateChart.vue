@@ -21,7 +21,6 @@
 
 <script setup lang="ts">
 import {computed, onMounted, onUnmounted, ref, watch, watchEffect} from "vue";
-import {ElMessage} from "element-plus";
 import * as echarts from "echarts";
 import MyChart from "@/components/cards/charts/MyChart.vue";
 import {fillMissingDates} from "@/utils/fillMissingDates";
@@ -53,11 +52,9 @@ const getIncomeListRequest = async () => {
       const result = response.data.result;
       if (result.length !== 0) incomeList.value = preprocessData(result);
       else if (result.length === 0 && incomeList.value.length !== 0) incomeList.value = [];
-      ElMessage.success(response.data.message);
     }
   } catch (error) {
     console.error(error);
-    ElMessage.error('获取失败');
   }
 };
 
@@ -72,11 +69,9 @@ const getExpenseListRequest = async () => {
       const result = response.data.result;
       if (result.length !== 0) expenseList.value = preprocessData(result);
       else if (result.length === 0 && expenseList.value.length !== 0) expenseList.value = [];
-      ElMessage.success(response.data.message);
     }
   } catch (error) {
     console.error(error);
-    ElMessage.error('获取失败');
   }
 };
 

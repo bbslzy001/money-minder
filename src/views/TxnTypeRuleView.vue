@@ -482,7 +482,7 @@ const updateRuleConfigRequest = async () => {
     });
     if (response.status === RequestCode.SUCCESS) {
       closeRuleConfigForm();
-      ElMessage.success(response.data.message);
+      ElMessage.success('更新成功');
       await getRuleConfigRequest();
     }
   } catch (error) {
@@ -496,11 +496,9 @@ const getRuleConfigRequest = async () => {
     const response = await jsonRequest.get('/config/get/1');
     if (response.status === RequestCode.SUCCESS) {
       ruleConfig.value = response.data.result.configValue;
-      ElMessage.success(response.data.message);
     }
   } catch (error) {
     console.error(error);
-    ElMessage.error('获取失败');
   }
 };
 
@@ -509,7 +507,7 @@ const addTxnTypeRequest = async () => {
     const response = await jsonRequest.post('/txn-type/add', addTxnTypeForm.value);
     if (response.status === RequestCode.SUCCESS) {
       closeAddTxnTypeForm();
-      ElMessage.success(response.data.message);
+      ElMessage.success('添加成功');
       await getTxnTypeRequest();
     }
   } catch (error) {
@@ -522,7 +520,7 @@ const deleteTxnTypeRequest = async (index: number, row: TxnType) => {
   try {
     const response = await jsonRequest.delete(`/txn-type/delete/${row.txnTypeId}`);
     if (response.status === RequestCode.SUCCESS) {
-      ElMessage.success(response.data.message);
+      ElMessage.success('删除成功');
       await getTxnTypeRequest();
       await getRuleRequest();
     }
@@ -540,7 +538,7 @@ const updateTxnTypeRequest = async () => {
     });
     if (response.status === RequestCode.SUCCESS) {
       closeUpdateTxnTypeForm();
-      ElMessage.success(response.data.message);
+      ElMessage.success('更新成功');
       await getTxnTypeRequest();
     }
   } catch (error) {
@@ -554,11 +552,9 @@ const getTxnTypeRequest = async () => {
     const response = await jsonRequest.get('/txn-type/getall');
     if (response.status === RequestCode.SUCCESS) {
       txnTypeList.value = response.data.result;
-      ElMessage.success(response.data.message);
     }
   } catch (error) {
     console.error(error);
-    ElMessage.error('获取失败');
   }
 };
 
@@ -577,7 +573,7 @@ const addRuleRequest = async () => {
     });
     if (response.status === RequestCode.SUCCESS) {
       closeAddRuleForm();
-      ElMessage.success(response.data.message);
+      ElMessage.success('添加成功');
       await getRuleRequest();
     }
   } catch (error) {
@@ -591,7 +587,7 @@ const deleteRuleRequest = async (index: number, row: Rule) => {
     const arg = (ruleConfig.value as RuleConfig).deleteRuleApplyTxns ? '/apply-txns' : '';
     const response = await jsonRequest.delete(`/rule/delete${arg}/${row.ruleId}`);
     if (response.status === RequestCode.SUCCESS) {
-      ElMessage.success(response.data.message);
+      ElMessage.success('删除成功');
       await getRuleRequest();
     }
   } catch (error) {
@@ -615,7 +611,7 @@ const updateRuleRequest = async () => {
     });
     if (response.status === RequestCode.SUCCESS) {
       closeUpdateRuleForm();
-      ElMessage.success(response.data.message);
+      ElMessage.success('更新成功');
       await getRuleRequest();
     }
   } catch (error) {
@@ -629,11 +625,9 @@ const getRuleRequest = async () => {
     const response = await jsonRequest.get('/rule/getall');
     if (response.status === RequestCode.SUCCESS) {
       ruleList.value = response.data.result;
-      ElMessage.success(response.data.message);
     }
   } catch (error) {
     console.error(error);
-    ElMessage.error('获取失败');
   }
 };
 

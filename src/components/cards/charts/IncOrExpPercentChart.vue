@@ -14,7 +14,7 @@
 </style>
 
 <script setup lang="ts">
-import {onMounted, onUnmounted, ref, watch} from "vue";
+import {onMounted, onUnmounted, ref, watch, watchEffect} from "vue";
 import {ElMessage} from "element-plus";
 import * as echarts from 'echarts';
 import MyChart from "@/components/cards/charts/MyChart.vue";
@@ -136,15 +136,13 @@ const drawChart = () => {
       ],
     };
   }
-  myChart.setOption(option);
+  myChart.setOption(option, true);
   return myChart;
 };
 
 watch(props, async () => {
   await getIncomeRequest();
   await getExpenseRequest();
-  const myChart = drawChart();
-  resizeChart.observe(myChart, document.getElementById('inc-or-exp-percent-chart'));
 });
 
 onMounted(async () => {
@@ -152,6 +150,11 @@ onMounted(async () => {
   await getExpenseRequest();
   const myChart = drawChart();
   resizeChart.observe(myChart, document.getElementById('inc-or-exp-percent-chart'));
+
+  // 监听响应式数据变化
+  watchEffect(() => {
+    drawChart();
+  });
 });
 
 onUnmounted(() => {

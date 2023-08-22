@@ -52,6 +52,7 @@ const getIncomeListRequest = async () => {
     if (response.status === RequestCode.SUCCESS) {
       const result = response.data.result;
       if (result.length !== 0) incomeList.value = preprocessData(result);
+      else if (result.length === 0 && incomeList.value.length !== 0) incomeList.value = [];
       ElMessage.success(response.data.message);
     }
   } catch (error) {
@@ -70,6 +71,7 @@ const getExpenseListRequest = async () => {
     if (response.status === RequestCode.SUCCESS) {
       const result = response.data.result;
       if (result.length !== 0) expenseList.value = preprocessData(result);
+      else if (result.length === 0 && expenseList.value.length !== 0) expenseList.value = [];
       ElMessage.success(response.data.message);
     }
   } catch (error) {
@@ -134,7 +136,7 @@ const drawChart = () => {
       ],
     };
   }
-  myChart.setOption(option);
+  myChart.setOption(option, true);
   return myChart;
 };
 
@@ -197,13 +199,6 @@ const preprocessData = (originDataList: any[]): any[] => {
 watch(props, async () => {
   await getIncomeListRequest();
   await getExpenseListRequest();
-  const myChart = drawChart();
-  resizeChart.observe(myChart, document.getElementById('date-chart'));
-
-  // 监听响应式数据变化
-  watchEffect(() => {
-    drawChart();
-  });
 });
 
 onMounted(async () => {

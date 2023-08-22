@@ -14,7 +14,7 @@
 </style>
 
 <script setup lang="ts">
-import {onMounted, onUnmounted, ref, watch} from "vue";
+import {onMounted, onUnmounted, ref, watch, watchEffect} from "vue";
 import {ElMessage} from "element-plus";
 import * as echarts from "echarts";
 import MyChart from "@/components/cards/charts/MyChart.vue";
@@ -175,7 +175,7 @@ const drawChart = () => {
       ],
     };
   }
-  myChart.setOption(option);
+  myChart.setOption(option, true);
 
   // 不允许取消所有legend
   myChart.on('legendselectchanged', (params: any) => {
@@ -192,8 +192,6 @@ const drawChart = () => {
 watch(props, async () => {
   await getIncomeListRequest();
   await getExpenseListRequest();
-  const myChart = drawChart();
-  resizeChart.observe(myChart, document.getElementById('time-chart'));
 });
 
 onMounted(async () => {
@@ -201,6 +199,11 @@ onMounted(async () => {
   await getExpenseListRequest();
   const myChart = drawChart();
   resizeChart.observe(myChart, document.getElementById('time-chart'));
+
+  // 监听响应式数据变化
+  watchEffect(() => {
+    drawChart();
+  });
 });
 
 onUnmounted(() => {

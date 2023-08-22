@@ -170,20 +170,13 @@ const drawChart = () => {
       ],
     };
   }
-  myChart.setOption(option);
+  myChart.setOption(option, true);
   return myChart;
 };
 
 watch(props, async () => {
   await getIncomeListRequest();
   await getExpenseListRequest();
-  const myChart = drawChart();
-  resizeChart.observe(myChart, document.getElementById('month-calendar-chart'));
-
-  // 监听响应式数据变化
-  watchEffect(() => {
-    drawChart();
-  });
 });
 
 onMounted(async () => {

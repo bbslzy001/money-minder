@@ -159,7 +159,7 @@ const drawChart = () => {
       ],
     };
   }
-  myChart.setOption(option);
+  myChart.setOption(option, true);
   return myChart;
 };
 
@@ -167,13 +167,6 @@ watch(props, async () => {
   await getTxnTypeRequest();
   await getIncomeListRequest();
   await getExpenseListRequest();
-  const myChart = drawChart();
-  resizeChart.observe(myChart, document.getElementById('type-chart'));
-
-  // 监听响应式数据变化
-  watchEffect(() => {
-    drawChart();
-  });
 });
 
 onMounted(async () => {

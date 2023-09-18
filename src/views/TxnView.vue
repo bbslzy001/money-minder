@@ -5,7 +5,7 @@
       <span class="title-text">交易明细</span>
     </template>
     <template #content>
-      <el-container direction="vertical" style="height: calc(100vh - 128px);">
+      <el-container direction="vertical">
         <MyTableCard title="筛选条件" style="height: auto;">
           <template #content>
             <div class="input">
@@ -37,7 +37,7 @@
         </MyTableCard>
         <MyTableCard title="交易列表" style="margin-top: 24px;">
           <template #content>
-            <MyTable :page-size="pageSize" :table-data="txnListForTable" :show-pagination="true">
+            <MyTable :page-size="pageSize" :table-data="txnListForTable" :show-pagination="true" :unlimited-height="true">
               <template #table-content>
                 <el-table-column prop="txnDateTime" label="交易时间" width="180"/>
                 <el-table-column prop="txnTypeId" label="交易类型" width="120">
@@ -49,7 +49,7 @@
                   </template>
                 </el-table-column>
                 <el-table-column prop="txnCpty" label="交易方" width="240"/>
-                <el-table-column prop="prodDesc" label="商品描述" width="auto"/>
+                <el-table-column prop="prodDesc" label="商品描述" width="auto" min-width="240"/>
                 <el-table-column prop="incOrExp" label="收入/支出" width="120">
                   <template #default="scope">
                     <el-tag v-if="scope.row.incOrExp === '收入'" type="success">收入</el-tag>

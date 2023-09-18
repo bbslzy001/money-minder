@@ -2,7 +2,7 @@
   <div class="table" ref="table">
     <el-table
         :data="props.showPagination ? pagedTableData : props.tableData"
-        :max-height="tableHeight"
+        :max-height="props.unlimitedHeight ? 'auto' : tableHeight"
         size="default"
         show-overflow-tooltip>
       <slot name="table-content"/>
@@ -36,6 +36,7 @@ interface Props {
   pageSize?: number;
   showPagination?: boolean;
   bottomSpace?: number;
+  unlimitedHeight?: boolean;
 }
 
 const props = defineProps<Props>();

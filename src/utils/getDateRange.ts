@@ -1,4 +1,17 @@
-import {endOfDay, endOfMonth, endOfWeek, endOfYear, format, startOfDay, startOfMonth, startOfWeek, startOfYear, subDays, subMonths, subYears} from 'date-fns';
+import {
+    endOfDay,
+    endOfMonth,
+    endOfWeek,
+    endOfYear,
+    format,
+    startOfDay,
+    startOfMonth,
+    startOfWeek,
+    startOfYear,
+    subDays,
+    subMonths,
+    subYears
+} from 'date-fns';
 
 const getDateRange = (type: 'day' | 'week' | 'month' | 'year' | 'custom', date: string[]) => {
     let now = new Date(date[0]);

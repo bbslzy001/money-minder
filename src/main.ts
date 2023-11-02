@@ -14,7 +14,7 @@ const app = createApp(App)
 app.use(store).use(router).use(ElementPlus, {size: 'default', zIndex: 2000, locale: zhCn}).mount('#app')
 
 
-// ÓÃÓÚ½â¾ö el-table µÄ ResizeObserver loop limit exceeded ´íÎó
+// ç”¨äºŽè§£å†³ el-table çš„ ResizeObserver loop limit exceeded é”™è¯¯
 type DebounceFunction = (...args: any[]) => void;
 
 const debounce = (fn: DebounceFunction, delay: number): DebounceFunction => {

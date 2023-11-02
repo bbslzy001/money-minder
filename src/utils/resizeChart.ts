@@ -4,11 +4,11 @@ let windowListener: (() => void) | null = null;
 let parentElementObserver: ResizeObserver | null = null;
 
 const observe = (chart: EChartsType, parentElement: HTMLElement | null) => {
-    // ¼àÌýä¯ÀÀÆ÷´°¿Ú±ä»¯
+    // ç›‘å¬æµè§ˆå™¨çª—å£å˜åŒ–
     window.addEventListener('resize', windowListener = () => {
         chart.resize();
     });
-    // ¼àÌý¸¸ºÐ×Ó´óÐ¡±ä»¯
+    // ç›‘å¬çˆ¶ç›’å­å¤§å°å˜åŒ–
     if (parentElement) {
         parentElementObserver = observeElementResize(parentElement, () => {
             chart.resize();
@@ -17,9 +17,9 @@ const observe = (chart: EChartsType, parentElement: HTMLElement | null) => {
 }
 
 /**
- * ¼àÌýÔªËØµÄ´óÐ¡±ä»¯, ²¢ÔÚ±ä»¯Ê±Ö´ÐÐ»Øµ÷º¯Êý
- * @param element ´ý¼àÌýµÄÔªËØ
- * @param callback ´óÐ¡·¢Éú±ä»¯Ê±ÒªÖ´ÐÐµÄ»Øµ÷º¯Êý
+ * ç›‘å¬å…ƒç´ çš„å¤§å°å˜åŒ–, å¹¶åœ¨å˜åŒ–æ—¶æ‰§è¡Œå›žè°ƒå‡½æ•°
+ * @param element å¾…ç›‘å¬çš„å…ƒç´ 
+ * @param callback å¤§å°å‘ç”Ÿå˜åŒ–æ—¶è¦æ‰§è¡Œçš„å›žè°ƒå‡½æ•°
  */
 const observeElementResize = (element: HTMLElement, callback: () => void) => {
     const resizeObserver = new ResizeObserver(entries => {

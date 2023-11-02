@@ -1,18 +1,18 @@
 const fillMissingDates = (datalist: any[], startDate: Date, endDate: Date): any[] => {
-    // ´´½¨Ò»¸öÒÔÈÕÆÚ×÷Îªkey£¬ÖµÄ¬ÈÏÎª0µÄmap¶ÔÏó
+    // åˆ›å»ºä¸€ä¸ªä»¥æ—¥æœŸä½œä¸ºkeyï¼Œå€¼é»˜è®¤ä¸º0çš„mapå¯¹è±¡
     let dataMap = new Map();
     for (let d = startDate; d <= endDate; d.setDate(d.getDate() + 1)) {
-        let dateStr = formatDate(d);  // ½«ÈÕÆÚ×Ö·û´®×ª»»Îª 'yyyy-mm-dd'µÄ¸ñÊ½
+        let dateStr = formatDate(d);  // å°†æ—¥æœŸå­—ç¬¦ä¸²è½¬æ¢ä¸º 'yyyy-mm-dd'çš„æ ¼å¼
         dataMap.set(dateStr, 0);
     }
 
-    // ¸üĞÂdatalistÖĞ´æÔÚµÄÈÕÆÚµÄÖµ
+    // æ›´æ–°datalistä¸­å­˜åœ¨çš„æ—¥æœŸçš„å€¼
     datalist.forEach(data => {
-        let dateStr = data.txnDate.slice(0, 10);  // ½«ÈÕÆÚ×Ö·û´®×ª»»Îª 'yyyy-mm-dd'µÄ¸ñÊ½
+        let dateStr = data.txnDate.slice(0, 10);  // å°†æ—¥æœŸå­—ç¬¦ä¸²è½¬æ¢ä¸º 'yyyy-mm-dd'çš„æ ¼å¼
         dataMap.set(dateStr, data.txnAmount);
     });
 
-    // ½«map¶ÔÏó×ª»»ÎªÊı×é
+    // å°†mapå¯¹è±¡è½¬æ¢ä¸ºæ•°ç»„
     let result: any[] = [];
     dataMap.forEach((value, key) => {
         result.push({
@@ -24,7 +24,7 @@ const fillMissingDates = (datalist: any[], startDate: Date, endDate: Date): any[
     return result;
 }
 
-// ½«ÈÕÆÚ×Ö·û´®×ª»»Îª 'yyyy-mm-dd'µÄ¸ñÊ½
+// å°†æ—¥æœŸå­—ç¬¦ä¸²è½¬æ¢ä¸º 'yyyy-mm-dd'çš„æ ¼å¼
 const formatDate = (date: Date): string => {
     const year = date.getFullYear();
     const month = date.getMonth() + 1;
